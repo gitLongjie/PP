@@ -109,8 +109,8 @@ namespace PPEngine {
                 static Rect FromString(const char* s); // "1,1,1,1";
 
             private:
-                    glm::vec2 position_;
-                    glm::vec2 size_;
+                glm::vec2 position_;
+                glm::vec2 size_;
             };
         }
     }

@@ -134,6 +134,23 @@ namespace PPEngine {
                 return gResourceInstanceHandle_;
             }
 
+            void Context::DrawColor(const Core::Math::Rect& rect, unsigned long color) {
+                const glm::vec2& minRect = rect.GetMin();
+                const glm::vec2& maxRect = rect.GetMax();
+                RECT rc{ static_cast<long>(minRect.x), static_cast<long>(minRect.y),
+                    static_cast<long>(maxRect.x), static_cast<long>(maxRect.y) };
+                WindowRender::DrawColor(hdcPaint_, rc, color);
+            }
+
+            void Context::DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
+                unsigned long color2, bool vertical, int32_t steps) {
+                const glm::vec2& minRect = rect.GetMin();
+                const glm::vec2& maxRect = rect.GetMax();
+                RECT rc{ static_cast<long>(minRect.x), static_cast<long>(minRect.y),
+                    static_cast<long>(maxRect.x), static_cast<long>(maxRect.y) };
+                WindowRender::DrawGradient(hdcPaint_, rc, color1, color2, vertical, steps);
+            }
+
             void Context::Invalidate(Core::Math::Rect& rect) {
                 if (nullptr == hWndPaint_) {
                     return;
@@ -175,11 +192,30 @@ namespace PPEngine {
                     return true;
 
                     case WM_PAINT:{
+                        if (nullptr == control_) {
+                            PAINTSTRUCT ps = { 0 };
+                            ::BeginPaint(hWndPaint_, &ps);
+                            WindowRender::DrawColor(hdcPaint_, ps.rcPaint, 0xFFFF0000);
+                            ::EndPaint(hWndPaint_, &ps);
+                            return true;
+                        }
+                        
+                        RECT clientRect{ 0 };
+                        ::GetClientRect(hWndPaint_, &clientRect);
+
+                        if (control_->IsUpdateNeeded()) {
+                            float x = clientRect.left;
+                            float y = clientRect.top;
+                            float width = clientRect.right - clientRect.left;
+                            float height = clientRect.bottom - clientRect.top;
+                            const Core::Math::Rect rect(x, y, width, height);
+                            control_->SetRect(rect);
+                        }
                         PAINTSTRUCT ps = { 0 };
                         ::BeginPaint(hWndPaint_, &ps);
-                        WindowRender::DrawColor(hdcPaint_, ps.rcPaint, 0xFFFF0000);
+                        //WindowRender::DrawColor(hdcPaint_, ps.rcPaint, 0xFFFF0000);
+                        control_->OnDraw();
                         ::EndPaint(hWndPaint_, &ps);
-                        return true;
                     }
                     return true;
                 }

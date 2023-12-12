@@ -30,6 +30,25 @@ namespace PPEngine {
         }
 
         void Control::SetAttribute(const char* name, const char* value) {
+            if (0 == strcmp(name, "bkcolor") || 0 == strcmp(name, "bkcolor1")) {
+                const char* color = value;
+                if (*color == '#') {
+                    ++color;
+                }
+
+                char* endStr = nullptr;
+                unsigned long uColor = strtoul(color, &endStr, 16);
+                SetBkColor(uColor);
+            } else if (0 == strcmp(name, "bkcolor2")) {
+                const char* color = value;
+                if (*color == '#') {
+                    ++color;
+                }
+
+                char* endStr = nullptr;
+                unsigned long uColor = strtoul(color, &endStr, 16);
+                SetBk2Color(uColor);
+            }
         }
 
         void Control::Invalidate() {
@@ -51,7 +70,7 @@ namespace PPEngine {
         }
 
         bool Control::IsUpdateNeeded() const {
-            return false;
+            return updateNeeded_;
         }
 
         void Control::NeedUpdate() {
@@ -80,6 +99,41 @@ namespace PPEngine {
 
             enabled_ = enable;
             Invalidate();
+        }
+
+        void Control::SetBkColor(unsigned long color) {
+            if (bkColor_ == color) { return; }
+
+            bkColor_ = color;
+            Invalidate();
+        }
+
+        void Control::SetBk2Color(unsigned long color) {
+            if (bk2Color_ == color) { return; }
+
+            bk2Color_ = color;
+            Invalidate(); 
+        }
+
+        void Control::OnDrawBkColor() {
+            if (0 != bkColor_) {
+                if (0 != bk2Color_) {
+                    if (0 != bk3Color_) {
+                        Core::Math::Rect rect = rect_;
+                        rect.SetHeight(rect_.GetHeight() / 2);
+                        context_->DrawGradient(rect, bkColor_, bk2Color_, true, 8);
+                        rect.SetPosition(rect_.GetMin() + glm::vec2(0, rect_.GetHeight() / 2));
+                        context_->DrawGradient(rect, bk2Color_, bk3Color_, true, 8);
+
+                    } else {
+                        context_->DrawGradient(rect_, bkColor_, bk2Color_, true, 16);
+                    }
+                } else if (bkColor_ >= 0xFF000000) {
+                    context_->DrawColor(rect_, bkColor_);
+                } else {
+                    context_->DrawColor(rect_, bkColor_);
+                }
+            }
         }
 
         void Control::SetRect(const Core::Math::Rect& rect) {
@@ -121,6 +175,10 @@ namespace PPEngine {
                 context_->Invalidate(rect_);
             }
             
+        }
+
+        void Control::OnDraw() {
+            OnDrawBkColor();
         }
 
     }

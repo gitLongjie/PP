@@ -1,5 +1,6 @@
 #include "Platforms/Windows/WindowRender.h"
 
+#include <assert.h>
 
 namespace PPEngine {
     namespace Platforms {
@@ -141,6 +142,77 @@ namespace PPEngine {
                     RECT rcCorners = { 0 };
                     DrawImage(hdc, hBitmap, rc, rc, rcBmpPart, rcCorners, true, 255);
                     ::DeleteObject(hBitmap);
+                }
+            }
+
+            void WindowRender::DrawGradient(HDC hDC, const RECT& rc, DWORD dwFirst, DWORD dwSecond, bool bVertical, int nSteps) {
+                typedef BOOL(WINAPI* LPALPHABLEND)(HDC, int, int, int, int, HDC, int, int, int, int, BLENDFUNCTION);
+                static LPALPHABLEND lpAlphaBlend = (LPALPHABLEND) ::GetProcAddress(::GetModuleHandle("msimg32.dll"), "AlphaBlend");
+                if (lpAlphaBlend == NULL) lpAlphaBlend = AlphaBitBlt;
+                typedef BOOL(WINAPI* PGradientFill)(HDC, PTRIVERTEX, ULONG, PVOID, ULONG, ULONG);
+                static PGradientFill lpGradientFill = (PGradientFill) ::GetProcAddress(::GetModuleHandle("msimg32.dll"), "GradientFill");
+
+                BYTE bAlpha = (BYTE)(((dwFirst >> 24) + (dwSecond >> 24)) >> 1);
+                if (bAlpha == 0) return;
+                int cx = rc.right - rc.left;
+                int cy = rc.bottom - rc.top;
+                RECT rcPaint = rc;
+                HDC hPaintDC = hDC;
+                HBITMAP hPaintBitmap = NULL;
+                HBITMAP hOldPaintBitmap = NULL;
+                if (bAlpha < 255) {
+                    rcPaint.left = rcPaint.top = 0;
+                    rcPaint.right = cx;
+                    rcPaint.bottom = cy;
+                    hPaintDC = ::CreateCompatibleDC(hDC);
+                    hPaintBitmap = ::CreateCompatibleBitmap(hDC, cx, cy);
+                    assert(hPaintDC);
+                    assert(hPaintBitmap);
+                    hOldPaintBitmap = (HBITMAP) ::SelectObject(hPaintDC, hPaintBitmap);
+                }
+                if (lpGradientFill != NULL) {
+                    TRIVERTEX triv[2] =
+                    {
+                        { rcPaint.left, rcPaint.top, GetBValue(dwFirst) << 8, GetGValue(dwFirst) << 8, GetRValue(dwFirst) << 8, 0xFF00 },
+                        { rcPaint.right, rcPaint.bottom, GetBValue(dwSecond) << 8, GetGValue(dwSecond) << 8, GetRValue(dwSecond) << 8, 0xFF00 }
+                    };
+                    GRADIENT_RECT grc = { 0, 1 };
+                    lpGradientFill(hPaintDC, triv, 2, &grc, 1, bVertical ? GRADIENT_FILL_RECT_V : GRADIENT_FILL_RECT_H);
+                } else {
+                    // Determine how many shades
+                    int nShift = 1;
+                    if (nSteps >= 64) nShift = 6;
+                    else if (nSteps >= 32) nShift = 5;
+                    else if (nSteps >= 16) nShift = 4;
+                    else if (nSteps >= 8) nShift = 3;
+                    else if (nSteps >= 4) nShift = 2;
+                    int nLines = 1 << nShift;
+                    for (int i = 0; i < nLines; i++) {
+                        // Do a little alpha blending
+                        BYTE bR = (BYTE)((GetBValue(dwSecond) * (nLines - i) + GetBValue(dwFirst) * i) >> nShift);
+                        BYTE bG = (BYTE)((GetGValue(dwSecond) * (nLines - i) + GetGValue(dwFirst) * i) >> nShift);
+                        BYTE bB = (BYTE)((GetRValue(dwSecond) * (nLines - i) + GetRValue(dwFirst) * i) >> nShift);
+                        // ... then paint with the resulting color
+                        HBRUSH hBrush = ::CreateSolidBrush(RGB(bR, bG, bB));
+                        RECT r2 = rcPaint;
+                        if (bVertical) {
+                            r2.bottom = rc.bottom - ((i * (rc.bottom - rc.top)) >> nShift);
+                            r2.top = rc.bottom - (((i + 1) * (rc.bottom - rc.top)) >> nShift);
+                            if ((r2.bottom - r2.top) > 0) ::FillRect(hDC, &r2, hBrush);
+                        } else {
+                            r2.left = rc.right - (((i + 1) * (rc.right - rc.left)) >> nShift);
+                            r2.right = rc.right - ((i * (rc.right - rc.left)) >> nShift);
+                            if ((r2.right - r2.left) > 0) ::FillRect(hPaintDC, &r2, hBrush);
+                        }
+                        ::DeleteObject(hBrush);
+                    }
+                }
+                if (bAlpha < 255) {
+                    BLENDFUNCTION bf = { AC_SRC_OVER, 0, bAlpha, AC_SRC_ALPHA };
+                    lpAlphaBlend(hDC, rc.left, rc.top, cx, cy, hPaintDC, 0, 0, cx, cy, bf);
+                    ::SelectObject(hPaintDC, hOldPaintBitmap);
+                    ::DeleteObject(hPaintBitmap);
+                    ::DeleteDC(hPaintDC);
                 }
             }
 

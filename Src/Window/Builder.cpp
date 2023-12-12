@@ -167,32 +167,26 @@ namespace PPEngine {
             ~ControlCreatorVisitor() override = default;
 
             bool VisitEnter(const tinyxml2::XMLElement& element, const tinyxml2::XMLAttribute* attribute) override {
-                const tinyxml2::XMLAttribute* first = attribute;
                 Window::Control::Ptr control;
-                while (nullptr != first) {
-                    const char* aName = first->Name();
-                    if (0 == strcmp("VerticalLayout", aName)) {
-                        control = std::make_shared<VerticalLayout>();
-                    } 
+                const char* eleName = element.Name();
+                if (0 == strcmp("VerticalLayout", eleName)) {
+                    control = std::make_shared<VerticalLayout>();
+                }
+                if (nullptr == control) {
+                    return true;
+                }
+                
+                const tinyxml2::XMLAttribute* current = attribute;
+                while (nullptr != current) {
+                    const char* aName = current->Name();
+                    const char* aValue = current->Value();
+                    control->SetAttribute(aName, aValue);
+                    current = current->Next();
+                }
 
-                    first = first->Next();
-                    if (nullptr == control) {
-                        continue;
-                    }
-
-                    control->SetContext(context_, root_.get());
-                    if (!root_) {
-                        root_ = control;
-                    }
-
-                    const tinyxml2::XMLAttribute* current = attribute;
-                    while (nullptr != current) {
-                        const char* aName = current->Name();
-                        const char* aValue = current->Value();
-                        control->SetAttribute(aName, aValue);
-                        current = current->Next();
-                    }
-                    
+                control->SetContext(context_, root_.get());
+                if (!root_) {
+                    root_ = control;
                 }
                 return true;
             }

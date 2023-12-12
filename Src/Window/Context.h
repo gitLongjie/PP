@@ -16,10 +16,14 @@ namespace PPEngine {
             virtual void RemovePostPaint(Control* control);
             virtual void SetFocus(Control* control, bool focusWnd);
             virtual Control* GetFocus() const { return focusControl_; }
+            virtual void DrawColor(const Core::Math::Rect& rect, unsigned long color);
+            virtual void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
+                unsigned long color2, bool vertical, int32_t steps);
 
             bool IsUpdateNeeded() const { return needUpdate_; }
             void NeedUpdate() { needUpdate_ = true; }
 
+            
 
         protected:
             std::vector<Control*> postPaintControls_;

@@ -27,6 +27,8 @@ namespace PPEngine {
             virtual void SetAttribute(const char* name, const char* value);
             virtual void SetRect(const Core::Math::Rect& rect);
 
+            virtual void OnDraw();
+
             void Invalidate();
             bool IsUpdateNeeded() const;
             void NeedUpdate();
@@ -35,6 +37,11 @@ namespace PPEngine {
             void SetEnabled(bool enable = true);
 
             const Core::Math::Rect& GetRect() const { return rect_; }
+            void SetBkColor(unsigned long color);
+            void SetBk2Color(unsigned long color);
+
+        protected:
+            virtual void OnDrawBkColor();
 
         private:
             class Context* context_{ nullptr };
@@ -49,11 +56,14 @@ namespace PPEngine {
             bool float_{ false };
             bool focused_{ false };
 
-            bool visible_{ false };
-            bool internVisible_{ false };
-            bool enabled_{ false };
+            bool visible_{ true };
+            bool internVisible_{ true };
+            bool enabled_{ true };
 
-            bool updateNeeded_ { false };
+            bool updateNeeded_ { true };
+            unsigned long bkColor_{ 0 };
+            unsigned long bk2Color_{ 0 };
+            unsigned long bk3Color_{ 0 };
         };
     }
 }

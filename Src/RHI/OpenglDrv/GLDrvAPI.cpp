@@ -50,7 +50,7 @@ namespace PPEngine {
         }
 
         void GLDrvAPI::UpdateRenderSize(const DriverSettings& setting) {
-            int width, height;
+            int width = 0, height = 0;
             //glfwGetFramebufferSize(reinterpret_cast<GLFWwindow*>(setting.windowHandle), &width, &height);
             glViewport(0, 0, width, height);
 

@@ -17,5 +17,13 @@ namespace PPEngine {
 
         }
 
+        void Context::DrawColor(const Core::Math::Rect& rect, unsigned long color1) {
+
+        }
+
+        void Context::DrawGradient(const Core::Math::Rect& rect, unsigned long color1, unsigned long color2, bool vertical, int32_t steps) {
+
+        }
+
     }
 }

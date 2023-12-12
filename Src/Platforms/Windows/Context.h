@@ -44,6 +44,10 @@ namespace PPEngine {
                 static void SetResourceDll(HINSTANCE hInst);
                 static HINSTANCE GetResourceDll();
 
+                void DrawColor(const Core::Math::Rect& rect, unsigned long color) override;
+                void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
+                    unsigned long color2, bool vertical, int32_t steps) override;
+
                 void Invalidate(Core::Math::Rect& rect) override;
 
                 const Core::Math::Size& GetSize() const { return size_; }
