@@ -1,5 +1,6 @@
 #include "Window/Control.h"
 
+#include "Core/StringUtil.h"
 #include "Window/Context.h"
 
 namespace PPEngine {
@@ -31,23 +32,23 @@ namespace PPEngine {
 
         void Control::SetAttribute(const char* name, const char* value) {
             if (0 == strcmp(name, "bkcolor") || 0 == strcmp(name, "bkcolor1")) {
-                const char* color = value;
-                if (*color == '#') {
-                    ++color;
-                }
-
-                char* endStr = nullptr;
-                unsigned long uColor = strtoul(color, &endStr, 16);
+                unsigned long uColor = Core::StringToColor16(value);
                 SetBkColor(uColor);
             } else if (0 == strcmp(name, "bkcolor2")) {
-                const char* color = value;
-                if (*color == '#') {
-                    ++color;
+                unsigned long uColor = Core::StringToColor16(value);
+                SetBkColor2(uColor);
+            } else if (0 == strcmp(name, "bkcolor3")) {
+                unsigned long uColor = Core::StringToColor16(value);
+                SetBkColor3(uColor);
+            } else if (0 == strcmp(name, "bordersize")) {
+                std::string border(value);
+                if (std::string::npos == border.find(",")) {
+                    SetBorderSize(atoi(value)); 
+                } else {
+                    SetBorderSize(Core::Math::Rect::FromString(value));
                 }
-
-                char* endStr = nullptr;
-                unsigned long uColor = strtoul(color, &endStr, 16);
-                SetBk2Color(uColor);
+            } else if (0 == strcmp(name, "borderround")) {
+                SetBorderRound(Core::Math::FromString(value));
             }
         }
 
@@ -108,32 +109,71 @@ namespace PPEngine {
             Invalidate();
         }
 
-        void Control::SetBk2Color(unsigned long color) {
-            if (bk2Color_ == color) { return; }
+        void Control::SetBkColor2(unsigned long color) {
+            if (bkColor2_ == color) { return; }
 
-            bk2Color_ = color;
+            bkColor2_ = color;
             Invalidate(); 
+        }
+        
+        void Control::SetBkColor3(unsigned long color) {
+            if (bkColor3_ == color) { return; }
+
+            bkColor3_ = color;
+            Invalidate(); 
+        }
+
+        void Control::SetBorderSize(const Core::Math::Rect& size) {
+            borderRect_ = size;
+            Invalidate();
+        }
+
+        void Control::SetBorderSize(int32_t size) {
+            borderSize_ = size;
+            Invalidate();
+        }
+
+        void Control::SetBorderRound(const Core::Math::Size& size) {
+            if (borderRound_ == size) { return; }
+
+            borderRound_ = size;
+            Invalidate();
         }
 
         void Control::OnDrawBkColor() {
             if (0 != bkColor_) {
-                if (0 != bk2Color_) {
-                    if (0 != bk3Color_) {
-                        Core::Math::Rect rect = rect_;
+                if (0 != bkColor2_) {
+                    if (0 != bkColor3_) {
+                        Core::Math::Rect rect = rectPaint_;
                         rect.SetHeight(rect_.GetHeight() / 2);
-                        context_->DrawGradient(rect, bkColor_, bk2Color_, true, 8);
+                        context_->DrawGradient(rect, bkColor_, bkColor2_, true, 8);
                         rect.SetPosition(rect_.GetMin() + glm::vec2(0, rect_.GetHeight() / 2));
-                        context_->DrawGradient(rect, bk2Color_, bk3Color_, true, 8);
+                        context_->DrawGradient(rect, bkColor2_, bkColor3_, true, 8);
 
                     } else {
-                        context_->DrawGradient(rect_, bkColor_, bk2Color_, true, 16);
+                        context_->DrawGradient(rectPaint_, bkColor_, bkColor2_, true, 16);
                     }
                 } else if (bkColor_ >= 0xFF000000) {
-                    context_->DrawColor(rect_, bkColor_);
+                    context_->DrawColor(rectPaint_, bkColor_);
                 } else {
-                    context_->DrawColor(rect_, bkColor_);
+                    context_->DrawColor(rectPaint_, bkColor_);
                 }
             }
+        }
+
+        void Control::OnDrawBkImage() {
+            if (bkImage_.empty()) { return; }
+
+            context_->DrawImageString(rectPaint_, rect_, bkImage_);
+        }
+
+        void Control::OnDrawStatusImage() {
+        }
+
+        void Control::OnDrawText() {
+        }
+
+        void Control::OnDrawBorder() {
         }
 
         void Control::SetRect(const Core::Math::Rect& rect) {
@@ -177,8 +217,21 @@ namespace PPEngine {
             
         }
 
-        void Control::OnDraw() {
+        void Control::OnDraw(const Core::Math::Rect& rect) {
+            if (!rect_.Intersects(rect)) {
+                return;
+            }
+
+            rectPaint_ = rect_.CalIntersects(rect);
+
+            if (borderRound_.x > 0 || borderRound_.y > 0) {
+                context_->GenerateRoundClip(rectPaint_, rect_, borderRound_.x, borderRound_.y);
+            }
+
             OnDrawBkColor();
+            OnDrawBkImage();
+            OnDrawStatusImage();
+            OnDrawText();
         }
 
     }

@@ -28,5 +28,15 @@ namespace PPEngine {
             
             return true;
         }
+        unsigned long StringToColor16(const char* color) {
+            const char* acolor = color;
+            if (*acolor == '#') {
+                ++acolor;
+            }
+
+            char* endStr = nullptr;
+            unsigned long uColor = strtoul(acolor, &endStr, 16);
+            return uColor;
+        }
     }
 }

@@ -17,12 +17,18 @@ namespace PPEngine {
 
         }
 
+        void Context::DrawImageString(const Core::Math::Rect& rectPaint, const Core::Math::Rect& rect, const std::string& image) {
+        }
+
         void Context::DrawColor(const Core::Math::Rect& rect, unsigned long color1) {
 
         }
 
         void Context::DrawGradient(const Core::Math::Rect& rect, unsigned long color1, unsigned long color2, bool vertical, int32_t steps) {
 
+        }
+
+        void Context::GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) {
         }
 
     }

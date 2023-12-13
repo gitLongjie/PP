@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include "Core/Math/Size.h"
 #include "Core/Math/Rect.h"
@@ -27,7 +28,7 @@ namespace PPEngine {
             virtual void SetAttribute(const char* name, const char* value);
             virtual void SetRect(const Core::Math::Rect& rect);
 
-            virtual void OnDraw();
+            virtual void OnDraw(const Core::Math::Rect& rect);
 
             void Invalidate();
             bool IsUpdateNeeded() const;
@@ -38,16 +39,24 @@ namespace PPEngine {
 
             const Core::Math::Rect& GetRect() const { return rect_; }
             void SetBkColor(unsigned long color);
-            void SetBk2Color(unsigned long color);
+            void SetBkColor2(unsigned long color);
+            void SetBkColor3(unsigned long color);
+            void SetBorderSize(const Core::Math::Rect& size);
+            void SetBorderSize(int32_t size);
+            void SetBorderRound(const Core::Math::Size& size);
 
         protected:
             virtual void OnDrawBkColor();
+            virtual void OnDrawBkImage();
+            virtual void OnPaintStatusImage();
+            virtual void OnPaintText();
 
         private:
             class Context* context_{ nullptr };
             Control* parent_{ nullptr };
 
             Core::Math::Rect rect_;
+            Core::Math::Rect rectPaint_;
             Core::Math::Size cXY_{ 0.0f, 0.0f };
             Core::Math::Size cxyFixed_{ 0.0f, 0.0f };
             Core::Math::Size cxyMin_{ 0.0f, 0.0f };
@@ -62,8 +71,14 @@ namespace PPEngine {
 
             bool updateNeeded_ { true };
             unsigned long bkColor_{ 0 };
-            unsigned long bk2Color_{ 0 };
-            unsigned long bk3Color_{ 0 };
+            unsigned long bkColor2_{ 0 };
+            unsigned long bkColor3_{ 0 };
+
+            Core::Math::Rect borderRect_;
+            int32_t borderSize_{ 0 };
+            Core::Math::Size borderRound_{ 0.0f, 0.0f };
+
+            std::string bkImage_;
         };
     }
 }
