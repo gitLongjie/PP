@@ -37,19 +37,28 @@ namespace PPEngine {
             bool IsEnabled() const { return enabled_; }
             void SetEnabled(bool enable = true);
 
+            bool IsFocused() const { return focused_; }
+            void SetFocuse();
+
             const Core::Math::Rect& GetRect() const { return rect_; }
+            unsigned long GetColor(unsigned long color);
             void SetBkColor(unsigned long color);
             void SetBkColor2(unsigned long color);
             void SetBkColor3(unsigned long color);
             void SetBorderSize(const Core::Math::Rect& size);
             void SetBorderSize(int32_t size);
             void SetBorderRound(const Core::Math::Size& size);
+            void SetBorderColor(unsigned long color);
+            unsigned long GetBorderColor() const { return borderColor_; }
+            void SetFocusBorderColor(unsigned long color);
+            unsigned long SetFocusBorderColor() const { return focusBorderColor_; }
 
         protected:
             virtual void OnDrawBkColor();
             virtual void OnDrawBkImage();
-            virtual void OnPaintStatusImage();
-            virtual void OnPaintText();
+            virtual void OnDrawStatusImage();
+            virtual void OnDrawText();
+            virtual void OnDrawBorder();
 
         private:
             class Context* context_{ nullptr };
@@ -70,9 +79,12 @@ namespace PPEngine {
             bool enabled_{ true };
 
             bool updateNeeded_ { true };
+            bool isHSL_{ false };
             unsigned long bkColor_{ 0 };
             unsigned long bkColor2_{ 0 };
             unsigned long bkColor3_{ 0 };
+            unsigned long borderColor_{ 0 };
+            unsigned long focusBorderColor_{ 0 };
 
             Core::Math::Rect borderRect_;
             int32_t borderSize_{ 0 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "Core/Math/Rect.h"
 
@@ -16,6 +17,9 @@ namespace PPEngine {
             virtual void RemovePostPaint(Control* control);
             virtual void SetFocus(Control* control, bool focusWnd);
             virtual Control* GetFocus() const { return focusControl_; }
+            virtual void DrawLine(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color, int nStyle = 0);
+            virtual void DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color);
+            virtual void DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color);
             virtual void DrawImageString(const Core::Math::Rect& rectPaint, const Core::Math::Rect& rect, const std::string& image);
             virtual void DrawColor(const Core::Math::Rect& rect, unsigned long color);
             virtual void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,

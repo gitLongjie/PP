@@ -134,6 +134,30 @@ namespace PPEngine {
                 return gResourceInstanceHandle_;
             }
 
+            void Context::DrawLine(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color, int nStyle) {
+                const glm::vec2& minRect = rectPaint.GetMin();
+                const glm::vec2& maxRect = rectPaint.GetMax();
+                RECT rc{ static_cast<long>(minRect.x), static_cast<long>(minRect.y),
+                    static_cast<long>(maxRect.x), static_cast<long>(maxRect.y) };
+                WindowRender::DrawLine(hdcPaint_, rc, color, nStyle);
+            }
+
+            void Context::DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color) {
+                const glm::vec2& minRect = rectPaint.GetMin();
+                const glm::vec2& maxRect = rectPaint.GetMax();
+                RECT rc{ static_cast<long>(minRect.x), static_cast<long>(minRect.y),
+                    static_cast<long>(maxRect.x), static_cast<long>(maxRect.y) };
+                WindowRender::DrawRect(hdcPaint_, rc, color, color);
+            }
+
+            void Context::DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color) {
+                const glm::vec2& minRect = rectPaint.GetMin();
+                const glm::vec2& maxRect = rectPaint.GetMax();
+                RECT rc{ static_cast<long>(minRect.x), static_cast<long>(minRect.y),
+                    static_cast<long>(maxRect.x), static_cast<long>(maxRect.y) };
+                WindowRender::DrawRoundRect(hdcPaint_, rc, width, height, size, color);
+            }
+
             void Context::DrawColor(const Core::Math::Rect& rect, unsigned long color) {
                 const glm::vec2& minRect = rect.GetMin();
                 const glm::vec2& maxRect = rect.GetMax();

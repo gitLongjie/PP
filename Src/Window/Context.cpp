@@ -17,6 +17,15 @@ namespace PPEngine {
 
         }
 
+        void Context::DrawLine(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color, int nStyle) {
+        }
+
+        void Context::DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color) {
+        }
+
+        void Context::DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color) {
+        }
+
         void Context::DrawImageString(const Core::Math::Rect& rectPaint, const Core::Math::Rect& rect, const std::string& image) {
         }
 

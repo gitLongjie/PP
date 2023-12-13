@@ -102,6 +102,19 @@ namespace PPEngine {
             Invalidate();
         }
 
+        void Control::SetFocuse() {
+            if (nullptr == context_) { return; }
+
+            context_->SetFocus(this, true);
+        }
+
+        unsigned long Control::GetColor(unsigned long color) {
+            if (!isHSL_) { return color; }
+
+            //short H = 0, S = 0, L = 0;
+            return color;
+        }
+
         void Control::SetBkColor(unsigned long color) {
             if (bkColor_ == color) { return; }
 
@@ -140,6 +153,20 @@ namespace PPEngine {
             Invalidate();
         }
 
+        void Control::SetBorderColor(unsigned long color) {
+            if (borderColor_ == color) { return; }
+
+            borderColor_ = color;
+            Invalidate();
+        }
+
+        void Control::SetFocusBorderColor(unsigned long color) {
+            if (focusBorderColor_ == color) { return; }
+
+            focusBorderColor_ = color;
+            Invalidate();
+        }
+
         void Control::OnDrawBkColor() {
             if (0 != bkColor_) {
                 if (0 != bkColor2_) {
@@ -174,6 +201,21 @@ namespace PPEngine {
         }
 
         void Control::OnDrawBorder() {
+            if (0 != borderColor_ || 0 != focusBorderColor_) {
+                if (borderSize_ > 0 && (borderRound_.x > 0 || borderRound_.y > 0)) {
+                    if (IsFocused() && 0 != focusBorderColor_) {
+                        context_->DrawRoundRect(rectPaint_, borderSize_, borderRound_.x, borderRound_.y, focusBorderColor_);
+                    } else {
+                        context_->DrawRoundRect(rectPaint_, borderSize_, borderRound_.x, borderRound_.y, borderColor_);
+                    }
+                } else {
+                    if (IsFocused() && 0 != focusBorderColor_) {
+                        context_->DrawRect(rectPaint_, borderSize_, focusBorderColor_);
+                    } else  if (borderRect_.GetMin().x > 0 || borderRect_.GetMin().y > 0 || borderRect_.GetMax().x > 0 || borderRect_.GetMax().y > 0) {
+                        context_->DrawRect(rectPaint_, borderSize_, borderRound_.x, borderRound_.y, borderColor_);
+                    }
+                }
+            }
         }
 
         void Control::SetRect(const Core::Math::Rect& rect) {

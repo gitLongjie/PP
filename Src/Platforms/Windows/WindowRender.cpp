@@ -117,6 +117,42 @@ namespace PPEngine {
                 return TRUE;
             }
 
+            void WindowRender::DrawLine(HDC hDC, const RECT& rc, int nSize, DWORD dwPenColor, int nStyle) {
+               assert(::GetObjectType(hDC) == OBJ_DC || ::GetObjectType(hDC) == OBJ_MEMDC);
+
+                LOGPEN lg;
+                lg.lopnColor = RGB(GetBValue(dwPenColor), GetGValue(dwPenColor), GetRValue(dwPenColor));
+                lg.lopnStyle = nStyle;
+                lg.lopnWidth.x = nSize;
+                HPEN hPen = CreatePenIndirect(&lg);
+                HPEN hOldPen = (HPEN)::SelectObject(hDC, hPen);
+                POINT ptTemp = { 0 };
+                ::MoveToEx(hDC, rc.left, rc.top, &ptTemp);
+                ::LineTo(hDC, rc.right, rc.bottom);
+                ::SelectObject(hDC, hOldPen);
+                ::DeleteObject(hPen);
+            }
+
+            void WindowRender::DrawRect(HDC hDC, const RECT& rc, int nSize, DWORD dwPenColor) {
+                assert(::GetObjectType(hDC) == OBJ_DC || ::GetObjectType(hDC) == OBJ_MEMDC);
+                HPEN hPen = ::CreatePen(PS_SOLID | PS_INSIDEFRAME, nSize, RGB(GetBValue(dwPenColor), GetGValue(dwPenColor), GetRValue(dwPenColor)));
+                HPEN hOldPen = (HPEN)::SelectObject(hDC, hPen);
+                ::SelectObject(hDC, ::GetStockObject(HOLLOW_BRUSH));
+                ::Rectangle(hDC, rc.left, rc.top, rc.right, rc.bottom);
+                ::SelectObject(hDC, hOldPen);
+                ::DeleteObject(hPen);
+            }
+
+            void WindowRender::DrawRoundRect(HDC hDC, const RECT& rc, int width, int height, int nSize, DWORD dwPenColor) {
+                assert(::GetObjectType(hDC) == OBJ_DC || ::GetObjectType(hDC) == OBJ_MEMDC);
+                HPEN hPen = ::CreatePen(PS_SOLID | PS_INSIDEFRAME, nSize, RGB(GetBValue(dwPenColor), GetGValue(dwPenColor), GetRValue(dwPenColor)));
+                HPEN hOldPen = (HPEN)::SelectObject(hDC, hPen);
+                ::SelectObject(hDC, ::GetStockObject(HOLLOW_BRUSH));
+                ::RoundRect(hDC, rc.left, rc.top, rc.right, rc.bottom, width, height);
+                ::SelectObject(hDC, hOldPen);
+                ::DeleteObject(hPen);
+            }
+
             void WindowRender::DrawColor(HDC hdc, const RECT& rc, unsigned long color) {
                 if (color <= 0x00FFFFFF) return;
                 if (color >= 0xFF000000) {

@@ -44,6 +44,9 @@ namespace PPEngine {
                 static void SetResourceDll(HINSTANCE hInst);
                 static HINSTANCE GetResourceDll();
 
+                void DrawLine(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color, int nStyle = 0) override;
+                void DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color) override;
+                void DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color) override;
                 void DrawColor(const Core::Math::Rect& rect, unsigned long color) override;
                 void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
                     unsigned long color2, bool vertical, int32_t steps) override;

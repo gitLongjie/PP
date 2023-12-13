@@ -8,6 +8,9 @@ namespace PPEngine {
         namespace Windows {
             class WindowRender {
             public:
+                static void DrawLine(HDC hDC, const RECT& rc, int nSize, DWORD dwPenColor, int nStyle = PS_SOLID);
+                static void DrawRect(HDC hDC, const RECT& rc, int nSize, DWORD dwPenColor);
+                static void DrawRoundRect(HDC hDC, const RECT& rc, int width, int height, int nSize, DWORD dwPenColor);
                 static void DrawColor(HDC hdc, const RECT& rc, unsigned long color);
                 static void DrawGradient(HDC hDC, const RECT& rc, DWORD dwFirst, DWORD dwSecond, bool bVertical, int nSteps);
                 static void DrawImage(HDC hdc, HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint,
