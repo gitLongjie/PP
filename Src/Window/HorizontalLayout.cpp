@@ -1,16 +1,15 @@
-#include "Window/VerticalLayout.h"
+#include "Window/HorizontalLayout.h"
 
 #include "Window/Container.h"
 #include "Window/Context.h"
 
-
 namespace PPEngine {
     namespace Window {
-        VerticalLayout::VerticalLayout() : Container() {}
+        HorizontalLayout::HorizontalLayout() : Container() {}
 
-        VerticalLayout::~VerticalLayout() {}
+        HorizontalLayout::~HorizontalLayout() {}
 
-        void VerticalLayout::SetAttribute(const char* name, const char* value) {
+        void HorizontalLayout::SetAttribute(const char* name, const char* value) {
             if (0 == strcmp(name, "sepheight")) {
                 SetSepHeight(atoi(value));
             } else if (0 == strcmp(name, "sepimm")) {
@@ -20,14 +19,14 @@ namespace PPEngine {
             }
         }
 
-        void VerticalLayout::SetRect(const Core::Math::Rect& rect) {
+        void HorizontalLayout::SetRect(const Core::Math::Rect& rect) {
             Container::SetRect(rect);
 
             Core::Math::Rect rc(rect_);
 
         }
 
-        void VerticalLayout::SetSepImmMode(bool immediately) {
+        void HorizontalLayout::SetSepImmMode(bool immediately) {
             if (immediately_ == immediately) return;
             if (captured_ && !immediately_ && nullptr != GetContext()) {
                 GetContext()->RemovePostPaint(this);
