@@ -40,6 +40,9 @@ namespace PPEngine {
             } else if (0 == strcmp(name, "bkcolor3")) {
                 unsigned long uColor = Core::StringToColor16(value);
                 SetBkColor3(uColor);
+            } else if (0 == strcmp(name, "bordercolor")) {
+                unsigned long uColor = Core::StringToColor16(value);
+                SetBorderColor(uColor);
             } else if (0 == strcmp(name, "bordersize")) {
                 std::string border(value);
                 if (std::string::npos == border.find(",")) {
@@ -208,11 +211,31 @@ namespace PPEngine {
                     } else {
                         context_->DrawRoundRect(rectPaint_, borderSize_, borderRound_.x, borderRound_.y, borderColor_);
                     }
+                } else if (borderSize_ > 0) {
+                    context_->DrawRect(rectPaint_, borderSize_, borderColor_);
                 } else {
                     if (IsFocused() && 0 != focusBorderColor_) {
                         context_->DrawRect(rectPaint_, borderSize_, focusBorderColor_);
-                    } else  if (borderRect_.GetMin().x > 0 || borderRect_.GetMin().y > 0 || borderRect_.GetMax().x > 0 || borderRect_.GetMax().y > 0) {
-                        context_->DrawRect(rectPaint_, borderSize_, borderRound_.x, borderRound_.y, borderColor_);
+                    } else  if (borderRect_.GetMin().x > 0) {
+                        const glm::vec2& start = rectPaint_.GetMin();
+                        glm::vec2 end(start);
+                        end.y = rectPaint_.GetMax().y;
+                        context_->DrawLine(start, end, borderSize_, focusBorderColor_);
+                    } else  if (borderRect_.GetMin().y > 0) {
+                        const glm::vec2& start = rectPaint_.GetMin();
+                        glm::vec2 end(start);
+                        end.x = rectPaint_.GetMax().x;
+                        context_->DrawLine(start, end, borderSize_, focusBorderColor_);
+                    } else  if (borderRect_.GetMax().x > 0) {
+                        const glm::vec2& start = rectPaint_.GetMax();
+                        glm::vec2 end(start);
+                        end.y = rectPaint_.GetMin().y;
+                        context_->DrawLine(start, end, borderSize_, focusBorderColor_);
+                    } else  if (borderRect_.GetMax().y > 0) {
+                        const glm::vec2& start = rectPaint_.GetMax();
+                        glm::vec2 end(start);
+                        end.x = rectPaint_.GetMin().x;
+                        context_->DrawLine(start, end, borderSize_, focusBorderColor_);
                     }
                 }
             }
@@ -259,6 +282,13 @@ namespace PPEngine {
             
         }
 
+        void Control::SetInternVisible(bool visible) {
+            internVisible_ = visible;
+            if (!visible && context_ && context_->GetFocus() == this) {
+                context_->SetFocus(nullptr, true);
+            }
+        }
+
         void Control::OnDraw(const Core::Math::Rect& rect) {
             if (!rect_.Intersects(rect)) {
                 return;
@@ -274,6 +304,7 @@ namespace PPEngine {
             OnDrawBkImage();
             OnDrawStatusImage();
             OnDrawText();
+            OnDrawBorder();
         }
 
     }

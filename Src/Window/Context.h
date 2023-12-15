@@ -2,12 +2,14 @@
 
 #include <vector>
 #include <string>
+#include <unordered_set>
 
 #include "Core/Math/Rect.h"
+#include "Window/Control.h"
+
 
 namespace PPEngine {
     namespace Window {
-        class Control;
 
         class Context {
         public:
@@ -17,7 +19,7 @@ namespace PPEngine {
             virtual void RemovePostPaint(Control* control);
             virtual void SetFocus(Control* control, bool focusWnd);
             virtual Control* GetFocus() const { return focusControl_; }
-            virtual void DrawLine(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color, int nStyle = 0);
+            virtual void DrawLine(const glm::vec2& start, const glm::vec2& end, int32_t size, unsigned long color, int nStyle = 0);
             virtual void DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color);
             virtual void DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color);
             virtual void DrawImageString(const Core::Math::Rect& rectPaint, const Core::Math::Rect& rect, const std::string& image);
@@ -29,6 +31,9 @@ namespace PPEngine {
             bool IsUpdateNeeded() const { return needUpdate_; }
             void NeedUpdate() { needUpdate_ = true; }
 
+            void InitControl(Control* control, Control* parent);
+            void UninitContorl(Control* control);
+            bool Attach(Control::Ptr control);
             
 
         protected:
@@ -36,6 +41,9 @@ namespace PPEngine {
             Control* focusControl_{ nullptr };
             bool needUpdate_{ false };
             bool noActivate_{ false };
+
+            Control::Ptr control_{ nullptr };
+            std::unordered_set<Control*> controls_;
         };
     }
 }

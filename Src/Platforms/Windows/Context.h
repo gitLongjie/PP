@@ -9,7 +9,6 @@
 #include "Core/Platform.h"
 #include "Core/Image.h"
 
-#include "Window/Control.h"
 #include "Window/Context.h"
 #include "Platforms/Windows/Font.h"
 
@@ -44,7 +43,7 @@ namespace PPEngine {
                 static void SetResourceDll(HINSTANCE hInst);
                 static HINSTANCE GetResourceDll();
 
-                void DrawLine(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color, int nStyle = 0) override;
+                void DrawLine(const glm::vec2& start, const glm::vec2& end, int32_t size, unsigned long color, int nStyle = 0) override;
                 void DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color) override;
                 void DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color) override;
                 void DrawColor(const Core::Math::Rect& rect, unsigned long color) override;
@@ -68,8 +67,6 @@ namespace PPEngine {
                 void SetCaptionRect(const Core::Math::Rect& captionRect) { captionRect_ = captionRect; }
                 const Core::Math::Rect& GetCaptionRect() const { return captionRect_; }
 
-                bool Attach(Window::Control::Ptr control);
-
                 LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result);
 
                 void SetFocus(Window::Control* control, bool focusWnd) override;
@@ -87,8 +84,6 @@ namespace PPEngine {
                 Core::Math::Size maxInfo_;
                 Core::Math::Rect sizeBox_;
                 Core::Math::Rect captionRect_;
-
-                Window::Control::Ptr control_ { nullptr };
             };
         }
     }

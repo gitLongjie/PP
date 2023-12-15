@@ -1,5 +1,7 @@
 #include "Window/Container.h"
 
+#include "Window/Context.h"
+
 namespace PPEngine {
     namespace Window {
         Container::Container() {
@@ -32,13 +34,50 @@ namespace PPEngine {
 			}
 		}
 
-        void Container::AddControl(Control::Ptr control) {}
+		void Container::OnDraw(const Core::Math::Rect& rect) {
+			if (!rect_.Intersects(rect)) {
+				return;
+			}
 
-        void Container::RemoveControl(Control::Ptr control) {}
+			Control::OnDraw(rect);
+		}
+
+		void Container::SetInternVisible(bool visible) {
+			Control::SetInternVisible(visible);
+			for (auto& control : controls_) {
+				control->SetInternVisible(IsVisible());
+			}
+		}
+
+        bool Container::AddControl(Control::Ptr control) {
+			if (!control) return false;
+
+			if (nullptr != context_) {
+				context_->InitControl(control.get(), this);
+			}
+			if (IsVisible()) {
+				NeedUpdate();
+			} else {
+				control->SetInternVisible(false);
+			}
+
+			controls_.emplace_back(std::move(control));
+			return true;
+		}
+
+        void Container::RemoveControl(Control::Ptr control) {
+            if (!control) return;
+
+			const auto itor = std::find(controls_.begin(), controls_.end(), control);
+			if (itor != controls_.end()) {
+				context_->UninitContorl(control.get());
+				controls_.erase(itor);
+			}
+		}
 
 		void Container::SetInset(const Core::Math::Rect& rect) {
-			rect_ = rect;
-
+			rectInset_ = rect;
+			NeedUpdate();
 		}
 
         void Container::SetChildPadding(int32_t padding) {

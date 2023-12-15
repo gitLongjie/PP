@@ -9,7 +9,7 @@ namespace PPEngine {
         class IContainer {
         public:
             virtual ~IContainer() = default;
-            virtual void AddControl(Control::Ptr control) = 0;
+            virtual bool AddControl(Control::Ptr control) = 0;
             virtual void RemoveControl(Control::Ptr control) = 0;
             virtual int32_t GetCount() const = 0;
             virtual void Clear() = 0;
@@ -21,13 +21,15 @@ namespace PPEngine {
             ~Container() override;
 
             void SetAttribute(const char* name, const char* value) override;
+            void OnDraw(const Core::Math::Rect& rect) override;
+            void SetInternVisible(bool visible) override;
 
-            void AddControl(Control::Ptr control) override;
+            bool AddControl(Control::Ptr control) override;
             void RemoveControl(Control::Ptr control) override;
             int32_t GetCount() const override { return controls_.size(); }
             void Clear() override { controls_.clear(); }
 
-            Core::Math::Rect GetInset() const { return rect_; }
+            const Core::Math::Rect& GetInset() const { return rectInset_; }
             void SetInset(const Core::Math::Rect& rect); // 设置内边距，相当于设置客户区
             int32_t GetChildPadding() const { return childPadding_; }
             void SetChildPadding(int32_t padding);
@@ -47,7 +49,7 @@ namespace PPEngine {
 
         protected:
             std::vector<Control::Ptr> controls_;
-            Core::Math::Rect rect_;
+            Core::Math::Rect rectInset_;
 
             int32_t childPadding_{ 0 };
             uint32_t childAlign_{ 0 };

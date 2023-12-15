@@ -1,7 +1,9 @@
 #include "Window/Context.h"
+#include "Window/Control.h"
 
 namespace PPEngine {
     namespace Window {
+
         void Context::Invalidate(Core::Math::Rect& rect) {}
 
         void Context::RemovePostPaint(Control* control) {
@@ -17,7 +19,7 @@ namespace PPEngine {
 
         }
 
-        void Context::DrawLine(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color, int nStyle) {
+        void Context::DrawLine(const glm::vec2& start, const glm::vec2& end, int32_t size, unsigned long color, int nStyle) {
         }
 
         void Context::DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color) {
@@ -38,6 +40,27 @@ namespace PPEngine {
         }
 
         void Context::GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) {
+        }
+
+        void Context::InitControl(Control* control, Control* parent) {
+            if (nullptr == control) { return; }
+
+            control->SetContext(this, parent);
+            controls_.insert(control);
+        }
+
+        void Context::UninitContorl(Control* control) {
+            controls_.erase(control);
+        }
+
+        bool Context::Attach(Window::Control::Ptr control) {
+            if (nullptr == control) {
+                return false;
+            }
+
+            control->SetContext(this, nullptr);
+            control_ = control;
+            return true;
         }
 
     }

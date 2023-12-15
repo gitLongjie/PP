@@ -27,6 +27,7 @@ namespace PPEngine {
             virtual void SetVisible(bool visible = true);
             virtual void SetAttribute(const char* name, const char* value);
             virtual void SetRect(const Core::Math::Rect& rect);
+            virtual void SetInternVisible(bool visible);
 
             virtual void OnDraw(const Core::Math::Rect& rect);
 
@@ -60,7 +61,7 @@ namespace PPEngine {
             virtual void OnDrawText();
             virtual void OnDrawBorder();
 
-        private:
+        protected:
             class Context* context_{ nullptr };
             Control* parent_{ nullptr };
 

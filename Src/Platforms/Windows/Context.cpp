@@ -134,12 +134,10 @@ namespace PPEngine {
                 return gResourceInstanceHandle_;
             }
 
-            void Context::DrawLine(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color, int nStyle) {
-                const glm::vec2& minRect = rectPaint.GetMin();
-                const glm::vec2& maxRect = rectPaint.GetMax();
-                RECT rc{ static_cast<long>(minRect.x), static_cast<long>(minRect.y),
-                    static_cast<long>(maxRect.x), static_cast<long>(maxRect.y) };
-                WindowRender::DrawLine(hdcPaint_, rc, color, nStyle);
+            void Context::DrawLine(const glm::vec2& start, const glm::vec2& end, int32_t size, unsigned long color, int nStyle) {
+                POINT ptStart{ static_cast<long>(start.x), static_cast<long>(start.y) };
+                POINT ptEnd{ static_cast<long>(end.x), static_cast<long>(end.y) };
+                WindowRender::DrawLine(hdcPaint_, ptStart, ptEnd, color, nStyle);
             }
 
             void Context::DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color) {
@@ -191,16 +189,6 @@ namespace PPEngine {
                 if (nullptr == control_ && hWndPaint_ != nullptr) {
                     ::SetWindowPos(hWndPaint_, nullptr, 0, 0, size_.x, size_.y, SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
                 }
-            }
-
-            bool Context::Attach(Window::Control::Ptr control) {
-                if (nullptr == control) {
-                    return false;
-                }
-
-                control->SetContext(this, nullptr);
-                control_ = control;
-                return true;
             }
 
             LRESULT Context::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result) {

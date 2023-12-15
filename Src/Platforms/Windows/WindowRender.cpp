@@ -117,7 +117,7 @@ namespace PPEngine {
                 return TRUE;
             }
 
-            void WindowRender::DrawLine(HDC hDC, const RECT& rc, int nSize, DWORD dwPenColor, int nStyle) {
+            void WindowRender::DrawLine(HDC hDC, const POINT& start, const POINT& end, int nSize, DWORD dwPenColor, int nStyle) {
                assert(::GetObjectType(hDC) == OBJ_DC || ::GetObjectType(hDC) == OBJ_MEMDC);
 
                 LOGPEN lg;
@@ -127,8 +127,8 @@ namespace PPEngine {
                 HPEN hPen = CreatePenIndirect(&lg);
                 HPEN hOldPen = (HPEN)::SelectObject(hDC, hPen);
                 POINT ptTemp = { 0 };
-                ::MoveToEx(hDC, rc.left, rc.top, &ptTemp);
-                ::LineTo(hDC, rc.right, rc.bottom);
+                ::MoveToEx(hDC, start.x, start.y, &ptTemp);
+                ::LineTo(hDC, end.x, end.y);
                 ::SelectObject(hDC, hOldPen);
                 ::DeleteObject(hPen);
             }
