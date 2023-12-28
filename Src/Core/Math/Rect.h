@@ -49,9 +49,15 @@ namespace PPEngine {
                              position_.y > other.position_.y + other.size_.y ||
                              position_.y + size_.y < other.position_.y);
                 }
+
                 Rect CalIntersects(const Rect& other) const {
                     return Rect(glm::max(position_, other.position_),
                                 glm::min(position_ + size_, other.position_ + other.size_));
+                }
+
+                Rect CalOuttersects(const Rect& other) const {
+                    return Rect(glm::min(position_, other.position_),
+                        glm::max(position_ + size_, other.position_ + other.size_));
                 }
 
                 bool IsEmpty() const {

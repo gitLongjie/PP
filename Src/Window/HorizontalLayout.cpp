@@ -11,7 +11,7 @@ namespace PPEngine {
 
         void HorizontalLayout::SetAttribute(const char* name, const char* value) {
             if (0 == strcmp(name, "sepheight")) {
-                SetSepHeight(atoi(value));
+                SetSepWidth(atoi(value));
             } else if (0 == strcmp(name, "sepimm")) {
                 SetSepImmMode(strcmp(value, "true") == 0);
             } else {
@@ -24,6 +24,9 @@ namespace PPEngine {
 
             Core::Math::Rect rc(rect_);
 
+        }
+
+        void HorizontalLayout::OnDraw(const Core::Math::Rect& rect) {
         }
 
         void HorizontalLayout::SetSepImmMode(bool immediately) {

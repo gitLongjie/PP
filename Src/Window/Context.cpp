@@ -39,8 +39,8 @@ namespace PPEngine {
 
         }
 
-        void Context::GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) {
-        }
+        //void Context::GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) {
+        //}
 
         void Context::InitControl(Control* control, Control* parent) {
             if (nullptr == control) { return; }

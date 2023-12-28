@@ -70,7 +70,7 @@ namespace PPEngine {
                 LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result);
 
                 void SetFocus(Window::Control* control, bool focusWnd) override;
-                void GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) override;
+             //   void GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) override;
 
             private:
                

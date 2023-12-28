@@ -294,11 +294,11 @@ namespace PPEngine {
                 return;
             }
 
-            rectPaint_ = rect_.CalIntersects(rect);
+            rectPaint_ = rect.CalOuttersects(rect_);
 
-            if (borderRound_.x > 0 || borderRound_.y > 0) {
+            /*if (borderRound_.x > 0 || borderRound_.y > 0) {
                 context_->GenerateRoundClip(rectPaint_, rect_, borderRound_.x, borderRound_.y);
-            }
+            }*/
 
             OnDrawBkColor();
             OnDrawBkImage();

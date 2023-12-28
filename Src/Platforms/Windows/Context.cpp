@@ -211,11 +211,12 @@ namespace PPEngine {
                             ::EndPaint(hWndPaint_, &ps);
                             return true;
                         }
+
                         
                         RECT clientRect{ 0 };
                         ::GetClientRect(hWndPaint_, &clientRect);
 
-                        if (control_->IsUpdateNeeded()) {
+                        if (true || control_->IsUpdateNeeded()) {
                             float x = clientRect.left;
                             float y = clientRect.top;
                             float width = clientRect.right - clientRect.left;
@@ -226,8 +227,8 @@ namespace PPEngine {
                         PAINTSTRUCT ps = { 0 };
                         ::BeginPaint(hWndPaint_, &ps);
                         //WindowRender::DrawColor(hdcPaint_, ps.rcPaint, 0xFFFF0000);
-                        Core::Math::Rect rect(ps.rcPaint.left, ps.rcPaint.top,
-                            ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top);
+                        Core::Math::Rect rect(clientRect.left, clientRect.top,
+                            clientRect.right - clientRect.left, clientRect.bottom - clientRect.top);
                         control_->OnDraw(rect);
                         ::EndPaint(hWndPaint_, &ps);
                     }
@@ -267,22 +268,22 @@ namespace PPEngine {
                 }
             }
 
-            void Context::GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) {
-                RECT rcClip = { 0 };
-                ::GetClipBox(hdcPaint_, &rcClip);
+            //void Context::GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) {
+            //    RECT rcClip = { 0 };
+            //    ::GetClipBox(hdcPaint_, &rcClip);
 
-                const glm::vec2 minPos = rect.GetMin();
-                const glm::vec2 maxPos = rect.GetMax();
-                RECT rc = { static_cast<long>(minPos.x), static_cast<long>(minPos.y),
-                            static_cast<long>(maxPos.x), static_cast<long>(maxPos.y)
-                };
-                HRGN hOldRgn = ::CreateRectRgnIndirect(&rcClip);
-                HRGN hRgn = ::CreateRectRgnIndirect(&rc);
-                HRGN hRgnItem = ::CreateRoundRectRgn(rcItem.GetMin().x, rcItem.GetMin().y, rcItem.GetMax().x + 1, rcItem.GetMax().y + 1, width, height);
-                ::CombineRgn(hRgn, hRgn, hRgnItem, RGN_AND);
-                ::ExtSelectClipRgn(hdcPaint_, hRgn, RGN_AND);
-                ::DeleteObject(hRgnItem);
-            }
+            //    const glm::vec2 minPos = rect.GetMin();
+            //    const glm::vec2 maxPos = rect.GetMax();
+            //    RECT rc = { static_cast<long>(minPos.x), static_cast<long>(minPos.y),
+            //                static_cast<long>(maxPos.x), static_cast<long>(maxPos.y)
+            //    };
+            //    HRGN hOldRgn = ::CreateRectRgnIndirect(&rcClip);
+            //    HRGN hRgn = ::CreateRectRgnIndirect(&rc);
+            //    HRGN hRgnItem = ::CreateRoundRectRgn(rcItem.GetMin().x, rcItem.GetMin().y, rcItem.GetMax().x + 1, rcItem.GetMax().y + 1, width, height);
+            //    ::CombineRgn(hRgn, hRgn, hRgnItem, RGN_AND);
+            //    ::ExtSelectClipRgn(hdcPaint_, hRgn, RGN_AND);
+            //    ::DeleteObject(hRgnItem);
+            //}
 
         }
     }

@@ -26,7 +26,7 @@ namespace PPEngine {
             virtual void DrawColor(const Core::Math::Rect& rect, unsigned long color);
             virtual void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
                 unsigned long color2, bool vertical, int32_t steps);
-            virtual void GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height);
+            //virtual void GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height);
 
             bool IsUpdateNeeded() const { return needUpdate_; }
             void NeedUpdate() { needUpdate_ = true; }
