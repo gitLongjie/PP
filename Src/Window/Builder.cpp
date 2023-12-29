@@ -6,6 +6,8 @@
 
 #include "Window/Control.h"
 #include "Window/VerticalLayout.h"
+#include "Window/HorizontalLayout.h"
+#include "Window/Container.h"
 
 #include "Platforms/Windows/Context.h"
 
@@ -171,6 +173,10 @@ namespace PPEngine {
                 const char* eleName = element.Name();
                 if (0 == strcmp("VerticalLayout", eleName)) {
                     control = std::make_shared<VerticalLayout>();
+                } else if (0 == strcmp("HorizontalLayout", eleName)) {
+                    control = std::make_shared<HorizontalLayout>();
+                } else if (0 == strcmp("Container", eleName)) {
+                    control = std::make_shared<Container>();
                 }
                 if (nullptr == control) {
                     return true;
