@@ -1,6 +1,7 @@
 #include "Window/Label.h"
 
 #include "Core/StringUtil.h"
+#include "Window/Context.h"
 
 namespace PPEngine {
     namespace Window {
@@ -80,6 +81,35 @@ namespace PPEngine {
         }
 
         void Label::OnDraw(const Core::Math::Rect& rect) {
+            if (0 == textColor_) {
+                textColor_ = context_->GetDefaultTextColor();
+            }
+
+            if (0 == disabledTextColor_) {
+                disabledTextColor_ = context_->GetDisabledColor();
+            }
+
+            Core::Math::Rect rect = rect_;
+            glm::vec2 rectMin = rect.GetMin();
+            glm::vec2 rectMax = rect.GetMax();
+            
+            glm::vec2 paddingMin = textPadding_.GetMin();
+            glm::vec2 paddingMax = textPadding_.GetMax();
+
+            rectMin += paddingMin;
+            rectMax -= paddingMax;
+            Core::Math::Rect drawRect(rectMin, rectMax);
+
+            if (!IsEnabledEffect()) {
+                if (text_.empty()) { return; }
+            }
+
         }
+
+        void Label::SetEnabledEffect(bool enable) {
+            enabledEffect_ = enable;
+            Invalidate();
+        }
+
     }
 }

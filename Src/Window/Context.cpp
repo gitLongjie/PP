@@ -4,6 +4,8 @@
 namespace PPEngine {
     namespace Window {
 
+        static Context::DefaultInfo sharedDefaultInfo_;
+
         void Context::Invalidate(Core::Math::Rect& rect) {}
 
         void Context::RemovePostPaint(Control* control) {
@@ -37,6 +39,28 @@ namespace PPEngine {
 
         void Context::DrawGradient(const Core::Math::Rect& rect, unsigned long color1, unsigned long color2, bool vertical, int32_t steps) {
 
+        }
+
+        void Context::SetDefaultTextColor(unsigned long color, bool shared) {
+            if (shared) {
+                if (defaultInfo_.fontColor_ == sharedDefaultInfo_.fontColor_) {
+                    defaultInfo_.fontColor_ = color;
+                }
+                sharedDefaultInfo_.fontColor_ = color;
+            } else {
+                defaultInfo_.fontColor_ = color;
+            }
+        }
+
+        void Context::SetDisabledColor(unsigned long color, bool shared) {
+            if (shared) {
+                if (defaultInfo_.disabledColor_ == sharedDefaultInfo_.disabledColor_) {
+                    defaultInfo_.disabledColor_ = color;
+                }
+                sharedDefaultInfo_.disabledColor_ = color;
+            } else {
+                defaultInfo_.disabledColor_ = color;
+            }
         }
 
         //void Context::GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) {

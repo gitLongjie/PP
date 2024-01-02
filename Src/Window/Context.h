@@ -13,6 +13,13 @@ namespace PPEngine {
 
         class Context {
         public:
+            struct DefaultInfo {
+                unsigned long disabledColor_{ 0 };
+                unsigned long fontColor_{ 0 };
+                unsigned long selectedBkColor_{ 0 };
+            };
+
+        public:
             virtual ~Context() = default;
 
             virtual void Invalidate(Core::Math::Rect& rect);
@@ -27,6 +34,12 @@ namespace PPEngine {
             virtual void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
                 unsigned long color2, bool vertical, int32_t steps);
             //virtual void GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height);
+
+            void SetDefaultTextColor(unsigned long color, bool shared);
+            unsigned long GetDefaultTextColor() const { return defaultInfo_.fontColor_; }
+            void SetDisabledColor(unsigned long color, bool shared);
+            unsigned long GetDisabledColor() const { return defaultInfo_.fontColor_; }
+            
 
             bool IsUpdateNeeded() const { return needUpdate_; }
             void NeedUpdate() { needUpdate_ = true; }
@@ -44,6 +57,7 @@ namespace PPEngine {
 
             Control::Ptr control_{ nullptr };
             std::unordered_set<Control*> controls_;
+            DefaultInfo defaultInfo_;
         };
     }
 }

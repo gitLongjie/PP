@@ -32,7 +32,7 @@ namespace PPEngine {
             const Core::Math::Rect& GetTextPadding() const { return textPadding_; }
             void SetShowHtml(bool showHtml) { showHtml_ = showHtml; }
             bool IsShowHtml() const { return showHtml_; }
-            void SetEnabledEffect(bool enable) { enabledEffect_ = enable; }
+            void SetEnabledEffect(bool enable);
             bool IsEnabledEffect() const { return enabledEffect_; }
             void SetTextRenderingHintAntiAlias(int32_t textRenderingHintAntiAlias) { textRenderingHintAntiAlias_ = textRenderingHintAntiAlias; }
             int32_t GetTextRenderingHintAntiAlias() const { return textRenderingHintAntiAlias_; }
@@ -87,6 +87,8 @@ namespace PPEngine {
             unsigned long textShadowColorA_{ 0 };
             unsigned long textShadowColorB_{ 0 };
             unsigned long strokeColor_{ 0 };
+
+            std::string text_;
         };
     }
 }
