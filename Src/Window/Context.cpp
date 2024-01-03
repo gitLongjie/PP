@@ -41,6 +41,10 @@ namespace PPEngine {
 
         }
 
+        void Context::DrawText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style) {
+
+        }
+
         void Context::SetDefaultTextColor(unsigned long color, bool shared) {
             if (shared) {
                 if (defaultInfo_.fontColor_ == sharedDefaultInfo_.fontColor_) {

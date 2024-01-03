@@ -33,6 +33,7 @@ namespace PPEngine {
             virtual void DrawColor(const Core::Math::Rect& rect, unsigned long color);
             virtual void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
                 unsigned long color2, bool vertical, int32_t steps);
+            virtual void DrawText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style);
             //virtual void GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height);
 
             void SetDefaultTextColor(unsigned long color, bool shared);

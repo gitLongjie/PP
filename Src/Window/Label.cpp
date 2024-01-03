@@ -102,6 +102,10 @@ namespace PPEngine {
 
             if (!IsEnabledEffect()) {
                 if (text_.empty()) { return; }
+
+                if (IsEnabled()) {
+                    context_->DrawRect()
+                }
             }
 
         }

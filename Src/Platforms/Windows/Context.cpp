@@ -173,6 +173,19 @@ namespace PPEngine {
                 WindowRender::DrawGradient(hdcPaint_, rc, color1, color2, vertical, steps);
             }
 
+            void Context::DrawText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style) {
+                if (text.empty()) {
+                    return;
+                }
+
+                ::SetBkMode(hdcPaint_, TRANSPARENT);
+                ::SetTextColor(hdcPaint_, RGB(GetBValue(color), GetGValue(color), GetRValue(color)));
+                HFONT old = static_cast<HFONT>(::SelectObject(hdcPaint_, GetFont(font)));
+                RECT dr{ rect.GetMin().x, rect.GetMin().y, rect.GetMax().x, rect.GetMax().y };
+                ::DrawText(hdcPaint_, text.c_str(), -1, &dr, style);
+                ::SelectObject(hdcPaint_, old);
+            }
+
             void Context::Invalidate(Core::Math::Rect& rect) {
                 if (nullptr == hWndPaint_) {
                     return;
