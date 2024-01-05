@@ -8,6 +8,7 @@
 #include "Window/VerticalLayout.h"
 #include "Window/HorizontalLayout.h"
 #include "Window/Container.h"
+#include "Window/Text.h"
 
 #include "Platforms/Windows/Context.h"
 
@@ -177,6 +178,8 @@ namespace PPEngine {
                     control = std::make_shared<HorizontalLayout>();
                 } else if (0 == strcmp("Container", eleName)) {
                     control = std::make_shared<Container>();
+                } else if (0 == strcmp("Text", eleName)) {
+                    control = std::make_shared<Text>();
                 }
                 if (nullptr == control) {
                     return true;
@@ -190,14 +193,17 @@ namespace PPEngine {
                     current = current->Next();
                 }
 
-                control->SetContext(context_, root_.get());
+                control->SetContext(context_, parent_);
                 if (!root_) {
                     root_ = control;
                 }
+                parent_ = control.get();
+
                 return true;
             }
             Context* context_;
             Control::Ptr root_;
+            Control* parent_{ nullptr };
         };
 
 

@@ -20,7 +20,6 @@ namespace PPEngine {
 
             void SetAttribute(const char* name, const char* value) override;
             void SetRect(const Core::Math::Rect& rect) override;
-            void OnDraw(const Core::Math::Rect& rect) override;
 
             void SetFont(int32_t font) { font_ = font; }
             int32_t GetFont() const { return font_;}
@@ -63,6 +62,9 @@ namespace PPEngine {
             unsigned long GetTextShadowColorB() const { return textShadowColorB_; }
             void SetStrokeColor(unsigned long color) { strokeColor_ = color; }
             unsigned long GetStrokeColor() const { return strokeColor_; }
+
+        protected:
+            void OnDrawText() override;
 
         protected:
             Align align_;

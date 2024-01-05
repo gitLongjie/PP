@@ -173,7 +173,7 @@ namespace PPEngine {
                 WindowRender::DrawGradient(hdcPaint_, rc, color1, color2, vertical, steps);
             }
 
-            void Context::DrawText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style) {
+            void Context::DrawUIText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style) {
                 if (text.empty()) {
                     return;
                 }

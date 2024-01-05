@@ -14,7 +14,8 @@ namespace PPEngine {
         void Text::SetRect(const Core::Math::Rect& rect) {
         }
 
-        void Text::OnDraw(const Core::Math::Rect& rect) {
+        void Text::OnDrawText() {
+            Label::OnDrawText();
         }
 
     }

@@ -49,7 +49,7 @@ namespace PPEngine {
                 void DrawColor(const Core::Math::Rect& rect, unsigned long color) override;
                 void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
                     unsigned long color2, bool vertical, int32_t steps) override;
-                void DrawText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style) override;
+                void DrawUIText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style) override;
 
                 void Invalidate(Core::Math::Rect& rect) override;
 

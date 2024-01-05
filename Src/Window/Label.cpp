@@ -80,7 +80,12 @@ namespace PPEngine {
         void Label::SetRect(const Core::Math::Rect& rect) {
         }
 
-        void Label::OnDraw(const Core::Math::Rect& rect) {
+        void Label::SetEnabledEffect(bool enable) {
+            enabledEffect_ = enable;
+            Invalidate();
+        }
+
+        void Label::OnDrawText() {
             if (0 == textColor_) {
                 textColor_ = context_->GetDefaultTextColor();
             }
@@ -89,10 +94,10 @@ namespace PPEngine {
                 disabledTextColor_ = context_->GetDisabledColor();
             }
 
-            Core::Math::Rect rect = rect_;
-            glm::vec2 rectMin = rect.GetMin();
-            glm::vec2 rectMax = rect.GetMax();
-            
+            Core::Math::Rect rect1 = rect_;
+            glm::vec2 rectMin = rect1.GetMin();
+            glm::vec2 rectMax = rect1.GetMax();
+
             glm::vec2 paddingMin = textPadding_.GetMin();
             glm::vec2 paddingMax = textPadding_.GetMax();
 
@@ -104,15 +109,10 @@ namespace PPEngine {
                 if (text_.empty()) { return; }
 
                 if (IsEnabled()) {
-                    context_->DrawRect()
+                    context_->DrawUIText(drawRect, text_, textColor_, font_, 0);
                 }
             }
 
-        }
-
-        void Label::SetEnabledEffect(bool enable) {
-            enabledEffect_ = enable;
-            Invalidate();
         }
 
     }

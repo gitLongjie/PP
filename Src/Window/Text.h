@@ -11,7 +11,9 @@ namespace PPEngine {
 
             void SetAttribute(const char* name, const char* value) override;
             void SetRect(const Core::Math::Rect& rect) override;
-            void OnDraw(const Core::Math::Rect& rect) override;
+
+        protected:
+            void OnDrawText() override;
         };
     }
 }
