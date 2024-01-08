@@ -2,26 +2,21 @@
 
 #include <string>
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <Windows.h>
-#endif // defined(_WIN32) || defined(_WIN64)
+#include "Core/Singleton.h"
+#include "Core/Font.h"
 
 namespace PPEngine {
     namespace Core {
-        struct FontInfo {
-#if defined(_WIN32) || defined(_WIN64)
-            HFONT hFont;
-            TEXTMETRIC tm;
-#else 
-            using InstanceHandle = void*;
-#endif // defined(_WIN32) || defined(_WIN64)
-           
-            std::string sFontName;
-            int iSize;
-            bool bBold;
-            bool bUnderline;
-            bool bItalic;
-        } ;
+        class Platform : public SingletonSub<Platform> {
+        public:
+            bool Initialize() override;
+            void Uninitialize() override;
+
+            virtual std::string GetPlatformName() = 0;
+            virtual Font::Ptr CreateFont(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic) = 0;
+
+            static Platform* Create();
+        };
 
     } // namespace Core
 } // namespace name

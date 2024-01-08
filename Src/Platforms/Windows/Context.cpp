@@ -2,7 +2,7 @@
 
 #include <assert.h>
 #include <unordered_map>
-#include "Platforms/Windows/Font.h"
+#include "Core/Font.h"
 #include "Platforms/Windows/WindowRender.h"
 
 
@@ -44,7 +44,7 @@ namespace PPEngine {
             }
 
             void Context::SetDefaultFont(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared) {
-                Font::Ptr ptr = Font::Create(font, nSize, bBold, bUnderline, bItalic);
+                Core::Font::Ptr ptr = Core::Font::Create(font, nSize, bBold, bUnderline, bItalic);
                 if (!ptr) {
                     return;
                 }
@@ -56,21 +56,18 @@ namespace PPEngine {
                 return Core::FontManager::Get()->GetFontCount(bShared);
             }
 
-            HFONT Context::AddFont(int id, const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared) {
-                Font::Ptr ptr = Font::Create(font, nSize, bBold, bUnderline, bItalic);
-                if (!ptr) {
-                    return nullptr;
+            void Context::AddFont(int id, Core::Font::Ptr font, bool shared) {
+                if (!font) {
+                    return;
                 }
-                HFONT ret = ptr->GetFont();
+                Windows::Font* winFont = reinterpret_cast<Platforms::Windows::Font*>(font.get());
                 if (hdcPaint_) {
-                    HFONT hOldFont = (HFONT) ::SelectObject(hdcPaint_, ptr->GetFont());
-                    ::GetTextMetrics(hdcPaint_, &ptr->GetTEXTMETRIC());
+                    HFONT hOldFont = (HFONT) ::SelectObject(hdcPaint_, winFont->GetFont());
+                    ::GetTextMetrics(hdcPaint_, &winFont->GetTEXTMETRIC());
                     ::SelectObject(hdcPaint_, hOldFont);
                 }
 
-                Core::FontManager::Get()->Add(id, std::move(ptr), bShared);
-
-                return ret;
+                Window::Context::AddFont(id, font, shared);
             }
 
             HFONT Context::GetFont(int id) {
@@ -134,6 +131,13 @@ namespace PPEngine {
                 return gResourceInstanceHandle_;
             }
 
+            bool Context::Serialize(tinyxml2::XMLElement* xmlElement) {
+                if (nullptr == xmlElement) {
+                    return false;
+                }
+                return Window::Context::Serialize(xmlElement);
+            }
+
             void Context::DrawLine(const glm::vec2& start, const glm::vec2& end, int32_t size, unsigned long color, int nStyle) {
                 POINT ptStart{ static_cast<long>(start.x), static_cast<long>(start.y) };
                 POINT ptEnd{ static_cast<long>(end.x), static_cast<long>(end.y) };
@@ -181,7 +185,7 @@ namespace PPEngine {
                 ::SetBkMode(hdcPaint_, TRANSPARENT);
                 ::SetTextColor(hdcPaint_, RGB(GetBValue(color), GetGValue(color), GetRValue(color)));
                 HFONT old = static_cast<HFONT>(::SelectObject(hdcPaint_, GetFont(font)));
-                RECT dr{ rect.GetMin().x, rect.GetMin().y, rect.GetMax().x, rect.GetMax().y };
+                RECT dr{ (long)rect.GetMin().x, (long)rect.GetMin().y, (long)rect.GetMax().x, (long)rect.GetMax().y };
                 ::DrawText(hdcPaint_, text.c_str(), -1, &dr, style);
                 ::SelectObject(hdcPaint_, old);
             }

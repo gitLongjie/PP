@@ -25,6 +25,8 @@ namespace PPEngine {
 
             bool IsNameEmpty() const { return name_.empty(); }
 
+            static Font::Ptr Create(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic);
+
         private:
             std::string name_;
             int32_t size_{ 12 };

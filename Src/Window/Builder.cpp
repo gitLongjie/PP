@@ -248,11 +248,9 @@ namespace PPEngine {
         Control::Ptr Builder::Create(IBuilderCallback* callback,  Context* context, Control::Ptr parent) {
             callback_ = callback;
             tinyxml2::XMLElement* root = xmlDoc_.RootElement();
-            if (nullptr == root) return nullptr;
+            if (nullptr == root || nullptr ==context) return nullptr;
 
-            if (nullptr == context) {
-                return nullptr;
-            }
+            context->Serialize(root);
 
             Platforms::Windows::Context* winContext = reinterpret_cast<Platforms::Windows::Context*>(context);
             const char* className = root->Name();
@@ -271,13 +269,6 @@ namespace PPEngine {
                     element->Accept(&visitor);
                     if (!visitor.name_.empty()) {
 
-                    }
-                } else if (0 == strcmp(className, "Font")) {
-                    FontVisitor visitor;
-                    element->Accept(&visitor);
-                    if (visitor.id > 0 && !visitor.name.empty()) {
-                        winContext->AddFont(visitor.id, visitor.name, visitor.size, visitor.bold, visitor.underline, visitor.italic);
-                        if (visitor.defaultfont) winContext->SetDefaultFont(visitor.name, visitor.size, visitor.bold, visitor.underline, visitor.italic);
                     }
                 }
             }
@@ -353,9 +344,11 @@ namespace PPEngine {
                 return nullptr;
             }
 
-            ControlCreatorVisitor visitor(context);
-            root->Accept(&visitor);
-            return visitor.root_;
+            return nullptr;
+
+            //ControlCreatorVisitor visitor(context);
+            //root->Accept(&visitor);
+            //return visitor.root_;
         }
     }
 }

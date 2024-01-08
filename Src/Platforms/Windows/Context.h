@@ -28,7 +28,7 @@ namespace PPEngine {
                 Font* GetDefaultFontInfo();
                 void SetDefaultFont(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
                 int32_t GetCustomFontCount(bool bShared = false) const;
-                HFONT AddFont(int id, const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
+             /*   HFONT AddFont(int id, const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);*/
                 HFONT GetFont(int id);
                 void RemoveFont(int id, bool bShared = false);
                 void RemoveAllFonts(bool bShared = false);
@@ -43,6 +43,10 @@ namespace PPEngine {
                 static void SetResourceDll(HINSTANCE hInst);
                 static HINSTANCE GetResourceDll();
 
+                bool Serialize(tinyxml2::XMLElement* xmlElement) override;
+
+                void AddFont(int id, Core::Font::Ptr font, bool shared) override;
+
                 void DrawLine(const glm::vec2& start, const glm::vec2& end, int32_t size, unsigned long color, int nStyle = 0) override;
                 void DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color) override;
                 void DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color) override;
@@ -53,25 +57,12 @@ namespace PPEngine {
 
                 void Invalidate(Core::Math::Rect& rect) override;
 
-                const Core::Math::Size& GetSize() const { return size_; }
-                void SetInitSize(const Core::Math::Size& size);
-                
-                const Core::Math::Size& GetRoundCorner() const { return roundCorner_; }
-                void SetRoundCorner(const Core::Math::Size& roundCorner) { roundCorner_ = roundCorner;}
-                
-                const Core::Math::Size& GetMaxInfo() const { return maxInfo_; }
-                void SetMaxInfo(const Core::Math::Size& maxInfo) { maxInfo_ = maxInfo;}
-
-                void SetSizeBox(const Core::Math::Rect& sizeBox) { sizeBox_ = sizeBox; }
-                const Core::Math::Rect& GetSizeBox() const { return sizeBox_; }
-
-                void SetCaptionRect(const Core::Math::Rect& captionRect) { captionRect_ = captionRect; }
-                const Core::Math::Rect& GetCaptionRect() const { return captionRect_; }
-
-                LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result);
-
                 void SetFocus(Window::Control* control, bool focusWnd) override;
              //   void GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) override;
+
+                void SetInitSize(const Core::Math::Size& size) override;
+
+                LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result);
 
             private:
                
@@ -80,11 +71,7 @@ namespace PPEngine {
                 std::string name_;
                 HWND hWndPaint_;
                 HDC hdcPaint_;
-                Core::Math::Size size_;
-                Core::Math::Size roundCorner_;
-                Core::Math::Size maxInfo_;
-                Core::Math::Rect sizeBox_;
-                Core::Math::Rect captionRect_;
+              
             };
         }
     }

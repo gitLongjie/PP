@@ -14,11 +14,13 @@ namespace PPEngine {
                 Font(const std::string& name, int32_t size, bool bold, bool underline, bool italic);
                 ~Font() override;
 
-                static Font::Ptr Create(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic);
+                //static Font::Ptr Create(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic);
 
                 void Active() override;
 
                 HFONT GetFont() const { return font_; }
+                void SetFont(HFONT font) { font_ = font; }
+
                 const TEXTMETRIC& GetTEXTMETRIC() const { return tm_; }
                 TEXTMETRIC& GetTEXTMETRIC() { return tm_; }
 

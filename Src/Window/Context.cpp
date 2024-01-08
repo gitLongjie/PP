@@ -1,10 +1,44 @@
 #include "Window/Context.h"
+
+#include "Core/Platform.h"
+
 #include "Window/Control.h"
+
 
 namespace PPEngine {
     namespace Window {
 
         static Context::DefaultInfo sharedDefaultInfo_;
+
+        bool Context::Serialize(tinyxml2::XMLElement* root) {
+            if (nullptr == root) {
+                return false;
+            }
+
+            const char* name = root->Name();
+            if (strcmp(name, "Window") == 0) {
+                ParseAttribute(root);
+            }
+
+            tinyxml2::XMLElement* xmlElement = root->FirstChildElement();
+            while (xmlElement) {
+                const char* name = xmlElement->Name();
+                if (0 == strcmp(name, "")) {
+
+                } else if (0 == strcmp(name, "")) {
+
+                } else {
+                    
+                }
+                xmlElement = xmlElement->NextSiblingElement();
+            }
+
+            return true;
+        }
+
+        void Context::AddFont(int id, Core::Font::Ptr font, bool shared) {
+            Core::FontManager::Get()->Add(id, font, shared);
+        }
 
         void Context::Invalidate(Core::Math::Rect& rect) {}
 
@@ -89,6 +123,66 @@ namespace PPEngine {
             control->SetContext(this, nullptr);
             control_ = control;
             return true;
+        }
+
+        void Context::ParseAttribute(tinyxml2::XMLElement* root) {
+            const char* sizeValue = root->Attribute("size");
+            SetInitSize(Core::Math::FromString(sizeValue));
+
+            const char* roundCornerValue = root->Attribute("roundcorner");
+            SetRoundCorner(Core::Math::FromString(roundCornerValue));
+
+            const char* maxInfoValue = root->Attribute("mininfo");
+            SetMaxInfo(Core::Math::FromString(maxInfoValue));
+
+            const char* captionValue = root->Attribute("caption");
+            SetCaptionRect(Core::Math::Rect::FromString(captionValue));
+
+            const char* sizeBoxValue = root->Attribute("sizebox");
+            SetSizeBox(Core::Math::Rect::FromString(sizeBoxValue));
+        }
+
+        void Context::ParseFontAttribute(tinyxml2::XMLElement* root) {
+            const tinyxml2::XMLAttribute* attribte = root->FirstAttribute();
+            int32_t id = -1;
+            bool shared = false;
+            std::string name;
+            int32_t size = 0;
+            bool bold = false;
+            bool underline = false;
+            bool italic = false;
+            bool defaultfont = false;
+
+            while (nullptr != attribte) {
+                const char* aName = root->Name();
+                if (0 == strcmp(aName, "id")) {
+                    id = attribte->IntValue();
+                } else if (0 == strcmp(aName, "shared")) {
+                    shared = attribte->BoolValue();
+                } else if (0 == strcmp(aName, "name")) {
+                    name = attribte->Value();
+                } else if (0 == strcmp(aName, "size")) {
+                    size = attribte->IntValue();
+                } else if (0 == strcmp(aName, "bold")) {
+                    bold = attribte->BoolValue();
+                } else if (0 == strcmp(aName, "underline")) {
+                    underline = attribte->BoolValue();
+                } else if (0 == strcmp(aName, "italic")) {
+                    italic = attribte->BoolValue();
+                } else if (0 == strcmp(aName, "defaultfont")) {
+                    defaultfont = attribte->BoolValue();
+                }
+
+                attribte = attribte->Next();
+            }
+
+            Core::Font::Ptr font = Core::Platform::Get()->CreateFont(name, size, bold, underline, italic);
+            AddFont(id, font, shared);
+            //addfont
+        }
+
+        void Context::SetInitSize(const Core::Math::Size& size) {
+            
         }
 
     }

@@ -10,6 +10,7 @@
 
 #include "Core/Logger.h"
 #include "Core/Font.h"
+#include "Core/Platform.h"
 #include "RHI/RHI.h"
 
 namespace PPEngine {
@@ -35,6 +36,10 @@ namespace PPEngine {
     }
 
     bool PPApplication::Initialize() {
+        if (!Core::Platform::Init()) {
+            return false;
+        }
+
         if (!Core::FontManager::Init()) {
             return false;
         }
@@ -68,5 +73,7 @@ namespace PPEngine {
 
     void PPApplication::Uninitialize() {
         PPRHI::RHI::Shotdown();
+        Core::FontManager::Shotdown();
+        Core::Platform::Shotdown();
     }
 }
