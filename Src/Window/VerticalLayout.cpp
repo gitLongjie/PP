@@ -10,6 +10,10 @@ namespace PPEngine {
 
         VerticalLayout::~VerticalLayout() {}
 
+        Control::Ptr VerticalLayout::Create() {
+            return std::make_shared<VerticalLayout>();
+        }
+
         void VerticalLayout::SetAttribute(const char* name, const char* value) {
             if (0 == strcmp(name, "sepheight")) {
                 SetSepHeight(atoi(value));

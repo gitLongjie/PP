@@ -99,7 +99,7 @@ public:
        // m_pm.Init(m_hWnd);
         context_.Init(hWnd_);
         PPEngine::Window::Builder builder;
-        PPEngine::Window::Control::Ptr pRoot = builder.Create("skin.xml", (UINT)0, &context_);
+        builder.Create("skin.xml", &context_);
         //ASSERT(pRoot && "Failed to parse XML");
      //   context_.Attach(pRoot);
         // m_pm.AddNotifier(this);

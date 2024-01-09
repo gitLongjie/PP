@@ -2,6 +2,9 @@
 
 #include <memory>
 #include <string>
+#include <functional>
+
+#include "Core/Xml/tinyxml2.h"
 
 #include "Core/Math/Size.h"
 #include "Core/Math/Rect.h"
@@ -16,6 +19,8 @@ namespace PPEngine {
             Control();
             virtual ~Control();
 
+            
+
             void SetContext(class Context* context, Control* parent) {
                 context_ = context;
                 parent_ = parent;
@@ -23,6 +28,9 @@ namespace PPEngine {
             class Context* GetContext() const { return context_;}
             Control* GetParent() const { return parent_; }
 
+            bool Serialize(tinyxml2::XMLElement* root);
+
+            virtual const char* GetClass() const { return "Control"; }
             virtual bool IsVisible() const { return visible_ && internVisible_; }
             virtual void SetVisible(bool visible = true);
             virtual void SetAttribute(const char* name, const char* value);
@@ -61,6 +69,9 @@ namespace PPEngine {
             virtual void OnDrawText();
             virtual void OnDrawBorder();
 
+        private:
+            void CreateControl(tinyxml2::XMLElement* root, Control* parent);
+
         protected:
             class Context* context_{ nullptr };
             Control* parent_{ nullptr };
@@ -93,5 +104,9 @@ namespace PPEngine {
 
             std::string bkImage_;
         };
+
+        using ControlCreator = std::function<Control::Ptr()>;
+        void RegisterControlCreator(const char* type, ControlCreator);
+        Control::Ptr CreateControl(const char* type);
     }
 }

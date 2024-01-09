@@ -21,14 +21,23 @@ namespace PPEngine {
             }
 
             tinyxml2::XMLElement* xmlElement = root->FirstChildElement();
-            while (xmlElement) {
+            while (nullptr != xmlElement) {
                 const char* name = xmlElement->Name();
-                if (0 == strcmp(name, "")) {
-
-                } else if (0 == strcmp(name, "")) {
+                if (0 == strcmp(name, "Font")) {
+                    ParseFontAttribute(xmlElement);
+                } else if (0 == strcmp(name, "Default")) {
 
                 } else {
-                    
+                    Control::Ptr control = CreateControl(name);
+                    if (nullptr == control) {
+                        continue;
+                    }
+
+                    if (!control_) {
+                        Attach(control);
+                    }
+
+                    control->Serialize(xmlElement);
                 }
                 xmlElement = xmlElement->NextSiblingElement();
             }

@@ -20,6 +20,9 @@ namespace PPEngine {
             Container();
             ~Container() override;
 
+            static Control::Ptr Create();
+
+            const char* GetClass() const { return "Container"; }
             void SetAttribute(const char* name, const char* value) override;
             void OnDraw(const Core::Math::Rect& rect) override;
             void SetInternVisible(bool visible) override;

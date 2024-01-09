@@ -1,10 +1,24 @@
 #include "Window/Control.h"
 
+#include <unordered_map>
+
 #include "Core/StringUtil.h"
 #include "Window/Context.h"
 
 namespace PPEngine {
     namespace Window {
+        static std::unordered_map<std::string, ControlCreator> controlCreators_;
+        void RegisterControlCreator(const char* type, ControlCreator Creator) {
+            controlCreators_[type] = std::move(Creator);
+        }
+
+        Control::Ptr CreateControl(const char* type) {
+            if (controlCreators_.find(type) != controlCreators_.end()) {
+                return controlCreators_[type]();
+            }
+            return Control::Ptr();
+        }
+
 
         Control::Control()
         {
@@ -14,6 +28,24 @@ namespace PPEngine {
         Control::~Control()
         {
 
+        }
+
+        bool Control::Serialize(tinyxml2::XMLElement* root) {
+            const char* name = root->Name();
+            if (0 != strcmp(GetClass(), name)) {
+                return false;
+            }
+
+            const tinyxml2::XMLAttribute* current = root->FirstAttribute();
+            while (nullptr != current) {
+                const char* aName = current->Name();
+                const char* aValue = current->Value();
+                SetAttribute(aName, aValue);
+                current = current->Next();
+            }
+
+            CreateControl(root, this);
+            return true;
         }
 
         void Control::SetVisible(bool visible) {
@@ -46,7 +78,7 @@ namespace PPEngine {
             } else if (0 == strcmp(name, "bordersize")) {
                 std::string border(value);
                 if (std::string::npos == border.find(",")) {
-                    SetBorderSize(atoi(value)); 
+                    SetBorderSize(atoi(value));
                 } else {
                     SetBorderSize(Core::Math::Rect::FromString(value));
                 }
@@ -129,14 +161,14 @@ namespace PPEngine {
             if (bkColor2_ == color) { return; }
 
             bkColor2_ = color;
-            Invalidate(); 
+            Invalidate();
         }
-        
+
         void Control::SetBkColor3(unsigned long color) {
             if (bkColor3_ == color) { return; }
 
             bkColor3_ = color;
-            Invalidate(); 
+            Invalidate();
         }
 
         void Control::SetBorderSize(const Core::Math::Rect& size) {
@@ -279,7 +311,7 @@ namespace PPEngine {
             if (nullptr != context_) {
                 context_->Invalidate(rect_);
             }
-            
+
         }
 
         void Control::SetInternVisible(bool visible) {
@@ -307,5 +339,19 @@ namespace PPEngine {
             OnDrawBorder();
         }
 
+        void Control::CreateControl(tinyxml2::XMLElement* root, Control* parent) {
+            tinyxml2::XMLElement* xmlElement = root->FirstChildElement();
+            while (xmlElement) {
+                const char* name = xmlElement->Name();
+                Control::Ptr control = Window::CreateControl(name);
+                if (nullptr == control) {
+                    break;
+                }
+                control->SetContext(parent->GetContext(), parent);
+                control->Serialize(xmlElement);
+
+                xmlElement = xmlElement->NextSiblingElement();
+            }
+        }
     }
 }

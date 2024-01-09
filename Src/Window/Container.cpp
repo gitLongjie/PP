@@ -11,6 +11,10 @@ namespace PPEngine {
         Container::~Container() {
         }
 
+		Control::Ptr Container::Create() {
+			return std::make_shared<Container>();
+		}
+
         void Container::SetAttribute(const char* name, const char* value) {
 			if (strcmp(name, "inset") == 0) {
 				Core::Math::Rect rcInset = Core::Math::Rect::FromString(value);

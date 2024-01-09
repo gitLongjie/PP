@@ -8,6 +8,7 @@
 #include "Window/VerticalLayout.h"
 #include "Window/HorizontalLayout.h"
 #include "Window/Container.h"
+#include "Window/Label.h"
 #include "Window/Text.h"
 
 #include "Platforms/Windows/Context.h"
@@ -206,18 +207,13 @@ namespace PPEngine {
             Control* parent_{ nullptr };
         };
 
-
-        Builder::Builder() : callback_(nullptr)
-        {
-
-        }
-
-        Control::Ptr Builder::Create(const char* xml,/* LPCTSTR type,*/ IBuilderCallback* callback,
-             Context* context, Control::Ptr parent) {
+        Control::Ptr Builder::Create(const char* xml, Context* context, Control::Ptr parent) {
             xmlDoc_.LoadFile(xml);
             if (xmlDoc_.Error()) {
                 return nullptr;
             }
+
+           
             //资源ID为0-65535，两个字节；字符串指针为4个字节
             //字符串以<开头认为是XML字符串，否则认为是XML文件
 
@@ -242,25 +238,30 @@ namespace PPEngine {
             //    m_pstrtype = type;
             //}
 
-            return Create(callback, context, parent);
+            return Create(context, parent);
         }
 
-        Control::Ptr Builder::Create(IBuilderCallback* callback,  Context* context, Control::Ptr parent) {
-            callback_ = callback;
+        Control::Ptr Builder::Create( Context* context, Control::Ptr parent) {
+            static bool isRegisterDefaultControl = false;
+            if (!isRegisterDefaultControl) {
+                isRegisterDefaultControl = true;
+                RegisterDefaultControl();
+            }
+
+            RegisterCustomControl();
+
+
             tinyxml2::XMLElement* root = xmlDoc_.RootElement();
             if (nullptr == root || nullptr ==context) return nullptr;
 
             context->Serialize(root);
 
-            Platforms::Windows::Context* winContext = reinterpret_cast<Platforms::Windows::Context*>(context);
+         /*   Platforms::Windows::Context* winContext = reinterpret_cast<Platforms::Windows::Context*>(context);
             const char* className = root->Name();
             if (0 == strcmp(className, "Window")) {
                 WindowVisitor visitor(winContext);
                 root->Accept(&visitor);
             }
-            
-
-
             
             for (tinyxml2::XMLElement* element = root->FirstChildElement(); nullptr != element; element = element->NextSiblingElement()) {
                 className = element->Name();
@@ -271,84 +272,16 @@ namespace PPEngine {
 
                     }
                 }
-            }
-            return _Parse(root, parent, context);
-
-         /*   if (context) {
-                char* pstrClass = NULL;
-                int nAttributes = 0;
-                LPCTSTR pstrName = NULL;
-                LPCTSTR pstrValue = NULL;
-                LPTSTR pstr = NULL;
-                for (tinyxml2::XMLNode* element = root->FirstChild();  nullptr != element; element = element->NextSibling()) {
-                    pstrClass = element->Name();
-                   if (_tcsicmp(pstrClass, _T("Default")) == 0) {
-                        nAttributes = node.GetAttributeCount();
-                        LPCTSTR pControlName = NULL;
-                        LPCTSTR pControlValue = NULL;
-                        bool shared = false;
-                        for (int i = 0; i < nAttributes; i++) {
-                            pstrName = node.GetAttributeName(i);
-                            pstrValue = node.GetAttributeValue(i);
-                            if (_tcsicmp(pstrName, _T("name")) == 0) {
-                                pControlName = pstrValue;
-                            } else if (_tcsicmp(pstrName, _T("value")) == 0) {
-                                pControlValue = pstrValue;
-                            } else if (_tcsicmp(pstrName, _T("shared")) == 0) {
-                                shared = (_tcsicmp(pstrValue, _T("true")) == 0);
-                            }
-                        }
-                        if (pControlName) {
-                            context->AddDefaultAttributeList(pControlName, pControlValue, shared);
-                        }
-                    } else if (_tcsicmp(pstrClass, _T("MultiLanguage")) == 0) {
-                        nAttributes = node.GetAttributeCount();
-                        int id = -1;
-                        LPCTSTR pMultiLanguage = NULL;
-                        for (int i = 0; i < nAttributes; i++) {
-                            pstrName = node.GetAttributeName(i);
-                            pstrValue = node.GetAttributeValue(i);
-                            if (_tcsicmp(pstrName, _T("id")) == 0) {
-                                id = _tcstol(pstrValue, &pstr, 10);
-                            } else if (_tcsicmp(pstrName, _T("value")) == 0) {
-                                pMultiLanguage = pstrValue;
-                            }
-                        }
-                        if (id >= 0 && pMultiLanguage) {
-                            context->AddMultiLanguageString(id, pMultiLanguage);
-                        }
-                    }
-                }
-
-                pstrClass = root.GetName();
-                if (_tcsicmp(pstrClass, _T("Window")) == 0) {
-                    if (context->GetPaintWindow()) {
-                        int nAttributes = root.GetAttributeCount();
-                        for (int i = 0; i < nAttributes; i++) {
-                            pstrName = root.GetAttributeName(i);
-                            pstrValue = root.GetAttributeValue(i);
-                            context->SetWindowAttribute(pstrName, pstrValue);
-                        }
-                    }
-                }
-            }
-            return _Parse(&root, pParent, context);*/
-        }
-
-        tinyxml2::XMLDocument* Builder::GetMarkup() {
-            return &xmlDoc_;
-        }
-
-        Control::Ptr Builder::_Parse(tinyxml2::XMLNode* root, Control::Ptr parent,  Context* context) {
-            if (nullptr == root) {
-                return nullptr;
-            }
-
+            }*/
             return nullptr;
+        }
 
-            //ControlCreatorVisitor visitor(context);
-            //root->Accept(&visitor);
-            //return visitor.root_;
+        void Builder::RegisterDefaultControl() {
+            RegisterControlCreator("VerticalLayout", VerticalLayout::Create);
+            RegisterControlCreator("HorizontalLayout", HorizontalLayout::Create);
+            RegisterControlCreator("Container", Container::Create);
+            RegisterControlCreator("Text", Label::Create);
+            RegisterControlCreator("Text", Text::Create);
         }
     }
 }

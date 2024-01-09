@@ -8,7 +8,10 @@ namespace PPEngine {
         public:
             VerticalLayout();
             ~VerticalLayout() override;
+
+            static Control::Ptr Create();
             
+            const char* GetClass() const { return "VerticalLayout"; }
             void SetAttribute(const char* name, const char* value) override;
             void SetRect(const Core::Math::Rect& rect) override;
 

@@ -9,6 +9,9 @@ namespace PPEngine {
             Text();
             ~Text() override;
 
+            static Control::Ptr Create();
+
+            const char* GetClass() const { return "Text"; }
             void SetAttribute(const char* name, const char* value) override;
             void SetRect(const Core::Math::Rect& rect) override;
 

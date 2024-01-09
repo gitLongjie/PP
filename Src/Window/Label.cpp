@@ -11,6 +11,10 @@ namespace PPEngine {
         Label::~Label() {
         }
 
+        Control::Ptr Label::Create() {
+            return std::make_shared<Label>();
+        }
+
         void Label::SetAttribute(const char* name, const char* value) {
             if (0 == strcmp("align", name)) {
                 if (0 == strcmp("left", value)) {

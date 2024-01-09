@@ -9,6 +9,9 @@ namespace PPEngine {
             HorizontalLayout();
             ~HorizontalLayout() override;
 
+            static Control::Ptr Create();
+
+            const char* GetClass() const { return "HorizontalLayout"; }
             void SetAttribute(const char* name, const char* value) override;
             void SetRect(const Core::Math::Rect& rect) override;
             void OnDraw(const Core::Math::Rect& rect) override;

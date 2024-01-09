@@ -18,6 +18,9 @@ namespace PPEngine {
             Label();
             ~Label() override;
 
+            static Control::Ptr Create();
+
+            const char* GetClass() const { return "Label"; }
             void SetAttribute(const char* name, const char* value) override;
             void SetRect(const Core::Math::Rect& rect) override;
 

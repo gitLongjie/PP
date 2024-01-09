@@ -8,6 +8,10 @@ namespace PPEngine {
         Text::~Text() {
         }
 
+        Control::Ptr Text::Create() {
+            return std::make_shared<Text>();
+        }
+
         void Text::SetAttribute(const char* name, const char* value) {
         }
 

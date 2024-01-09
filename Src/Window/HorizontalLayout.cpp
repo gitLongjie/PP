@@ -9,6 +9,10 @@ namespace PPEngine {
 
         HorizontalLayout::~HorizontalLayout() {}
 
+        Control::Ptr HorizontalLayout::Create() {
+            return std::make_shared<HorizontalLayout>();
+        }
+
         void HorizontalLayout::SetAttribute(const char* name, const char* value) {
             if (0 == strcmp(name, "sepheight")) {
                 SetSepWidth(atoi(value));
@@ -23,7 +27,6 @@ namespace PPEngine {
             Container::SetRect(rect);
 
             Core::Math::Rect rc(rect_);
-
         }
 
         void HorizontalLayout::OnDraw(const Core::Math::Rect& rect) {
