@@ -13,7 +13,7 @@ namespace PPEngine {
 
             const char* GetClass() const { return "HorizontalLayout"; }
             void SetAttribute(const char* name, const char* value) override;
-            void SetRect(const Core::Math::Rect& rect) override;
+            void FixRect(Core::Math::Rect rect) override;
             void OnDraw(const Core::Math::Rect& rect) override;
 
             void SetSepWidth(int32_t width) { width_ = width; }

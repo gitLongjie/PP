@@ -24,8 +24,8 @@ namespace PPEngine {
             }
         }
 
-        void VerticalLayout::SetRect(const Core::Math::Rect& rect) {
-            Container::SetRect(rect);
+        void VerticalLayout::FixRect(Core::Math::Rect rect) {
+            Container::FixRect(rect);
 
             Core::Math::Rect rc(rect_);
 

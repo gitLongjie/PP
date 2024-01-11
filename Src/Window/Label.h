@@ -22,7 +22,7 @@ namespace PPEngine {
 
             const char* GetClass() const { return "Label"; }
             void SetAttribute(const char* name, const char* value) override;
-            void SetRect(const Core::Math::Rect& rect) override;
+            void FixRect(Core::Math::Rect rect) override;
 
             void SetFont(int32_t font) { font_ = font; }
             int32_t GetFont() const { return font_;}

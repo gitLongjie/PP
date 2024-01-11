@@ -7,7 +7,7 @@ namespace PPEngine {
         namespace Math {
             class Rect {
             public:
-                Rect() = default;
+                Rect();
                 Rect(float x, float y, float width, float height);
                 Rect(const glm::vec2& position, const glm::vec2& size);
                 Rect(const Rect& other);
@@ -99,6 +99,30 @@ namespace PPEngine {
                 void Set(const glm::vec2& position, const glm::vec2& size) {
                     position_ = position;
                     size_ = size;
+                }
+
+                void Join(const Rect& other) {
+                    glm::vec2 min = glm::min(position_, other.position_);
+                    glm::vec2 max = glm::max(position_ + size_, other.position_ + other.size_);
+                    position_ = min;
+                    size_ = max - min;
+                }
+
+                void Inset(const glm::vec2& offset) {
+                    position_ += offset;
+                    size_ -= offset;
+                }
+
+                void Inset(float left, float top, float right, float bottom) {
+                    position_.x += left;
+                    position_.y += top;
+                    size_.x -= left + right;
+                    size_.y -= top + bottom;
+                }
+
+                void Inset(const Rect& rect) {
+                    position_ += rect.position_;
+                    size_ -= rect.size_;
                 }
 
                 static const Rect Zero;

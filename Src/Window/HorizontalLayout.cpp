@@ -23,13 +23,15 @@ namespace PPEngine {
             }
         }
 
-        void HorizontalLayout::SetRect(const Core::Math::Rect& rect) {
-            Container::SetRect(rect);
+        void HorizontalLayout::FixRect(Core::Math::Rect rect) {
+            Container::FixRect(rect);
 
-            Core::Math::Rect rc(rect_);
+            rect = rect_;
+            rect.Inset(rectInset_);
         }
 
         void HorizontalLayout::OnDraw(const Core::Math::Rect& rect) {
+            Container::OnDraw(rect);
         }
 
         void HorizontalLayout::SetSepImmMode(bool immediately) {

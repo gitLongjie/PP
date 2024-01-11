@@ -44,8 +44,15 @@ namespace PPEngine {
                 current = current->Next();
             }
 
-            CreateControl(root, this);
+            CreateControl(root);
             return true;
+        }
+
+        void Control::InitControl(Control* parent) {
+            parent_ = parent;
+            if (nullptr != context_) {
+                context_->InitControl(shared_from_this(), parent);
+            }
         }
 
         void Control::SetVisible(bool visible) {
@@ -273,10 +280,13 @@ namespace PPEngine {
             }
         }
 
-        void Control::SetRect(const Core::Math::Rect& rect) {
-            rect_ = rect;
-
+        void Control::FixRect(Core::Math::Rect rect) {
             if (nullptr == context_) return;
+
+            Core::Math::Rect invalidateRc = rect_;
+            if (invalidateRc.IsEmpty()) {
+                invalidateRc = rect;
+            }
 
             if (float_) {
                 Control* parent = GetParent();
@@ -296,22 +306,17 @@ namespace PPEngine {
             }
 
             updateNeeded_ = false;
-            //invalidateRc.Join(m_rcItem);
+            invalidateRc.Join(rect_);
 
-            /*CControlUI* pParent = this;
-            RECT rcTemp;
-            RECT rcParent;
-            while (pParent = pParent->GetParent()) {
-                rcTemp = invalidateRc;
-                rcParent = pParent->GetPos();
-                if (!::IntersectRect(&invalidateRc, &rcTemp, &rcParent)) {
+            Control* parent = this;
+            Core::Math::Rect rcParent;
+            while ((parent = parent->GetParent()) != nullptr ) {
+                rcParent = parent->GetRect();
+                if (!invalidateRc.Intersects(rcParent)) {
                     return;
                 }
-            }*/
-            if (nullptr != context_) {
-                context_->Invalidate(rect_);
             }
-
+            context_->Invalidate(invalidateRc);
         }
 
         void Control::SetInternVisible(bool visible) {
@@ -339,7 +344,7 @@ namespace PPEngine {
             OnDrawBorder();
         }
 
-        void Control::CreateControl(tinyxml2::XMLElement* root, Control* parent) {
+        void Control::CreateControl(tinyxml2::XMLElement* root) {
             tinyxml2::XMLElement* xmlElement = root->FirstChildElement();
             while (xmlElement) {
                 const char* name = xmlElement->Name();
@@ -347,7 +352,8 @@ namespace PPEngine {
                 if (nullptr == control) {
                     break;
                 }
-                control->SetContext(parent->GetContext(), parent);
+
+                control->InitControl(this);
                 control->Serialize(xmlElement);
 
                 xmlElement = xmlElement->NextSiblingElement();

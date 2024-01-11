@@ -11,7 +11,7 @@
 
 namespace PPEngine {
     namespace Window {
-        class Control {
+        class Control : public std::enable_shared_from_this<Control> {
         public:
             using Ptr = std::shared_ptr<Control>;
 
@@ -31,10 +31,11 @@ namespace PPEngine {
             bool Serialize(tinyxml2::XMLElement* root);
 
             virtual const char* GetClass() const { return "Control"; }
+            virtual void InitControl(Control* parent);
             virtual bool IsVisible() const { return visible_ && internVisible_; }
             virtual void SetVisible(bool visible = true);
             virtual void SetAttribute(const char* name, const char* value);
-            virtual void SetRect(const Core::Math::Rect& rect);
+            virtual void FixRect(Core::Math::Rect rect);
             virtual void SetInternVisible(bool visible);
 
             virtual void OnDraw(const Core::Math::Rect& rect);
@@ -68,9 +69,9 @@ namespace PPEngine {
             virtual void OnDrawStatusImage();
             virtual void OnDrawText();
             virtual void OnDrawBorder();
+            virtual void CreateControl(tinyxml2::XMLElement* root);
 
         private:
-            void CreateControl(tinyxml2::XMLElement* root, Control* parent);
 
         protected:
             class Context* context_{ nullptr };

@@ -15,7 +15,7 @@ namespace PPEngine {
 			return std::make_shared<Container>();
 		}
 
-        void Container::SetAttribute(const char* name, const char* value) {
+		void Container::SetAttribute(const char* name, const char* value) {
 			if (strcmp(name, "inset") == 0) {
 				Core::Math::Rect rcInset = Core::Math::Rect::FromString(value);
 				SetInset(rcInset);
@@ -38,12 +38,18 @@ namespace PPEngine {
 			}
 		}
 
-		void Container::OnDraw(const Core::Math::Rect& rect) {
-			if (!rect_.Intersects(rect)) {
-				return;
-			}
+		void Container::FixRect(Core::Math::Rect rect) {
+			Control::FixRect(rect);
+		}
 
+		void Container::OnDraw(const Core::Math::Rect& rect) {
 			Control::OnDraw(rect);
+
+			for (auto& control : controls_) {
+				if (control->IsVisible()) {
+                    control->OnDraw(rect);
+                }
+            }
 		}
 
 		void Container::SetInternVisible(bool visible) {
@@ -57,7 +63,7 @@ namespace PPEngine {
 			if (!control) return false;
 
 			if (nullptr != context_) {
-				context_->InitControl(control.get(), this);
+				context_->InitControl(control, this);
 			}
 			if (IsVisible()) {
 				NeedUpdate();
@@ -74,7 +80,7 @@ namespace PPEngine {
 
 			const auto itor = std::find(controls_.begin(), controls_.end(), control);
 			if (itor != controls_.end()) {
-				context_->UninitContorl(control.get());
+				context_->UninitContorl(control);
 				controls_.erase(itor);
 			}
 		}
@@ -102,6 +108,22 @@ namespace PPEngine {
 			childVAlign_ = align;
 			NeedUpdate();
         }
+
+		void Container::CreateControl(tinyxml2::XMLElement* root) {
+			tinyxml2::XMLElement* xmlElement = root->FirstChildElement();
+			while (xmlElement) {
+				const char* name = xmlElement->Name();
+				Control::Ptr control = Window::CreateControl(name);
+				if (nullptr == control) {
+					break;
+				}
+
+				AddControl(control);
+				control->Serialize(xmlElement);
+
+				xmlElement = xmlElement->NextSiblingElement();
+			}
+		}
 
     }
 }

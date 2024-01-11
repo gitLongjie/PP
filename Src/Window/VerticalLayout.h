@@ -13,7 +13,7 @@ namespace PPEngine {
             
             const char* GetClass() const { return "VerticalLayout"; }
             void SetAttribute(const char* name, const char* value) override;
-            void SetRect(const Core::Math::Rect& rect) override;
+            void FixRect(Core::Math::Rect rect) override;
 
             void SetSepHeight(int32_t height) { height_ = height;}
             int32_t GetSepHeight() const { return height_; }

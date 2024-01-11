@@ -13,9 +13,11 @@ namespace PPEngine {
         }
 
         void Text::SetAttribute(const char* name, const char* value) {
+            Label::SetAttribute(name, value);
         }
 
-        void Text::SetRect(const Core::Math::Rect& rect) {
+        void Text::FixRect(Core::Math::Rect rect) {
+            Label::FixRect(rect);
         }
 
         void Text::OnDrawText() {

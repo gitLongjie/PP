@@ -24,6 +24,7 @@ namespace PPEngine {
 
             const char* GetClass() const { return "Container"; }
             void SetAttribute(const char* name, const char* value) override;
+            void FixRect(Core::Math::Rect rect) override;
             void OnDraw(const Core::Math::Rect& rect) override;
             void SetInternVisible(bool visible) override;
 
@@ -49,6 +50,9 @@ namespace PPEngine {
 
             /*void Update(float dt) override;
             void Draw() override;*/
+
+        protected:
+            void CreateControl(tinyxml2::XMLElement* root) override;
 
         protected:
             std::vector<Control::Ptr> controls_;

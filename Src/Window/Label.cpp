@@ -81,7 +81,7 @@ namespace PPEngine {
             }
         }
 
-        void Label::SetRect(const Core::Math::Rect& rect) {
+        void Label::FixRect(Core::Math::Rect rect) {
         }
 
         void Label::SetEnabledEffect(bool enable) {

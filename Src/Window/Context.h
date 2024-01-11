@@ -51,8 +51,8 @@ namespace PPEngine {
             bool IsUpdateNeeded() const { return needUpdate_; }
             void NeedUpdate() { needUpdate_ = true; }
 
-            void InitControl(Control* control, Control* parent);
-            void UninitContorl(Control* control);
+            void InitControl(Control::Ptr control, Control* parent);
+            void UninitContorl(Control::Ptr control);
             bool Attach(Control::Ptr control);
 
             void ParseAttribute(tinyxml2::XMLElement* root);
@@ -87,7 +87,7 @@ namespace PPEngine {
             bool noActivate_{ false };
 
             Control::Ptr control_{ nullptr };
-            std::unordered_set<Control*> controls_;
+            std::unordered_set<Control::Ptr> controls_;
             DefaultInfo defaultInfo_;
         };
     }

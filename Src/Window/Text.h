@@ -13,7 +13,7 @@ namespace PPEngine {
 
             const char* GetClass() const { return "Text"; }
             void SetAttribute(const char* name, const char* value) override;
-            void SetRect(const Core::Math::Rect& rect) override;
+            void FixRect(Core::Math::Rect rect) override;
 
         protected:
             void OnDrawText() override;

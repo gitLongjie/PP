@@ -233,13 +233,13 @@ namespace PPEngine {
                         RECT clientRect{ 0 };
                         ::GetClientRect(hWndPaint_, &clientRect);
 
-                        if (true || control_->IsUpdateNeeded()) {
+                        if (control_->IsUpdateNeeded()) {
                             float x = clientRect.left;
                             float y = clientRect.top;
                             float width = clientRect.right - clientRect.left;
                             float height = clientRect.bottom - clientRect.top;
                             const Core::Math::Rect rect(x, y, width, height);
-                            control_->SetRect(rect);
+                            control_->FixRect(rect);
                         }
                         PAINTSTRUCT ps = { 0 };
                         ::BeginPaint(hWndPaint_, &ps);

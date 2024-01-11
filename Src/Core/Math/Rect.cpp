@@ -5,6 +5,10 @@ namespace PPEngine {
         namespace Math {
             const Rect Rect::Zero = Rect(0.0f, 0.0f, 0.0f, 0.0f);
             const Rect Rect::One = Rect(0.0f, 0.0f, 1.0f, 1.0f);
+            Rect::Rect()
+                : position_(0.0f, 0.0f)
+                , size_(0.0f, 0.0f) {
+            }
             Rect::Rect(float x, float y, float width, float height)
                 : position_(x, y)
                 , size_(width, height) {
