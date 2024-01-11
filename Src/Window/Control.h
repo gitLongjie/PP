@@ -40,6 +40,7 @@ namespace PPEngine {
 
             virtual void OnDraw(const Core::Math::Rect& rect);
 
+            bool IsFloat() const { return float_; }
             void Invalidate();
             bool IsUpdateNeeded() const;
             void NeedUpdate();

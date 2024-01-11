@@ -303,6 +303,8 @@ namespace PPEngine {
                     cxyFixed_.x = rect_.GetWidth();
                     cxyFixed_.y = rect_.GetHeight();
                 }
+            } else {
+                rect_ = rect;
             }
 
             updateNeeded_ = false;

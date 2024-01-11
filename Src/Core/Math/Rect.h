@@ -69,7 +69,10 @@ namespace PPEngine {
                 }
                 const glm::vec2& GetMin() const {
                     return position_;
-                }                
+                }
+                const glm::vec2& GetSize() const {
+                    return size_;
+                }
                 glm::vec2 GetMax() const {
                     return position_ + size_;
                 }

@@ -27,7 +27,27 @@ namespace PPEngine {
         void VerticalLayout::FixRect(Core::Math::Rect rect) {
             Container::FixRect(rect);
 
-            Core::Math::Rect rc(rect_);
+            rect = rect_;
+            rect.Inset(rectInset_);
+
+            if (controls_.empty()) {
+                return;
+            }
+
+            Core::Math::Size available = rect.GetSize();
+
+            for (auto control : controls_) {
+                if (!control->IsVisible()) {
+                    continue;
+                }
+
+                if (control->IsFloat()) {
+                    continue;
+                }
+
+
+            }
+
 
         }
 
