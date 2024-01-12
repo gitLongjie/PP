@@ -64,6 +64,14 @@ namespace PPEngine {
             void SetFocusBorderColor(unsigned long color);
             unsigned long SetFocusBorderColor() const { return focusBorderColor_; }
 
+            void SetFixed(const Core::Math::Size& size);
+            const Core::Math::Size& GetFixed() const { return cxyFixed_; }
+            void SetFixedWidth(float width);
+            float GetFixedWidth() const { return cxyFixed_.x; }
+            void SetFixedHeight(float height);
+            float GetFixedHeight() const { return cxyFixed_.y; }
+
+
         protected:
             virtual void OnDrawBkColor();
             virtual void OnDrawBkImage();

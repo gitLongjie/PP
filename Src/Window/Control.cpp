@@ -209,6 +209,39 @@ namespace PPEngine {
             Invalidate();
         }
 
+        void Control::SetFixed(const Core::Math::Size& size) {
+            if (cxyFixed_ == size) { return; }
+
+            cxyFixed_ = size;
+            if (!float_) {
+                NeedParentUpdate();
+            } else {
+                NeedUpdate();
+            }
+        }
+
+        void Control::SetFixedWidth(float width) {
+            if (cxyFixed_.x == width) { return; }
+
+            cxyFixed_.x = width;
+            if (!float_) {
+                NeedParentUpdate();
+            } else {
+                NeedUpdate();
+            }
+        }
+
+        void Control::SetFixedHeight(float height) {
+            if (cxyFixed_.y == height) { return; }
+
+            cxyFixed_.y = height;
+            if (!float_) {
+                NeedParentUpdate();
+            } else {
+                NeedUpdate();
+            }
+        }
+
         void Control::OnDrawBkColor() {
             if (0 != bkColor_) {
                 if (0 != bkColor2_) {
@@ -288,6 +321,8 @@ namespace PPEngine {
                 invalidateRc = rect;
             }
 
+            rect_ = rect;
+
             if (float_) {
                 Control* parent = GetParent();
                 if (nullptr != parent) {
@@ -303,9 +338,7 @@ namespace PPEngine {
                     cxyFixed_.x = rect_.GetWidth();
                     cxyFixed_.y = rect_.GetHeight();
                 }
-            } else {
-                rect_ = rect;
-            }
+            } 
 
             updateNeeded_ = false;
             invalidateRc.Join(rect_);

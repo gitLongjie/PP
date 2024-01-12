@@ -2,6 +2,7 @@
 
 #include "Window/Container.h"
 #include "Window/Context.h"
+#include "Window/ScrollBar.h"
 
 
 namespace PPEngine {
@@ -30,24 +31,9 @@ namespace PPEngine {
             rect = rect_;
             rect.Inset(rectInset_);
 
-            if (controls_.empty()) {
-                return;
+            if (nullptr != GetVerticalScrollBar() && GetVerticalScrollBar()->IsVisible()) {
+                rect.right -= GetVerticalScrollBar()->GetRect().Width();
             }
-
-            Core::Math::Size available = rect.GetSize();
-
-            for (auto control : controls_) {
-                if (!control->IsVisible()) {
-                    continue;
-                }
-
-                if (control->IsFloat()) {
-                    continue;
-                }
-
-
-            }
-
 
         }
 

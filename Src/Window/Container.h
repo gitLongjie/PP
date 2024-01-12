@@ -48,6 +48,9 @@ namespace PPEngine {
             bool IsMouseChildEnabled() const { return mouseChildEnabled_; }
             void SetMouseChildEnabled(bool enable = true) { mouseChildEnabled_ = enable; }
 
+            class ScrollBar* GetVerticalScrollBar() const { return vscrollbar_; }
+            class ScrollBar* GetHorizontalScrollBar() const { return hscrollbar_; }
+
             /*void Update(float dt) override;
             void Draw() override;*/
 
@@ -57,6 +60,9 @@ namespace PPEngine {
         protected:
             std::vector<Control::Ptr> controls_;
             Core::Math::Rect rectInset_;
+
+            class ScrollBar* vscrollbar_{ nullptr };
+            class ScrollBar* hscrollbar_{ nullptr };
 
             int32_t childPadding_{ 0 };
             uint32_t childAlign_{ 0 };
