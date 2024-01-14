@@ -32,7 +32,24 @@ namespace PPEngine {
             rect.Inset(rectInset_);
 
             if (nullptr != GetVerticalScrollBar() && GetVerticalScrollBar()->IsVisible()) {
-                rect.right -= GetVerticalScrollBar()->GetRect().Width();
+                rect.SetWidth(rect.GetWidth() - GetVerticalScrollBar()->GetRect().GetWidth());
+            } if (nullptr != GetHorizontalScrollBar() && GetHorizontalScrollBar()->IsVisible()) {
+                rect.SetHeight(rect.GetHeight() - GetVerticalScrollBar()->GetRect().GetHeight());
+            }
+
+            if (controls_.empty()) {
+                ProcessScrollBar(rect, 0.0f, 0.0f);
+                return;
+            }
+
+            for (auto& control : controls_) {
+                if (!control->IsVisible()) {
+                    continue;
+                }
+
+                if (control->IsFloat()) {
+                    continue;
+                }
             }
 
         }

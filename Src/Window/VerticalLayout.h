@@ -24,6 +24,7 @@ namespace PPEngine {
             int32_t height_{ 0 };
             bool immediately_{ false };
             bool captured_{ false };
+            
         };
     }
 }

@@ -125,6 +125,14 @@ namespace PPEngine {
 			}
 		}
 
+        void Container::ProcessScrollBar(Core::Math::Rect rect, float cx, float cy) {
+			if (nullptr != hscrollbar_) {
+				if (nullptr == vscrollbar_) {
+
+				}
+			}
+        }
+
     }
 }
 
