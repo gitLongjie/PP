@@ -19,13 +19,13 @@ namespace PPEngine {
             Control();
             virtual ~Control();
 
-            
+
 
             void SetContext(class Context* context, Control* parent) {
                 context_ = context;
                 parent_ = parent;
             }
-            class Context* GetContext() const { return context_;}
+            class Context* GetContext() const { return context_; }
             Control* GetParent() const { return parent_; }
 
             bool Serialize(tinyxml2::XMLElement* root);
@@ -64,12 +64,29 @@ namespace PPEngine {
             void SetFocusBorderColor(unsigned long color);
             unsigned long SetFocusBorderColor() const { return focusBorderColor_; }
 
+            void SetPadding(const Core::Math::Rect& padding);
+            const Core::Math::Rect GetPadding() const { return rcPadding_; }
             void SetFixed(const Core::Math::Size& size);
             const Core::Math::Size& GetFixed() const { return cxyFixed_; }
             void SetFixedWidth(float width);
             float GetFixedWidth() const { return cxyFixed_.x; }
             void SetFixedHeight(float height);
             float GetFixedHeight() const { return cxyFixed_.y; }
+            void SetMinWidth(float width);
+            float GetMinWidth() const { return cxyMin_.x; }
+            void SetMinHeight(float height);
+            float GetMinHeight() const { return cxyMin_.y; }
+            void SetMaxWidth(float width);
+            float GetMaxWidth() const { return cxyMax_.x; }
+            void SetMaxHeight(float height);
+            float GetMaxHeight() const { return cxyMax_.y; }
+            /*virtual void SetRelativePos(const Core::Math::Size& szMove, const Core::Math::Size& szZoom);
+            virtual void SetRelativeParentSize(const Core::Math::Size& sz);*/
+           // virtual TRelativePosUI GetRelativePos() const;
+            bool IsRelativePos() const { return false; }
+        
+
+            Core::Math::Size EstimateSize(const Core::Math::Size& availableSize) { return cxyFixed_; }
 
 
         protected:
@@ -88,10 +105,11 @@ namespace PPEngine {
 
             Core::Math::Rect rect_;
             Core::Math::Rect rectPaint_;
+            Core::Math::Rect rcPadding_;
             Core::Math::Size cXY_{ 0.0f, 0.0f };
             Core::Math::Size cxyFixed_{ 0.0f, 0.0f };
             Core::Math::Size cxyMin_{ 0.0f, 0.0f };
-            Core::Math::Size cxyMax_{ 0.0f, 0.0f };
+            Core::Math::Size cxyMax_{ INT32_MAX, INT32_MAX };
 
             bool float_{ false };
             bool focused_{ false };

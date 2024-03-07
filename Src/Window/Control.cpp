@@ -209,6 +209,11 @@ namespace PPEngine {
             Invalidate();
         }
 
+        void Control::SetPadding(const Core::Math::Rect& padding) {
+            rcPadding_ = padding;
+            NeedParentUpdate();
+        }
+
         void Control::SetFixed(const Core::Math::Size& size) {
             if (cxyFixed_ == size) { return; }
 
@@ -235,6 +240,58 @@ namespace PPEngine {
             if (cxyFixed_.y == height) { return; }
 
             cxyFixed_.y = height;
+            if (!float_) {
+                NeedParentUpdate();
+            } else {
+                NeedUpdate();
+            }
+        }
+
+        void Control::SetMinWidth(float width) {
+            if (cxyMin_.x == width) { return; }
+
+            if (width < 0.0f) return;
+
+            cxyMin_.x = width;
+            if (!float_) {
+                NeedParentUpdate();
+            } else {
+                NeedUpdate();
+            }
+        }
+
+        void Control::SetMinHeight(float height) {
+            if (cxyMin_.y == height) { return; }
+
+            if (height < 0.0f) return;
+
+            cxyMin_.y = height;
+            if (!float_) {
+                NeedParentUpdate();
+            } else {
+                NeedUpdate();
+            }
+        }
+
+        void Control::SetMaxWidth(float width) {
+            if (cxyMax_.x == width) { return; }
+
+            if (width < 0.0f) return;
+
+            cxyMax_.x = width;
+            if (!float_) {
+                NeedParentUpdate();
+            } else {
+                NeedUpdate();
+            }
+        }
+
+        void Control::SetMaxHeight(float height) {
+            if (cxyMax_.y == height) { return; }
+
+            if (height < 0.0f) return;
+
+            cxyMax_.y = height;
             if (!float_) {
                 NeedParentUpdate();
             } else {

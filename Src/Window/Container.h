@@ -57,6 +57,7 @@ namespace PPEngine {
         protected:
             void CreateControl(tinyxml2::XMLElement* root) override;
 
+            void SetFloatRect(int iIndex);
             void ProcessScrollBar(Core::Math::Rect rect, float cx, float cy);
 
         protected:

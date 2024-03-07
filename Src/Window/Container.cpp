@@ -1,6 +1,7 @@
 #include "Window/Container.h"
 
 #include "Window/Context.h"
+#include "Window/ScrollBar.h"
 
 namespace PPEngine {
     namespace Window {
@@ -125,12 +126,53 @@ namespace PPEngine {
 			}
 		}
 
-        void Container::ProcessScrollBar(Core::Math::Rect rect, float cx, float cy) {
-			if (nullptr != hscrollbar_) {
-				if (nullptr == vscrollbar_) {
+		void Container::SetFloatRect(int iIndex) {
+			if (iIndex < 0 || iIndex >= controls_.size()) {
+                return;
+            }
 
-				}
+            Control::Ptr control = controls_[iIndex];
+			if (!control->IsVisible()) { return; }
+			if (!control->IsFloat()) { return; }
+
+            Core::Math::Size xy = control->GetFixed();
+			Core::Math::Rect rcCtrl;
+			if (xy.x >= 0) {
+				rcCtrl.SetLeft(rect_.GetLeft() + xy.x);
+				rcCtrl.SetRight(rect_.GetLeft() + xy.x + control->GetFixedWidth());
+			} else {
+				rcCtrl.SetLeft(rect_.GetLeft() + xy.x - control->GetFixedWidth());
+				rcCtrl.SetRight(rect_.GetLeft() + xy.x);
 			}
+
+			if (xy.y >= 0) {
+				rcCtrl.SetTop(rect_.GetTop() + xy.y);
+				rcCtrl.SetBottom(rect_.GetTop() + xy.y + control->GetFixedHeight());
+			} else {
+				rcCtrl.SetTop(rect_.GetTop() + xy.y - control->GetFixedHeight());
+				rcCtrl.SetBottom(rect_.GetTop() + xy.y);
+			}
+
+			if (control->IsRelativePos());
+		}
+
+		void Container::ProcessScrollBar(Core::Math::Rect rect, float cx, float cy) {
+			if (nullptr != hscrollbar_ && hscrollbar_->IsVisible()) {
+				const glm::vec2& leftTop = hscrollbar_->GetRect().GetMin();
+				Core::Math::Rect rcScrollBar(leftTop.x, rect.GetHeight(), rect.GetWidth(), hscrollbar_->GetFixedHeight());
+				hscrollbar_->FixRect(rcScrollBar);
+			}
+
+			if (nullptr == vscrollbar_) {
+				return;
+			}
+
+			if (cy > rect.GetHeight() && !vscrollbar_->IsVisible()) {
+				vscrollbar_->SetVisible(true);
+				vscrollbar_->SetScrollRange(cy - rect.GetHeight());
+				vscrollbar_->SetScrollPos(0);
+                
+            }
         }
 
     }

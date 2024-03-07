@@ -64,6 +64,34 @@ namespace PPEngine {
                     return size_.x == 0.0f && size_.y == 0.0f;
                 }
 
+                void SetLeft(float x) {
+                    position_.x = x;
+                }
+                float GetLeft() const {
+                    return position_.x;
+                }
+
+                void SetRight(float x) {
+                    size_.x = std::abs(x - position_.x);
+                }
+                float GetRight() const {
+                    return position_.x + size_.x;
+                }
+
+                void SetTop(float y) {
+                    position_.y = y;
+                }
+                float GetTop() const {
+                    return position_.y;
+                }
+
+                void SetBottom(float y) {
+                    size_.y = std::abs(y - position_.y);
+                }
+                float GetBottom() const {
+                    return position_.y + size_.y;
+                }
+
                 glm::vec2 GetCenter() const {
                     return position_ + size_ * 0.5f;
                 }
