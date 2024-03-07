@@ -70,6 +70,11 @@ namespace PPEngine {
         }
 
         void Control::SetAttribute(const char* name, const char* value) {
+            if (0 == strcmp("pos", name)) {
+                Core::Math::Rect rect = Core::Math::Rect::FromString(value);
+                SetFixedWidth(rect.GetWidth());
+                SetFixedHeight(rect.GetHeight());
+            }
             if (0 == strcmp(name, "bkcolor") || 0 == strcmp(name, "bkcolor1")) {
                 unsigned long uColor = Core::StringToColor16(value);
                 SetBkColor(uColor);

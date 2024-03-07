@@ -24,6 +24,10 @@ namespace PPEngine {
             void SetAttribute(const char* name, const char* value) override;
             void FixRect(Core::Math::Rect rect) override;
 
+            void SetText(const char* text) { SetText(std::string(text)); }
+            void SetText(const std::string& text);
+            const std::string& GetText() const { return text_; }
+
             void SetFont(int32_t font) { font_ = font; }
             int32_t GetFont() const { return font_;}
             void SetTextColor(unsigned long color) { textColor_ = color; }

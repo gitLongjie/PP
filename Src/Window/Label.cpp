@@ -76,12 +76,22 @@ namespace PPEngine {
                 SetTextShadowColorB(Core::StringToColor16(value));
             } else if (0 == strcmp("strokecolor", name)) {
                 SetStrokeColor(Core::StringToColor16(value));
-            } else {
+            } else if (0 == strcmp("text", name)) {
+                SetText(value);
+            }
+            else {
                Control::SetAttribute(name, value);
             }
         }
 
         void Label::FixRect(Core::Math::Rect rect) {
+        }
+
+        void Label::SetText(const std::string& text) {
+            if (text == text_) { return; }
+
+            text_ = text;
+            Invalidate();
         }
 
         void Label::SetEnabledEffect(bool enable) {
@@ -107,7 +117,7 @@ namespace PPEngine {
 
             rectMin += paddingMin;
             rectMax -= paddingMax;
-            Core::Math::Rect drawRect(rectMin, rectMax);
+            Core::Math::Rect drawRect(rectMin, {300, 60});
 
             if (!IsEnabledEffect()) {
                 if (text_.empty()) { return; }
