@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Core/Math/Size.h"
+#include "Core/FileSystem/FileHandle.h"
 
 #include "Window/Control.h"
 #include "Window/VerticalLayout.h"
@@ -208,6 +209,7 @@ namespace PPEngine {
         };
 
         Control::Ptr Builder::Create(const char* xml, Context* context, Control::Ptr parent) {
+            Core::FileSystem::FileHandle fileHandle(xml);
             xmlDoc_.LoadFile(xml);
             if (xmlDoc_.Error()) {
                 return nullptr;
