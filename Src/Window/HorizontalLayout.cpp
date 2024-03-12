@@ -121,10 +121,6 @@ namespace PPEngine {
 
         }
 
-        void HorizontalLayout::OnDraw(const Core::Math::Rect& rect) {
-            Container::OnDraw(rect);
-        }
-
         void HorizontalLayout::SetSepImmMode(bool immediately) {
             if (immediately_ == immediately) return;
             if (captured_ && !immediately_ && nullptr != GetContext()) {

@@ -96,6 +96,22 @@ namespace PPEngine {
                 }
             } else if (0 == strcmp(name, "borderround")) {
                 SetBorderRound(Core::Math::FromString(value));
+            } else if (0 == strcmp(name, "bkimage")) {
+              //  SetBkImage(value);
+            } else if (strcmp(name, "width") == 0) {
+                SetFixedWidth(atoi(value));
+            } else if (strcmp(name, "height") == 0) {
+                SetFixedHeight(atoi(value));
+            } else if (strcmp(name, "minwidth") == 0) {
+                SetMinWidth(atoi(value));
+            } else if (strcmp(name, "minheight") == 0) {
+                SetMinHeight(atoi(value));
+            } else if (strcmp(name, "maxwidth") == 0) {
+                SetMaxWidth(atoi(value));
+            } else if (strcmp(name, "maxheight") == 0) {
+                SetMaxHeight(atoi(value));
+            } else if (strcmp(name, "name") == 0) {
+              //  SetName(value);
             }
         }
 
@@ -428,7 +444,7 @@ namespace PPEngine {
                 return;
             }
 
-            rectPaint_ = rect.CalOuttersects(rect_);
+            rectPaint_ = rect.CalIntersects(rect_);
 
             /*if (borderRound_.x > 0 || borderRound_.y > 0) {
                 context_->GenerateRoundClip(rectPaint_, rect_, borderRound_.x, borderRound_.y);
