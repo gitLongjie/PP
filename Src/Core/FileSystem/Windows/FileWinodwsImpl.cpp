@@ -32,6 +32,10 @@ namespace PPEngine {
             }
 
             FileWindowsImpl::~FileWindowsImpl() {
+                if (IsValide()) {
+                    CloseHandle(fileHanle_);
+                    fileHanle_ = NULL;
+                }
             }
 
             bool FileWindowsImpl::IsValide() const {
@@ -43,22 +47,89 @@ namespace PPEngine {
                 assert(pos >= 0);
 
                 filePos_ = pos;
+                UpdateOverlappedPos();
                 return false;
             }
 
-            int64_t FileWindowsImpl::Read(char* data, int64_t bytes) const
-            {
-                return 0;
+            int64_t FileWindowsImpl::Read(char* data, int64_t bytes) {
+                assert(IsValide());
+
+                int64_t numberOfBytesRead = 0;
+                do {
+                    uint32_t byteToRead = std::min<int64_t>(bytes, int64_t(UINT32_MAX));
+                    DWORD bytesRead = 0;
+
+                    if (!ReadFile(fileHanle_, data, byteToRead, &bytesRead, &overlapped_)) {
+                        DWORD error = GetLastError();
+                        if (error != ERROR_IO_PENDING) {
+                            WARNLOG("read file faile, file:{}, error={}", fileName_.c_str(), error);
+                            return 0;
+                        }
+
+                        bytesRead = 0;
+                        if (!GetOverlappedResult(fileHanle_, &overlapped_, &bytesRead, true)) {
+                            WARNLOG("read file faile, file:{}, GetOverlappedResult failed", fileName_.c_str());
+                            return 0;
+                        }
+                    }
+
+                    bytes -= byteToRead;
+                    data += byteToRead;
+                    numberOfBytesRead += bytesRead;
+
+                    filePos_ += bytesRead;
+                    UpdateOverlappedPos();
+
+                    if (byteToRead != bytesRead) {
+                        WARNLOG("read file faile, file:{}, byteToRead({}) != bytesRead({})", fileName_.c_str(), byteToRead, bytesRead);
+                        return 0;
+                    }
+                } while (bytes > 0);
+                return numberOfBytesRead;
             }
 
-            int64_t FileWindowsImpl::Write(const char* data, int64_t bytes)
-            {
-                return 0;
+            int64_t FileWindowsImpl::Write(const char* data, int64_t bytes) {
+                assert(IsValide());
+
+                int64_t numberOfBytesWrite = 0;
+                do {
+                    uint32_t byteToWrite = std::min<int64_t>(bytes, int64_t(UINT32_MAX));
+                    DWORD bytesWrite = 0;
+
+                    if (!WriteFile(fileHanle_, data, byteToWrite, &bytesWrite, &overlapped_)) {
+                        DWORD error = GetLastError();
+                        if (error != ERROR_IO_PENDING) {
+                            WARNLOG("read file faile, file:{}, error={}", fileName_.c_str(), error);
+                            return 0;
+                        }
+
+                        bytesWrite = 0;
+                        if (!GetOverlappedResult(fileHanle_, &overlapped_, &bytesWrite, true)) {
+                            WARNLOG("read file faile, file:{}, GetOverlappedResult failed", fileName_.c_str());
+                            return 0;
+                        }
+                    }
+
+                    bytes -= byteToWrite;
+                    data += byteToWrite;
+                    numberOfBytesWrite += bytesWrite;
+
+                    filePos_ += bytesWrite;
+                    UpdateOverlappedPos();
+
+                    fileSize_ = std::max<int64_t>(fileSize_, filePos_);
+
+                    if (byteToWrite != bytesWrite) {
+                        WARNLOG("write file faile, file:{}, byteToRead({}) != bytesRead({})", fileName_.c_str(), byteToWrite, bytesWrite);
+                        return 0;
+                    }
+                } while (bytes > 0);
+                return numberOfBytesWrite;
             }
 
-            bool FileWindowsImpl::Flush()
-            {
-                return false;
+            bool FileWindowsImpl::Flush() {
+                assert(IsValide());
+                return FlushFileBuffers(fileHanle_) != 0;
             }
 
             void FileWindowsImpl::UpdateSize() {

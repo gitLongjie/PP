@@ -13,6 +13,8 @@ namespace PPEngine {
                 ~FileHandle();
 
                 bool OpenRead(bool allowWrite);
+                int64_t Size() const;
+                int64_t Read(char* data, int64_t bytes);
 
             private:
                 std::unique_ptr<IFileImpl> fileImpl_;

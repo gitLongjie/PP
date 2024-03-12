@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Core/Logger.h"
+#include "Core/StringUtil.h"
 #include "Core/Math/Size.h"
 #include "Core/FileSystem/FileHandle.h"
 
@@ -210,7 +212,24 @@ namespace PPEngine {
 
         Control::Ptr Builder::Create(const char* xml, Context* context, Control::Ptr parent) {
             Core::FileSystem::FileHandle fileHandle(xml);
-            xmlDoc_.LoadFile(xml);
+            if (!fileHandle.OpenRead(false)) {
+                DEBUGLOG("open read file failed: {}", xml);
+                return nullptr;
+            }
+
+            int64_t size = fileHandle.Size();
+            if (size <= 0) {
+                DEBUGLOG("file size is 0: {}", xml);
+                return nullptr;
+            }
+
+            std::string buffer(size, 0);
+            if (size != fileHandle.Read(&buffer[0], size)) {
+                DEBUGLOG("read file failed: {}", xml);
+                return nullptr;
+            }
+            Core::FromUtf8(buffer);
+            xmlDoc_.Parse(buffer.c_str(), size);
             if (xmlDoc_.Error()) {
                 return nullptr;
             }

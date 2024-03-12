@@ -16,15 +16,27 @@ namespace PPEngine {
 
                 bool IsValide() const override;
                 bool Seek(int64_t pos) override;
-                int64_t Read(char* data, int64_t bytes) const override;
+                int64_t Read(char* data, int64_t bytes) override;
                 int64_t Write(const char* data, int64_t bytes) override;
                 bool Flush() override;
 
             protected:
                 void UpdateSize();
+                void UpdateOverlappedPos() {
+                    ULARGE_INTEGER li;
+                    li.QuadPart = filePos_;
+                    overlapped_.Offset = li.LowPart;
+                    overlapped_.OffsetHigh = li.HighPart;
+                }
+                bool UpdateNonOverlappedPos() {
+                    LARGE_INTEGER li;
+                    li.QuadPart = filePos_;
+                    return SetFilePointer(fileHanle_, li.LowPart, &li.HighPart, FILE_BEGIN) != INVALID_SET_FILE_POINTER;
+                }
 
             private:
                 HANDLE fileHanle_{nullptr};
+                OVERLAPPED overlapped_{0};
             };
         }
     }

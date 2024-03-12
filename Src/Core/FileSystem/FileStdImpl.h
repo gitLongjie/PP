@@ -16,7 +16,7 @@ namespace PPEngine {
                 int64_t Size() const override;
                 int64_t Tell() const override;
                 bool Seek(int64_t pos) override;
-                int64_t Read(char* data, int64_t bytes) const override;
+                int64_t Read(char* data, int64_t bytes) override;
                 int64_t Write(const char* data, int64_t bytes) override;
                 bool Flush() override;
 

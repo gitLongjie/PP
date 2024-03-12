@@ -27,7 +27,7 @@ namespace PPEngine {
                 return false;
             }
 
-            int64_t FileStdImpl::Read(char* data, int64_t bytes) const {
+            int64_t FileStdImpl::Read(char* data, int64_t bytes) {
                 return 0;
             }
 
