@@ -38,5 +38,22 @@ namespace PPEngine {
             unsigned long uColor = strtoul(acolor, &endStr, 16);
             return uColor;
         }
+
+        std::vector<std::string> Split(const std::string& s, const std::string& delimiter) {
+            std::vector<std::string> tokens;
+            size_t prev = 0, pos = 0;
+            do {
+                pos = s.find(delimiter, prev);
+                if (pos == std::string::npos) {
+                    pos = s.length();
+                }
+                std::string token = s.substr(prev, pos - prev);
+                if (!token.empty()) {
+                    tokens.push_back(token);
+                }
+                prev = pos + delimiter.length();
+            } while (pos < s.length() && prev < s.length());
+            return tokens;
+        }
     }
 }

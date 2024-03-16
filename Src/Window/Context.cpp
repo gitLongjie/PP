@@ -1,6 +1,8 @@
 #include "Window/Context.h"
 
+#include "Core/Logger.h"
 #include "Core/Platform.h"
+#include "Core/StringUtil.h"
 
 #include "Window/Control.h"
 
@@ -74,6 +76,78 @@ namespace PPEngine {
         }
 
         void Context::DrawImageString(const Core::Math::Rect& rectPaint, const Core::Math::Rect& rect, const std::string& image) {
+            // 1¡¢aaa.jpg
+            // 2¡¢file='aaa.jpg' res='' restype='0' dest='0,0,0,0' source='0,0,0,0' corner='0,0,0,0' 
+            // mask='#FF0000' fade='255' hole='false' xtiled='false' ytiled='false'
+            std::string file = image;
+            std::string imageResType;
+            std::string res;
+            int32_t restype = 0;
+            Core::Math::Rect rcItem;
+            Core::Math::Rect rcBmpPart;
+            Core::Math::Rect rcCorner;
+
+            uint32 mask = 0;
+            uint8 fade = 0xff;
+
+            bool hole = false;
+            bool xtiled = false;
+            bool ytiled = false;
+
+            std::vector<std::string> ress = Core::Split(image, " ");
+            for (const std::string& res : ress) {
+                if ("file" == res || "res" == res) {
+                    file = res;
+                } else if ("restype" == res) {
+                    imageResType = res;
+                } else if ("dest" == res) {
+                    rcItem = Core::Math::Rect::FromString(res.c_str());
+                } else if ("source" == res) {
+                    rcBmpPart = Core::Math::Rect::FromString(res.c_str());
+                } else if ("corner" == res) {
+                    rcCorner = Core::Math::Rect::FromString(res.c_str());
+                } else if ("mask" == res) {
+                    mask = Core::StringToColor16(res.c_str());
+                } else if ("fade" == res) {
+                    fade = strtoul(res.c_str(), nullptr, 10);
+                } else if ("hole" == res) {
+                    hole = atoi(res.c_str());
+                } else if ("xtiled" == res) {
+                    xtiled = atoi(res.c_str());
+                } else if ("ytiled" == res) {
+                    ytiled = atoi(res.c_str());
+                }
+            }
+
+            Core::ImageDrawUI imageDrawUI = { rect, rectPaint, file, imageResType,
+                rcItem, rcBmpPart, rcCorner, mask, fade, hole, xtiled, ytiled };
+            DrawImage(imageDrawUI);
+        }
+
+        bool Context::DrawImage(Core::ImageDrawUI& imageDrawUI) {
+            if (imageDrawUI.name.empty()) {
+                DEBUGLOG("image name is empty");
+                return false;
+            }
+            
+            Core::Image::Ptr image = Core::ImageManager::Get()->GetImageEx(imageDrawUI.name, imageDrawUI.type, imageDrawUI.mask);
+            if (!image) {
+                DEBUGLOG("image in nullptr");
+                return false;
+            }
+
+            Core::Math::Rect& rcBmpPart = imageDrawUI.rcBmpPart;
+            if (rcBmpPart.IsEmpty()) {
+                rcBmpPart.SetSize({ image->GetWidth(), image->GetHeight() });
+            }
+            if (rcBmpPart.GetRight() > image->GetWidth()) rcBmpPart.SetRight(image->GetWidth());
+            if (rcBmpPart.GetBottom() > image->GetHeight()) rcBmpPart.SetBottom(image->GetHeight());
+
+            RECT rcTemp;
+            if (!::IntersectRect(&rcTemp, &rcItem, &rc)) return true;
+            if (!::IntersectRect(&rcTemp, &rcItem, &rcPaint)) return true;
+
+            return true;
         }
 
         void Context::DrawColor(const Core::Math::Rect& rect, unsigned long color1) {

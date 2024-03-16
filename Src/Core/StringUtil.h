@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace PPEngine {
     namespace Core {
@@ -8,5 +9,6 @@ namespace PPEngine {
 
         bool FromUtf8(std::string& inout);
         unsigned long StringToColor16(const char* color);
+        std::vector<std::string> Split(const std::string& s, const std::string& delimiter);
     }
 }

@@ -97,7 +97,7 @@ namespace PPEngine {
             } else if (0 == strcmp(name, "borderround")) {
                 SetBorderRound(Core::Math::FromString(value));
             } else if (0 == strcmp(name, "bkimage")) {
-              //  SetBkImage(value);
+                SetBkImage(value);
             } else if (strcmp(name, "width") == 0) {
                 SetFixedWidth(atoi(value));
             } else if (strcmp(name, "height") == 0) {
@@ -220,6 +220,15 @@ namespace PPEngine {
             if (borderColor_ == color) { return; }
 
             borderColor_ = color;
+            Invalidate();
+        }
+
+        void Control::SetBkImage(const std::string& bkImage) {
+            if (bkImage_ == bkImage) {
+                return;
+            }
+
+            bkImage_ = bkImage;
             Invalidate();
         }
 

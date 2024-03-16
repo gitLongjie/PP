@@ -7,6 +7,7 @@
 #include "Core/Xml/tinyxml2.h"
 #include "Core/Math/Rect.h"
 #include "Core/Font.h"
+#include "Core/Image.h"
 #include "Window/Control.h"
 
 
@@ -36,6 +37,7 @@ namespace PPEngine {
             virtual void DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color);
             virtual void DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color);
             virtual void DrawImageString(const Core::Math::Rect& rectPaint, const Core::Math::Rect& rect, const std::string& image);
+            virtual bool DrawImage(Core::ImageDrawUI& imageDrawUI);
             virtual void DrawColor(const Core::Math::Rect& rect, unsigned long color);
             virtual void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
                 unsigned long color2, bool vertical, int32_t steps);

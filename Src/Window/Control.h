@@ -60,6 +60,8 @@ namespace PPEngine {
             void SetBorderSize(int32_t size);
             void SetBorderRound(const Core::Math::Size& size);
             void SetBorderColor(unsigned long color);
+            void SetBkImage(const std::string& bkImage);
+            const std::string& GetBkImage() const { return bkImage_; }
             unsigned long GetBorderColor() const { return borderColor_; }
             void SetFocusBorderColor(unsigned long color);
             unsigned long SetFocusBorderColor() const { return focusBorderColor_; }

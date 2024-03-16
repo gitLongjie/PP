@@ -234,31 +234,6 @@ namespace PPEngine {
                 return nullptr;
             }
 
-           
-            //资源ID为0-65535，两个字节；字符串指针为4个字节
-            //字符串以<开头认为是XML字符串，否则认为是XML文件
-
-            //if (HIWORD(xml.m_lpstr) != NULL) {
-            //    if (*(xml.m_lpstr) == _T('<')) {
-            //        if (!m_xml.Load(xml.m_lpstr)) return NULL;
-            //    } else {
-            //        if (!m_xml.LoadFromFile(xml.m_lpstr)) return NULL;
-            //    }
-            //} else {
-            //    HRSRC hResource = ::FindResource( Context*::GetResourceDll(), xml.m_lpstr, type);
-            //    if (hResource == NULL) return NULL;
-            //    HGLOBAL hGlobal = ::LoadResource( Context*::GetResourceDll(), hResource);
-            //    if (hGlobal == NULL) {
-            //        FreeResource(hResource);
-            //        return NULL;
-            //    }
-
-            //    callback_ = callback;
-            //    if (!m_xml.LoadFromMem((BYTE*)::LockResource(hGlobal), ::SizeofResource( Context*::GetResourceDll(), hResource))) return NULL;
-            //    ::FreeResource(hResource);
-            //    m_pstrtype = type;
-            //}
-
             return Create(context, parent);
         }
 
