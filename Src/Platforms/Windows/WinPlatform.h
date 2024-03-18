@@ -8,7 +8,10 @@ namespace PPEngine {
             class WinPlatform : public Core::Platform {
             public:
                 virtual std::string GetPlatformName() override;
-                Core::Font::Ptr CreateFont(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic) override;
+                Core::Font::Ptr CreatePlatformFont(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic) override;
+
+                bool Initialize() override;
+                void Uninitialize() override;
             };
         }
     }

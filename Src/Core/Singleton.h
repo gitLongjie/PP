@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <assert.h>
 
 namespace PPEngine {
     namespace Core {

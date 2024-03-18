@@ -252,13 +252,13 @@ namespace PPEngine {
                 }
             }
 
-            void WindowRender::DrawImage(HDC hdc, HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint,
+            bool WindowRender::DrawImage(HDC hdc, HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint,
                 const RECT& rcBmpPart, const RECT& rcScale9, bool alpha, uint8_t fade, bool hole, bool xtiled, bool ytiled) {
                 typedef BOOL(WINAPI* LPALPHABLEND)(HDC, int, int, int, int, HDC, int, int, int, int, BLENDFUNCTION);
                 static LPALPHABLEND lpAlphaBlend = (LPALPHABLEND) ::GetProcAddress(::GetModuleHandle(TEXT("msimg32.dll")), "AlphaBlend");
 
                 if (lpAlphaBlend == NULL) lpAlphaBlend = AlphaBitBlt;
-                if (hBitmap == NULL) return;
+                if (hBitmap == NULL) return false;
 
                 HDC hCloneDC = ::CreateCompatibleDC(hdc);
                 HBITMAP hOldBitmap = (HBITMAP) ::SelectObject(hCloneDC, hBitmap);
@@ -688,6 +688,7 @@ namespace PPEngine {
 
                 ::SelectObject(hCloneDC, hOldBitmap);
                 ::DeleteDC(hCloneDC);
+                return true;
             }
 
         }

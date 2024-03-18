@@ -10,6 +10,7 @@
 #include <cassert>
 
 #include "Platforms/Windows/Context.h"
+#include "Platforms/Windows/ResourceManager.h"
 
 namespace PPEngine {
     namespace Platforms {
@@ -51,7 +52,8 @@ namespace PPEngine {
             HWND CWindowWnd::Create(HWND hwndParent, const char* pstrName, DWORD dwStyle, DWORD dwExStyle, int x, int y, int cx, int cy, HMENU hMenu) {
                 if (GetSuperClassName() != nullptr && !RegisterSuperclass()) return nullptr;
                 if (GetSuperClassName() == nullptr && !RegisterWindowClass()) return nullptr;
-                hWnd_ = ::CreateWindowEx(dwExStyle, GetWindowClassName(), pstrName, dwStyle, x, y, cx, cy, hwndParent, hMenu, Context::GetInstanceHandle(), this);
+                hWnd_ = ::CreateWindowEx(dwExStyle, GetWindowClassName(), pstrName, dwStyle, x, y, cx, cy, hwndParent,
+                    hMenu, ResourceManager::Get()->GetInstanceHandle(), this);
                 ASSERT(hWnd_ != nullptr);
                 return hWnd_;
             }
@@ -153,13 +155,13 @@ namespace PPEngine {
             }
 
             void CWindowWnd::SetIcon(UINT nRes) {
-                HICON hIcon = (HICON)::LoadImage(Context::GetInstanceHandle(), MAKEINTRESOURCE(nRes), IMAGE_ICON,
+                HICON hIcon = (HICON)::LoadImage(ResourceManager::Get()->GetInstanceHandle(), MAKEINTRESOURCE(nRes), IMAGE_ICON,
                     (::GetSystemMetrics(SM_CXICON) + 15) & ~15, (::GetSystemMetrics(SM_CYICON) + 15) & ~15,	// 防止高DPI下图标模糊
                     LR_DEFAULTCOLOR);
                 ASSERT(hIcon);
                 ::SendMessage(hWnd_, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
 
-                hIcon = (HICON)::LoadImage(Context::GetInstanceHandle(), MAKEINTRESOURCE(nRes), IMAGE_ICON,
+                hIcon = (HICON)::LoadImage(ResourceManager::Get()->GetInstanceHandle(), MAKEINTRESOURCE(nRes), IMAGE_ICON,
                     (::GetSystemMetrics(SM_CXICON) + 15) & ~15, (::GetSystemMetrics(SM_CYICON) + 15) & ~15,	// 防止高DPI下图标模糊
                     LR_DEFAULTCOLOR);
                 ASSERT(hIcon);
@@ -173,7 +175,7 @@ namespace PPEngine {
                 wc.cbWndExtra = 0;
                 wc.hIcon = nullptr;
                 wc.lpfnWndProc = CWindowWnd::__WndProc;
-                wc.hInstance = Context::GetInstanceHandle();
+                wc.hInstance = ResourceManager::Get()->GetInstanceHandle();
                 wc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
                 wc.hbrBackground = nullptr;
                 wc.lpszMenuName = nullptr;
@@ -189,14 +191,14 @@ namespace PPEngine {
                 WNDCLASSEX wc = { 0 };
                 wc.cbSize = sizeof(WNDCLASSEX);
                 if (!::GetClassInfoEx(nullptr, GetSuperClassName(), &wc)) {
-                    if (!::GetClassInfoEx(Context::GetInstanceHandle(), GetSuperClassName(), &wc)) {
+                    if (!::GetClassInfoEx(ResourceManager::Get()->GetInstanceHandle(), GetSuperClassName(), &wc)) {
                         ASSERT(!"Unable to locate window class");
                         return nullptr;
                     }
                 }
                 oldWndProc_ = wc.lpfnWndProc;
                 wc.lpfnWndProc = CWindowWnd::__ControlProc;
-                wc.hInstance = Context::GetInstanceHandle();
+                wc.hInstance = ResourceManager::Get()->GetInstanceHandle();
                 wc.lpszClassName = GetWindowClassName();
                 ATOM ret = ::RegisterClassEx(&wc);
                 ASSERT(ret != 0 || ::GetLastError() == ERROR_CLASS_ALREADY_EXISTS);

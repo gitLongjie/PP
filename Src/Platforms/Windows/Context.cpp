@@ -9,14 +9,6 @@
 namespace PPEngine {
     namespace Platforms {
         namespace Windows {
-            HINSTANCE gInstanceHandle_ = nullptr;
-            HINSTANCE gResourceInstanceHandle_ = nullptr;
-
-
-            
-
-
-
             void Context::Init(HWND hWnd, const char* name /*= nullptr*/) {
                 assert(::IsWindow(hWnd));
 
@@ -115,22 +107,6 @@ namespace PPEngine {
                 return nullptr;
             }
 
-            void Context::SetInstanceHandle(HINSTANCE handle) {
-                gInstanceHandle_ = handle;
-            }
-
-            HINSTANCE Context::GetInstanceHandle() {
-                return gInstanceHandle_;
-            }
-
-            void  Context::SetResourceDll(HINSTANCE hInst) {
-                gResourceInstanceHandle_ = hInst;
-            }
-            HINSTANCE Context::GetResourceDll() {
-                if (nullptr == gResourceInstanceHandle_ == 0L) return gInstanceHandle_;
-                return gResourceInstanceHandle_;
-            }
-
             bool Context::Serialize(tinyxml2::XMLElement* xmlElement) {
                 if (nullptr == xmlElement) {
                     return false;
@@ -166,6 +142,21 @@ namespace PPEngine {
                 RECT rc{ static_cast<long>(minRect.x), static_cast<long>(minRect.y),
                     static_cast<long>(maxRect.x), static_cast<long>(maxRect.y) };
                 WindowRender::DrawColor(hdcPaint_, rc, color);
+            }
+
+            bool Context::DrawImage(Core::ImageDrawUI& imageDrawUI, Core::Image::Ptr image) {
+                HBITMAP hBitmap = nullptr;
+
+                const Core::Math::Rect& imageRC = imageDrawUI.rc;
+                RECT rc = { imageRC.GetMin().x, imageRC.GetMin().y, imageRC.GetSize().x, imageRC.GetSize().y };
+                const Core::Math::Rect& imagePaintRC = imageDrawUI.rcPaint;
+                RECT rcPaint = { imagePaintRC.GetMin().x, imagePaintRC.GetMin().y, imagePaintRC.GetSize().x, imagePaintRC.GetSize().y };
+                const Core::Math::Rect& imageBmpRC = imageDrawUI.rcBmpPart;
+                RECT rcBmpPart = { imageBmpRC.GetMin().x, imageBmpRC.GetMin().y, imageBmpRC.GetSize().x, imageBmpRC.GetSize().y };
+                const Core::Math::Rect& imageCornerRC = imageDrawUI.rcCorner;
+                RECT rcCornerPart = { imageCornerRC.GetMin().x, imageCornerRC.GetMin().y, imageCornerRC.GetSize().x, imageCornerRC.GetSize().y };
+                return WindowRender::DrawImage(hdcPaint_, hBitmap, rc, rcPaint, rcBmpPart, rcCornerPart, image->IsAlpha(),
+                    imageDrawUI.fade, imageDrawUI.hole, imageDrawUI.xtiled, imageDrawUI.ytiled);
             }
 
             void Context::DrawGradient(const Core::Math::Rect& rect, unsigned long color1,

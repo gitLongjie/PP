@@ -143,11 +143,14 @@ namespace PPEngine {
             if (rcBmpPart.GetRight() > image->GetWidth()) rcBmpPart.SetRight(image->GetWidth());
             if (rcBmpPart.GetBottom() > image->GetHeight()) rcBmpPart.SetBottom(image->GetHeight());
 
-            RECT rcTemp;
-            if (!::IntersectRect(&rcTemp, &rcItem, &rc)) return true;
-            if (!::IntersectRect(&rcTemp, &rcItem, &rcPaint)) return true;
+            if (!imageDrawUI.rcItem.Intersects(imageDrawUI.rc)) { return true; }
+            if (!imageDrawUI.rcItem.Intersects(imageDrawUI.rcPaint)) { return true; }
 
-            return true;
+            return DrawImage(imageDrawUI, image);
+        }
+
+        bool Context::DrawImage(Core::ImageDrawUI& imageDrawUI, Core::Image::Ptr image){
+            return false;
         }
 
         void Context::DrawColor(const Core::Math::Rect& rect, unsigned long color1) {
@@ -259,7 +262,7 @@ namespace PPEngine {
                 attribte = attribte->Next();
             }
 
-            Core::Font::Ptr font = Core::Platform::Get()->CreateFont(name, size, bold, underline, italic);
+            Core::Font::Ptr font = Core::Platform::Get()->CreatePlatformFont(name, size, bold, underline, italic);
             AddFont(id, font, shared);
             //addfont
         }

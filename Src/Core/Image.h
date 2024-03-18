@@ -43,6 +43,8 @@ namespace PPEngine {
             int32 GetWidth() const { return width_; }
             int32 GetHeight() const { return height_; }
 
+            bool IsAlpha() const { return alpha_; }
+
         private:
             std::string name_;
             int32 width_{ 0 };

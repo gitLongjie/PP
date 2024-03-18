@@ -37,12 +37,6 @@ namespace PPEngine {
                 const Core::Image::Ptr AddImage(const std::string & bitmap, const std::string & type, unsigned long mask = 0, bool hsl = false, bool shared = false);
                 const Core::Image::Ptr AddImage(const std::string& bitmap, HBITMAP hBitmap, int width, int height, bool alpha, bool shared = false);
 
-
-                static void SetInstanceHandle(HINSTANCE handle);
-                static HINSTANCE GetInstanceHandle();
-                static void SetResourceDll(HINSTANCE hInst);
-                static HINSTANCE GetResourceDll();
-
                 bool Serialize(tinyxml2::XMLElement* xmlElement) override;
 
                 void AddFont(int id, Core::Font::Ptr font, bool shared) override;
@@ -51,6 +45,7 @@ namespace PPEngine {
                 void DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color) override;
                 void DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color) override;
                 void DrawColor(const Core::Math::Rect& rect, unsigned long color) override;
+                bool DrawImage(Core::ImageDrawUI& imageDrawUI, Core::Image::Ptr image) override;
                 void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
                     unsigned long color2, bool vertical, int32_t steps) override;
                 void DrawUIText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style) override;
@@ -71,7 +66,6 @@ namespace PPEngine {
                 std::string name_;
                 HWND hWndPaint_;
                 HDC hdcPaint_;
-              
             };
         }
     }

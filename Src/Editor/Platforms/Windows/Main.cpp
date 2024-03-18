@@ -31,6 +31,7 @@
 #include "Platforms/Windows/WinWindow.h"
 #include "Platforms/Windows/MessageLoop.h"
 #include "Platforms/Windows/Context.h"
+#include "Platforms/Windows/ResourceManager.h"
 
 #include "Window/Builder.h"
 
@@ -191,12 +192,13 @@ public:
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     PPEngine::Platforms::Windows::WindowsMainLoopImpl impl;
-    PPEngine::Platforms::Windows::Context::SetInstanceHandle(hInstance);
+  //  PPEngine::Platforms::Windows::Context::SetInstanceHandle(hInstance);
     PPEngine::Core::MainLoop mainLoop(&impl);
     PPEngine::PPEditor::PPEditorApplication app(mainLoop);
     if (!app.Initialize()) {
         return -1;
     }
+    PPEngine::Platforms::Windows::ResourceManager::Get()->SetInstanceHandle(hInstance);
 
     PPEngine::Window::WindowSettings settings;
     settings.title = "PPEditor";
