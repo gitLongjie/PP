@@ -28,7 +28,7 @@ namespace PPEngine {
             
             return true;
         }
-        unsigned long StringToColor16(const char* color) {
+        uint32 StringToColor16(const char* color) {
             const char* acolor = color;
             if (*acolor == '#') {
                 ++acolor;

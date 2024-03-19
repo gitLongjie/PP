@@ -14,6 +14,7 @@
 #include "Window/Container.h"
 #include "Window/Label.h"
 #include "Window/Text.h"
+#include "Window/Button.h"
 
 #include "Platforms/Windows/Context.h"
 
@@ -278,8 +279,9 @@ namespace PPEngine {
             RegisterControlCreator("VerticalLayout", VerticalLayout::Create);
             RegisterControlCreator("HorizontalLayout", HorizontalLayout::Create);
             RegisterControlCreator("Container", Container::Create);
-            RegisterControlCreator("Text", Label::Create);
+            RegisterControlCreator("Label", Label::Create);
             RegisterControlCreator("Text", Text::Create);
+            RegisterControlCreator("Button", Button::Create);
         }
     }
 }

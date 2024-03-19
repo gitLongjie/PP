@@ -8,6 +8,7 @@
 
 #include "Core/Math/Size.h"
 #include "Core/Math/Rect.h"
+#include "Core/Constent.h"
 
 namespace PPEngine {
     namespace Window {
