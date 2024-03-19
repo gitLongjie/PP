@@ -96,26 +96,31 @@ namespace PPEngine {
 
             std::vector<std::string> ress = Core::Split(image, " ");
             for (const std::string& res : ress) {
-                if ("file" == res || "res" == res) {
-                    file = res;
-                } else if ("restype" == res) {
-                    imageResType = res;
-                } else if ("dest" == res) {
-                    rcItem = Core::Math::Rect::FromString(res.c_str());
-                } else if ("source" == res) {
-                    rcBmpPart = Core::Math::Rect::FromString(res.c_str());
-                } else if ("corner" == res) {
-                    rcCorner = Core::Math::Rect::FromString(res.c_str());
-                } else if ("mask" == res) {
-                    mask = Core::StringToColor16(res.c_str());
-                } else if ("fade" == res) {
-                    fade = strtoul(res.c_str(), nullptr, 10);
-                } else if ("hole" == res) {
-                    hole = atoi(res.c_str());
-                } else if ("xtiled" == res) {
-                    xtiled = atoi(res.c_str());
-                } else if ("ytiled" == res) {
-                    ytiled = atoi(res.c_str());
+                std::vector<std::string> value = Core::Split(res, "=");
+                if (value.size() != 2) {
+                    continue;
+                }
+
+                if ("file" == value[0] || "res" == value[0]) {
+                    file = value[1];
+                } else if ("restype" == value[0]) {
+                    imageResType = value[1];
+                } else if ("dest" == value[0]) {
+                    rcItem = Core::Math::Rect::FromString(value[1].c_str());
+                } else if ("source" == value[0]) {
+                    rcBmpPart = Core::Math::Rect::FromString(value[1].c_str());
+                } else if ("corner" == value[0]) {
+                    rcCorner = Core::Math::Rect::FromString(value[1].c_str());
+                } else if ("mask" == value[0]) {
+                    mask = Core::StringToColor16(value[1].c_str());
+                } else if ("fade" == value[0]) {
+                    fade = strtoul(value[1].c_str(), nullptr, 10);
+                } else if ("hole" == value[0]) {
+                    hole = atoi(value[1].c_str());
+                } else if ("xtiled" == value[0]) {
+                    xtiled = atoi(value[1].c_str());
+                } else if ("ytiled" == value[0]) {
+                    ytiled = atoi(value[1].c_str());
                 }
             }
 
@@ -130,7 +135,7 @@ namespace PPEngine {
                 return false;
             }
             
-            Core::Image::Ptr image = Core::ImageManager::Get()->GetImageEx(imageDrawUI.name, imageDrawUI.type, imageDrawUI.mask);
+            Core::Image::Ptr image = GetImageEx(imageDrawUI.name, imageDrawUI.type, imageDrawUI.mask);
             if (!image) {
                 DEBUGLOG("image in nullptr");
                 return false;
@@ -269,6 +274,18 @@ namespace PPEngine {
 
         void Context::SetInitSize(const Core::Math::Size& size) {
             
+        }
+
+        Core::Image::Ptr Context::GetImageEx(const std::string& name, const std::string& type, uint32 mask) {
+            Core::Image::Ptr image = Core::ImageManager::Get()->GetImageEx(name, type, mask);
+            if (!image) {
+                image = AddImage(name, type, mask);
+            }
+            return image;
+        }
+
+        Core::Image::Ptr Context::AddImage(const std::string& bitmap, const std::string& type, uint32 mask) {
+            return Core::ImageManager::Get()->AddImage(bitmap, type, mask);
         }
 
     }

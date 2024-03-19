@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "Core/Font.h"
 #include "Platforms/Windows/WindowRender.h"
+#include "Platforms/Windows/ResourceManager.h"
 
 
 namespace PPEngine {
@@ -97,16 +98,6 @@ namespace PPEngine {
                 return font;
             }
 
-           
-
-            const Core::Image::Ptr Context::AddImage(const std::string& bitmap, const std::string& type, unsigned long mask /*= 0*/, bool hsl /*= false*/, bool shared /*= false*/) {
-                return nullptr;
-            }
-
-            const Core::Image::Ptr Context::AddImage(const std::string& bitmap, HBITMAP hBitmap, int width, int height, bool alpha, bool shared /*= false*/) {
-                return nullptr;
-            }
-
             bool Context::Serialize(tinyxml2::XMLElement* xmlElement) {
                 if (nullptr == xmlElement) {
                     return false;
@@ -145,7 +136,10 @@ namespace PPEngine {
             }
 
             bool Context::DrawImage(Core::ImageDrawUI& imageDrawUI, Core::Image::Ptr image) {
-                HBITMAP hBitmap = nullptr;
+                HBITMAP hBitmap = ResourceManager::Get()->GetBitmap(image->GetName());
+                if (nullptr == hBitmap) {
+                    return false;
+                }
 
                 const Core::Math::Rect& imageRC = imageDrawUI.rc;
                 RECT rc = { imageRC.GetMin().x, imageRC.GetMin().y, imageRC.GetSize().x, imageRC.GetSize().y };
@@ -244,6 +238,28 @@ namespace PPEngine {
                 }
 
                 return false;
+            }
+
+            Core::Image::Ptr Context::AddImage(const std::string& name, const std::string& type, uint32 mask) {
+                Core::Image::Ptr image = Window::Context::AddImage(name, type, mask);
+                if (!image) {
+                    return nullptr;
+                }
+
+                HBITMAP hbitmap = ResourceManager::Get()->GetBitmap(name);
+                if (nullptr == hbitmap) {
+                    ResourceManager::Get()->AddBitmap(image, mask);
+                }
+                return image;
+            }
+
+            HBITMAP Context::GetBitmap(Core::Image::Ptr image, uint32 mask) {
+                HBITMAP hbitmap = ResourceManager::Get()->GetBitmap(image->GetName());
+                if (nullptr == hbitmap) {
+                    ResourceManager::Get()->AddBitmap(image, mask);
+                }
+
+                return ResourceManager::Get()->GetBitmap(image->GetName());
             }
 
             void Context::SetFocus(Window::Control* control, bool focusWnd) {

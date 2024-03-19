@@ -84,9 +84,6 @@ namespace PPEngine {
             }
         }
 
-        void Label::FixRect(Core::Math::Rect rect) {
-        }
-
         void Label::SetText(const std::string& text) {
             if (text == text_) { return; }
 
@@ -117,7 +114,7 @@ namespace PPEngine {
 
             rectMin += paddingMin;
             rectMax -= paddingMax;
-            Core::Math::Rect drawRect(rectMin, {300, 60});
+            Core::Math::Rect drawRect(rectMin, rectMax);
 
             if (!IsEnabledEffect()) {
                 if (text_.empty()) { return; }

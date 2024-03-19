@@ -34,9 +34,6 @@ namespace PPEngine {
                 void RemoveAllFonts(bool bShared = false);
                 Font* GetFontInfo(int id);
 
-                const Core::Image::Ptr AddImage(const std::string & bitmap, const std::string & type, unsigned long mask = 0, bool hsl = false, bool shared = false);
-                const Core::Image::Ptr AddImage(const std::string& bitmap, HBITMAP hBitmap, int width, int height, bool alpha, bool shared = false);
-
                 bool Serialize(tinyxml2::XMLElement* xmlElement) override;
 
                 void AddFont(int id, Core::Font::Ptr font, bool shared) override;
@@ -58,6 +55,11 @@ namespace PPEngine {
                 void SetInitSize(const Core::Math::Size& size) override;
 
                 LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result);
+
+            protected:
+                Core::Image::Ptr AddImage(const std::string& name, const std::string& type, uint32 mask = 0) override;
+
+                HBITMAP GetBitmap(Core::Image::Ptr image, uint32 mask);
 
             private:
                

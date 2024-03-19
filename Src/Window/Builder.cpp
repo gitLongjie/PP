@@ -6,6 +6,7 @@
 #include "Core/StringUtil.h"
 #include "Core/Math/Size.h"
 #include "Core/FileSystem/FileHandle.h"
+#include "Core/FileSystem/Path.h"
 
 #include "Window/Control.h"
 #include "Window/VerticalLayout.h"
@@ -211,7 +212,8 @@ namespace PPEngine {
         };
 
         Control::Ptr Builder::Create(const char* xml, Context* context, Control::Ptr parent) {
-            Core::FileSystem::FileHandle fileHandle(xml);
+            const std::string xmlPath = Core::FileSystem::Path::GetEditorSkinPath() + xml;
+            Core::FileSystem::FileHandle fileHandle(xmlPath.c_str());
             if (!fileHandle.OpenRead(false)) {
                 DEBUGLOG("open read file failed: {}", xml);
                 return nullptr;

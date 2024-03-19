@@ -100,11 +100,7 @@ public:
        // m_pm.Init(m_hWnd);
         context_.Init(hWnd_);
         PPEngine::Window::Builder builder;
-        builder.Create("../../Asset/Skin/Eidtor/skin.xml", &context_);
-        //ASSERT(pRoot && "Failed to parse XML");
-     //   context_.Attach(pRoot);
-        // m_pm.AddNotifier(this);
-
+        builder.Create("skin.xml", &context_);
         Init();
         return 0;
     }

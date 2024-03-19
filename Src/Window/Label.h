@@ -22,7 +22,6 @@ namespace PPEngine {
 
             const char* GetClass() const { return "Label"; }
             void SetAttribute(const char* name, const char* value) override;
-            void FixRect(Core::Math::Rect rect) override;
 
             void SetText(const char* text) { SetText(std::string(text)); }
             void SetText(const std::string& text);

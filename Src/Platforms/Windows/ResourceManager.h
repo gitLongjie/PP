@@ -3,9 +3,11 @@
 #include <Windows.h>
 #include <string>
 #include <memory>
+#include <unordered_map>
 
 #include "Core/Constent.h"
 #include "Core/Singleton.h"
+#include "Core/Image.h"
 
 namespace PPEngine {
     namespace Platforms {
@@ -27,9 +29,15 @@ namespace PPEngine {
                 void SetResourceDll(HINSTANCE hInst);
                 HINSTANCE GetResourceDll();
 
+                HBITMAP GetBitmap(const std::string& name);
+                bool AddBitmap(Core::Image::Ptr image, uint32 mask = 0);
+
             private:
-                HINSTANCE instanceHandle_;
-                HINSTANCE resourceDll_;
+                HINSTANCE instanceHandle_{ nullptr };
+                HINSTANCE resourceDll_{ nullptr };
+
+                using Bitmaps = std::unordered_map<std::string, HBITMAP>;
+                Bitmaps bitmaps_;
                
             };
         }

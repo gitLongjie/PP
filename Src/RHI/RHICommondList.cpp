@@ -14,9 +14,7 @@ namespace PPEngine {
         }
 
         RHICommonList::~RHICommonList() {
-            if (thread_->joinable()) {
-                thread_->join();
-            }
+           
         }
 
         RHICommonList::Ptr RHICommonList::Create() {
@@ -61,6 +59,11 @@ namespace PPEngine {
 
         void RHICommonList::Stop() {
             isRunning_ = false;
+
+            if (thread_ && thread_->joinable()) {
+                thread_->join();
+                thread_.reset();
+            }
         }
 
         void RHICommonList::Push(std::shared_ptr<class RHICommond> commond) {

@@ -75,6 +75,10 @@ namespace PPEngine {
 
             void SetCaptionRect(const Core::Math::Rect& captionRect) { captionRect_ = captionRect; }
             const Core::Math::Rect& GetCaptionRect() const { return captionRect_; }
+
+        protected:
+            Core::Image::Ptr GetImageEx(const std::string& name, const std::string& type, uint32 mask = 0);
+            virtual Core::Image::Ptr AddImage(const std::string& bitmap, const std::string& type, uint32 mask = 0);
             
 
         protected:
