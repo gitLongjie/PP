@@ -49,6 +49,10 @@ namespace PPEngine {
                 return Core::FontManager::Get()->GetFontCount(bShared);
             }
 
+            uint32 Context::GetDefaultSelectedBkColor() const {
+                return 0xFFBAE4FF;
+            }
+
             void Context::AddFont(int id, Core::Font::Ptr font, bool shared) {
                 if (!font) {
                     return;
@@ -190,11 +194,11 @@ namespace PPEngine {
                 HRGN hRgn = ::CreateRectRgnIndirect(&rc);
                 if (bDraw) ::ExtSelectClipRgn(hdcPaint_, hRgn, RGN_AND);
 
-                TEXTMETRIC* pTm = &pManager->GetDefaultFontInfo()->tm;
-                HFONT hOldFont = (HFONT) ::SelectObject(hdcPaint_, pManager->GetDefaultFontInfo()->hFont);
+                TEXTMETRIC* pTm = &GetDefaultFontInfo()->GetTEXTMETRIC();
+                HFONT hOldFont = (HFONT) ::SelectObject(hdcPaint_, GetDefaultFontInfo()->GetFont());
                 ::SetBkMode(hdcPaint_, TRANSPARENT);
-                ::SetTextColor(hdcPaint_, RGB(GetBValue(dwTextColor), GetGValue(dwTextColor), GetRValue(dwTextColor)));
-                DWORD dwBkColor = pManager->GetDefaultSelectedBkColor();
+                ::SetTextColor(hdcPaint_, RGB(GetBValue(color), GetGValue(color), GetRValue(color)));
+                DWORD dwBkColor = GetDefaultSelectedBkColor();
                 ::SetBkColor(hdcPaint_, RGB(GetBValue(dwBkColor), GetGValue(dwBkColor), GetRValue(dwBkColor)));
             }
 

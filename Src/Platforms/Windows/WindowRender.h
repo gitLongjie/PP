@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Windows.h>
-#include <stdint.h>
+
+#include "Core/Constent.h"
 
 namespace PPEngine {
     namespace Platforms {
@@ -14,8 +15,10 @@ namespace PPEngine {
                 static void DrawColor(HDC hdc, const RECT& rc, unsigned long color);
                 static void DrawGradient(HDC hDC, const RECT& rc, DWORD dwFirst, DWORD dwSecond, bool bVertical, int nSteps);
                 static bool DrawImage(HDC hdc, HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint,
-                    const RECT& rcBmpPart, const RECT& rcScale9, bool alpha, uint8_t fade = 255,
+                    const RECT& rcBmpPart, const RECT& rcScale9, bool alpha, uint8 fade = 255,
                     bool hole = false, bool xtiled = false, bool ytiled = false);
+                static void DrawHtmlText(HDC hDC, class Context* context, RECT& rc, LPCTSTR pstrText,
+                    DWORD dwTextColor, RECT* pLinks, char* sLinks, int& nLinkRects, UINT uStyle);
             };
         }
     }
