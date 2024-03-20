@@ -17,9 +17,9 @@ namespace PPEngine {
         class Context {
         public:
             struct DefaultInfo {
-                unsigned long disabledColor_{ 0 };
-                unsigned long fontColor_{ 0 };
-                unsigned long selectedBkColor_{ 0 };
+                uint32 disabledColor_{ 0 };
+                uint32 fontColor_{ 0 };
+                uint32 selectedBkColor_{ 0 };
             };
 
         public:
@@ -33,22 +33,23 @@ namespace PPEngine {
             virtual void RemovePostPaint(Control* control);
             virtual void SetFocus(Control* control, bool focusWnd);
             virtual Control* GetFocus() const { return focusControl_; }
-            virtual void DrawLine(const glm::vec2& start, const glm::vec2& end, int32_t size, unsigned long color, int nStyle = 0);
-            virtual void DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color);
-            virtual void DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color);
+            virtual void DrawLine(const glm::vec2& start, const glm::vec2& end, int32 size, uint32 color, int nStyle = 0);
+            virtual void DrawRect(const Core::Math::Rect& rectPaint, int32 size, uint32 color);
+            virtual void DrawRoundRect(const Core::Math::Rect& rectPaint, int32 size, int32 width, int32 height, uint32 color);
             virtual void DrawImageString(const Core::Math::Rect& rectPaint, const Core::Math::Rect& rect, const std::string& image);
             virtual bool DrawImage(Core::ImageDrawUI& imageDrawUI);
             virtual bool DrawImage(Core::ImageDrawUI& imageDrawUI, Core::Image::Ptr image);
-            virtual void DrawColor(const Core::Math::Rect& rect, unsigned long color);
-            virtual void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
-                unsigned long color2, bool vertical, int32_t steps);
-            virtual void DrawUIText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style);
+            virtual void DrawColor(const Core::Math::Rect& rect, uint32 color);
+            virtual void DrawGradient(const Core::Math::Rect& rect, uint32 color1,
+                uint32 color2, bool vertical, int32 steps);
+            virtual void DrawUIText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style);
+            virtual void DrawHtmlText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style);
             //virtual void GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height);
 
-            void SetDefaultTextColor(unsigned long color, bool shared);
-            unsigned long GetDefaultTextColor() const { return defaultInfo_.fontColor_; }
-            void SetDisabledColor(unsigned long color, bool shared);
-            unsigned long GetDisabledColor() const { return defaultInfo_.fontColor_; }
+            void SetDefaultTextColor(uint32 color, bool shared);
+            uint32 GetDefaultTextColor() const { return defaultInfo_.fontColor_; }
+            void SetDisabledColor(uint32 color, bool shared);
+            uint32 GetDisabledColor() const { return defaultInfo_.fontColor_; }
             
 
             bool IsUpdateNeeded() const { return needUpdate_; }

@@ -57,6 +57,14 @@ namespace PPEngine {
             std::string pushedForeImage_;
             std::string foucesedImage_;
             std::string disableImage_;
+
+            enum State : uint8 {
+                FOCUSED = 1 << 0,
+                PUSHED = 1 << 1,
+                HOT = 1 << 2,
+                DISABLED = 1 << 3,
+            };
+            uint8 state_{ FOCUSED };
         };
     }
 }

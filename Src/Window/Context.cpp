@@ -66,13 +66,13 @@ namespace PPEngine {
 
         }
 
-        void Context::DrawLine(const glm::vec2& start, const glm::vec2& end, int32_t size, unsigned long color, int nStyle) {
+        void Context::DrawLine(const glm::vec2& start, const glm::vec2& end, int32 size, uint32 color, int nStyle) {
         }
 
-        void Context::DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color) {
+        void Context::DrawRect(const Core::Math::Rect& rectPaint, int32 size, uint32 color) {
         }
 
-        void Context::DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color) {
+        void Context::DrawRoundRect(const Core::Math::Rect& rectPaint, int32 size, int32 width, int32 height, uint32 color) {
         }
 
         void Context::DrawImageString(const Core::Math::Rect& rectPaint, const Core::Math::Rect& rect, const std::string& image) {
@@ -82,7 +82,7 @@ namespace PPEngine {
             std::string file = image;
             std::string imageResType;
             std::string res;
-            int32_t restype = 0;
+            int32 restype = 0;
             Core::Math::Rect rcItem;
             Core::Math::Rect rcBmpPart;
             Core::Math::Rect rcCorner;
@@ -158,19 +158,22 @@ namespace PPEngine {
             return false;
         }
 
-        void Context::DrawColor(const Core::Math::Rect& rect, unsigned long color1) {
+        void Context::DrawColor(const Core::Math::Rect& rect, uint32 color1) {
 
         }
 
-        void Context::DrawGradient(const Core::Math::Rect& rect, unsigned long color1, unsigned long color2, bool vertical, int32_t steps) {
+        void Context::DrawGradient(const Core::Math::Rect& rect, uint32 color1, uint32 color2, bool vertical, int32 steps) {
 
         }
 
-        void Context::DrawUIText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style) {
+        void Context::DrawUIText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) {
 
         }
 
-        void Context::SetDefaultTextColor(unsigned long color, bool shared) {
+        void Context::DrawHtmlText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) {
+        }
+
+        void Context::SetDefaultTextColor(uint32 color, bool shared) {
             if (shared) {
                 if (defaultInfo_.fontColor_ == sharedDefaultInfo_.fontColor_) {
                     defaultInfo_.fontColor_ = color;
@@ -181,7 +184,7 @@ namespace PPEngine {
             }
         }
 
-        void Context::SetDisabledColor(unsigned long color, bool shared) {
+        void Context::SetDisabledColor(uint32 color, bool shared) {
             if (shared) {
                 if (defaultInfo_.disabledColor_ == sharedDefaultInfo_.disabledColor_) {
                     defaultInfo_.disabledColor_ = color;
@@ -235,10 +238,10 @@ namespace PPEngine {
 
         void Context::ParseFontAttribute(tinyxml2::XMLElement* root) {
             const tinyxml2::XMLAttribute* attribte = root->FirstAttribute();
-            int32_t id = -1;
+            int32 id = -1;
             bool shared = false;
             std::string name;
-            int32_t size = 0;
+            int32 size = 0;
             bool bold = false;
             bool underline = false;
             bool italic = false;

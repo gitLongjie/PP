@@ -1,5 +1,7 @@
 #include "Window/Button.h"
 
+#include <bitset>
+
 #include "Core/StringUtil.h"
 #include "Window/Context.h"
 
@@ -80,6 +82,18 @@ namespace PPEngine {
         }
 
         void Button::OnDrawText() {
+            if (IsFocused()) {
+                state_ = state_ | State::FOCUSED;
+            } else {
+                state_ = state_ & ~State::FOCUSED;
+            }
+
+            if (!IsEnabled()) {
+                state_ = state_ & ~State::DISABLED;
+            } else {
+                state_ = state_ | State::DISABLED;
+            }
+
             if (0 == textColor_) {
                 textColor_ = context_->GetDefaultTextColor();
             }
@@ -99,14 +113,11 @@ namespace PPEngine {
             rectMax -= paddingMax;
             Core::Math::Rect drawRect(rectMin, rectMax);
 
-            if (!IsEnabledEffect()) {
-                if (text_.empty()) { return; }
-
-                if (IsEnabled()) {
-                    context_->DrawUIText(drawRect, text_, textColor_, font_, 0);
-                }
+            if (IsShowHtml()) {
+                context_->DrawHtmlText(drawRect, text_, textColor_, font_, 0);
+            } else {
+                context_->DrawUIText(drawRect, text_, textColor_, font_, 0);
             }
-
         }
 
     }

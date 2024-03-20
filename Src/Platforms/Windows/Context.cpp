@@ -45,7 +45,7 @@ namespace PPEngine {
                 Core::FontManager::Get()->SetDefaultFont(std::move(ptr), bShared);
             }
 
-            int32_t Context::GetCustomFontCount(bool bShared) const {
+            int32 Context::GetCustomFontCount(bool bShared) const {
                 return Core::FontManager::Get()->GetFontCount(bShared);
             }
 
@@ -105,13 +105,13 @@ namespace PPEngine {
                 return Window::Context::Serialize(xmlElement);
             }
 
-            void Context::DrawLine(const glm::vec2& start, const glm::vec2& end, int32_t size, unsigned long color, int nStyle) {
+            void Context::DrawLine(const glm::vec2& start, const glm::vec2& end, int32 size, uint32 color, int nStyle) {
                 POINT ptStart{ static_cast<long>(start.x), static_cast<long>(start.y) };
                 POINT ptEnd{ static_cast<long>(end.x), static_cast<long>(end.y) };
                 WindowRender::DrawLine(hdcPaint_, ptStart, ptEnd, color, nStyle);
             }
 
-            void Context::DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color) {
+            void Context::DrawRect(const Core::Math::Rect& rectPaint, int32 size, uint32 color) {
                 const glm::vec2& minRect = rectPaint.GetMin();
                 const glm::vec2& maxRect = rectPaint.GetMax();
                 RECT rc{ static_cast<long>(minRect.x), static_cast<long>(minRect.y),
@@ -119,7 +119,7 @@ namespace PPEngine {
                 WindowRender::DrawRect(hdcPaint_, rc, color, color);
             }
 
-            void Context::DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color) {
+            void Context::DrawRoundRect(const Core::Math::Rect& rectPaint, int32 size, int32 width, int32 height, uint32 color) {
                 const glm::vec2& minRect = rectPaint.GetMin();
                 const glm::vec2& maxRect = rectPaint.GetMax();
                 RECT rc{ static_cast<long>(minRect.x), static_cast<long>(minRect.y),
@@ -127,7 +127,7 @@ namespace PPEngine {
                 WindowRender::DrawRoundRect(hdcPaint_, rc, width, height, size, color);
             }
 
-            void Context::DrawColor(const Core::Math::Rect& rect, unsigned long color) {
+            void Context::DrawColor(const Core::Math::Rect& rect, uint32 color) {
                 const glm::vec2& minRect = rect.GetMin();
                 const glm::vec2& maxRect = rect.GetMax();
                 RECT rc{ static_cast<long>(minRect.x), static_cast<long>(minRect.y),
@@ -153,8 +153,8 @@ namespace PPEngine {
                     imageDrawUI.fade, imageDrawUI.hole, imageDrawUI.xtiled, imageDrawUI.ytiled);
             }
 
-            void Context::DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
-                unsigned long color2, bool vertical, int32_t steps) {
+            void Context::DrawGradient(const Core::Math::Rect& rect, uint32 color1,
+                uint32 color2, bool vertical, int32 steps) {
                 const glm::vec2& minRect = rect.GetMin();
                 const glm::vec2& maxRect = rect.GetMax();
                 RECT rc{ static_cast<long>(minRect.x), static_cast<long>(minRect.y),
@@ -162,7 +162,7 @@ namespace PPEngine {
                 WindowRender::DrawGradient(hdcPaint_, rc, color1, color2, vertical, steps);
             }
 
-            void Context::DrawUIText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style) {
+            void Context::DrawUIText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) {
                 if (text.empty()) {
                     return;
                 }
@@ -171,8 +171,31 @@ namespace PPEngine {
                 ::SetTextColor(hdcPaint_, RGB(GetBValue(color), GetGValue(color), GetRValue(color)));
                 HFONT old = static_cast<HFONT>(::SelectObject(hdcPaint_, GetFont(font)));
                 RECT dr{ (long)rect.GetMin().x, (long)rect.GetMin().y, (long)rect.GetMax().x, (long)rect.GetMax().y };
-                ::DrawText(hdcPaint_, text.c_str(), -1, &dr, style);
+                ::DrawText(hdcPaint_, text.c_str(), -1, &dr, style | DT_NOPREFIX);
                 ::SelectObject(hdcPaint_, old);
+            }
+
+            void Context::DrawHtmlText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) {
+                assert(::GetObjectType(hdcPaint_) == OBJ_DC || ::GetObjectType(hdcPaint_) == OBJ_MEMDC);
+                if (rect.IsEmpty()) {
+                    return;
+                }
+
+                RECT rc = { static_cast<long>(rect.GetMin().x), static_cast<long>(rect.GetMin().y),
+                            static_cast<long>(rect.GetMax().x), static_cast<long>(rect.GetMax().y) };
+                bool bDraw = (style & DT_CALCRECT) == 0;
+                RECT rcClip = { 0 };
+                ::GetClipBox(hdcPaint_, &rcClip);
+                HRGN hOldRgn = ::CreateRectRgnIndirect(&rcClip);
+                HRGN hRgn = ::CreateRectRgnIndirect(&rc);
+                if (bDraw) ::ExtSelectClipRgn(hdcPaint_, hRgn, RGN_AND);
+
+                TEXTMETRIC* pTm = &pManager->GetDefaultFontInfo()->tm;
+                HFONT hOldFont = (HFONT) ::SelectObject(hdcPaint_, pManager->GetDefaultFontInfo()->hFont);
+                ::SetBkMode(hdcPaint_, TRANSPARENT);
+                ::SetTextColor(hdcPaint_, RGB(GetBValue(dwTextColor), GetGValue(dwTextColor), GetRValue(dwTextColor)));
+                DWORD dwBkColor = pManager->GetDefaultSelectedBkColor();
+                ::SetBkColor(hdcPaint_, RGB(GetBValue(dwBkColor), GetGValue(dwBkColor), GetRValue(dwBkColor)));
             }
 
             void Context::Invalidate(Core::Math::Rect& rect) {

@@ -27,7 +27,7 @@ namespace PPEngine {
 
                 Font* GetDefaultFontInfo();
                 void SetDefaultFont(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
-                int32_t GetCustomFontCount(bool bShared = false) const;
+                int32 GetCustomFontCount(bool bShared = false) const;
              /*   HFONT AddFont(int id, const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);*/
                 HFONT GetFont(int id);
                 void RemoveFont(int id, bool bShared = false);
@@ -38,14 +38,15 @@ namespace PPEngine {
 
                 void AddFont(int id, Core::Font::Ptr font, bool shared) override;
 
-                void DrawLine(const glm::vec2& start, const glm::vec2& end, int32_t size, unsigned long color, int nStyle = 0) override;
-                void DrawRect(const Core::Math::Rect& rectPaint, int32_t size, unsigned long color) override;
-                void DrawRoundRect(const Core::Math::Rect& rectPaint, int32_t size, int32_t width, int32_t height, unsigned long color) override;
-                void DrawColor(const Core::Math::Rect& rect, unsigned long color) override;
+                void DrawLine(const glm::vec2& start, const glm::vec2& end, int32 size, uint32 color, int nStyle = 0) override;
+                void DrawRect(const Core::Math::Rect& rectPaint, int32 size, uint32 color) override;
+                void DrawRoundRect(const Core::Math::Rect& rectPaint, int32 size, int32 width, int32 height, uint32 color) override;
+                void DrawColor(const Core::Math::Rect& rect, uint32 color) override;
                 bool DrawImage(Core::ImageDrawUI& imageDrawUI, Core::Image::Ptr image) override;
-                void DrawGradient(const Core::Math::Rect& rect, unsigned long color1,
-                    unsigned long color2, bool vertical, int32_t steps) override;
-                void DrawUIText(const Core::Math::Rect& rect, const std::string& text, unsigned long color, int32_t font, uint32_t style) override;
+                void DrawGradient(const Core::Math::Rect& rect, uint32 color1,
+                    uint32 color2, bool vertical, int32 steps) override;
+                void DrawUIText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) override;
+                void DrawHtmlText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) override;
 
                 void Invalidate(Core::Math::Rect& rect) override;
 
