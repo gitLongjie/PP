@@ -1,5 +1,7 @@
 #include "Window/HorizontalLayout.h"
 
+#include "Core/Math/Utils.h"
+
 #include "Window/Container.h"
 #include "Window/Context.h"
 #include "Window/ScrollBar.h"
@@ -65,7 +67,7 @@ namespace PPEngine {
 
 			int cxExpand = 0;
 			int cxNeeded = 0;
-			if (nAdjustables > 0) cxExpand = std::max(0.0f, (szAvailable.x - cxFixed) / nAdjustables);
+			if (nAdjustables > 0) cxExpand = Core::Math::Max(0.0f, (szAvailable.x - cxFixed) / nAdjustables);
 			// Position the elements
 			Core::Math::Size szRemaining = szAvailable;
 			int iPosX = rect.GetLeft();
@@ -89,7 +91,7 @@ namespace PPEngine {
 					sz.x = cxExpand;
 					// Distribute remaining to last element (usually round-off left-overs)
 					if (iAdjustable == nAdjustables) {
-						sz.x = std::max(0.0f, szRemaining.x - rcPadding.GetRight() - cxFixedRemaining);
+						sz.x = Core::Math::Max(0.0f, szRemaining.x - rcPadding.GetRight() - cxFixedRemaining);
 					}
 					if (sz.x < control->GetMinWidth()) sz.x = control->GetMinWidth();
 					if (sz.x > control->GetMaxWidth()) sz.x = control->GetMaxWidth();

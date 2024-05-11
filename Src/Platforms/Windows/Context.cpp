@@ -2,6 +2,8 @@
 
 #include <assert.h>
 #include <unordered_map>
+#include <Windowsx.h>
+
 #include "Core/Font.h"
 #include "Platforms/Windows/WindowRender.h"
 #include "Platforms/Windows/ResourceManager.h"
@@ -18,88 +20,15 @@ namespace PPEngine {
                     hWndPaint_ = hWnd;
                     hdcPaint_ = ::GetDC(hWnd);
                 }
-            }
 
-            Windows::Font* Context::GetDefaultFontInfo() {
-                Core::Font::Ptr font = Core::FontManager::Get()->GetDefaultFontInfo();
-                if (!font) {
-                    return nullptr;
-                }
-
-                Font* windowsFont = reinterpret_cast<Font*>(font.get());
-                if (0 == windowsFont->GetTEXTMETRIC().tmHeight) {
-                    HFONT hOldFont = (HFONT) ::SelectObject(hdcPaint_, windowsFont->GetFont());
-                    ::GetTextMetrics(hdcPaint_, &windowsFont->GetTEXTMETRIC());
-                    ::SelectObject(hdcPaint_, hOldFont);
-                }
-                
-                return windowsFont;
-            }
-
-            void Context::SetDefaultFont(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared) {
-                Core::Font::Ptr ptr = Core::Font::Create(font, nSize, bBold, bUnderline, bItalic);
-                if (!ptr) {
-                    return;
-                }
-
-                Core::FontManager::Get()->SetDefaultFont(std::move(ptr), bShared);
-            }
-
-            int32 Context::GetCustomFontCount(bool bShared) const {
-                return Core::FontManager::Get()->GetFontCount(bShared);
-            }
-
-            uint32 Context::GetDefaultSelectedBkColor() const {
-                return 0xFFBAE4FF;
-            }
-
-            void Context::AddFont(int id, Core::Font::Ptr font, bool shared) {
-                if (!font) {
-                    return;
-                }
-                Windows::Font* winFont = reinterpret_cast<Platforms::Windows::Font*>(font.get());
-                if (hdcPaint_) {
-                    HFONT hOldFont = (HFONT) ::SelectObject(hdcPaint_, winFont->GetFont());
-                    ::GetTextMetrics(hdcPaint_, &winFont->GetTEXTMETRIC());
-                    ::SelectObject(hdcPaint_, hOldFont);
-                }
-
-                Window::Context::AddFont(id, font, shared);
-            }
-
-            HFONT Context::GetFont(int id) {
-                if (id < 0) {
-                    Font* font = GetDefaultFontInfo();
-                    if (nullptr != font) {
-                        return font->GetFont();
-                    }
-                };
-
-                Core::Font::Ptr font = Core::FontManager::Get()->GetFont(id);
-                if (!font) {
-                    return nullptr;
-                }
-
-                Font* windowFont = reinterpret_cast<Font*>(font.get());
-                return windowFont->GetFont();
-            }
-
-            void Context::RemoveFont(int id, bool bShared) {
-                Core::FontManager::Get()->Remove(id, bShared);
-            }
-
-            void Context::RemoveAllFonts(bool bShared) {
-                Core::FontManager::Get()->Clear(bShared);
-            }
-
-            Font* Context::GetFontInfo(int id) {
-                Core::Font::Ptr coreFont = Core::FontManager::Get()->GetFont(id);
-                if (!coreFont) {
-                    return nullptr;
-                }
-
-                Font* font = reinterpret_cast<Font*>(coreFont.get());
-                return font;
+                LOGFONT lf = { 0 };
+                ::GetObject(::GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
+                lf.lfCharSet = DEFAULT_CHARSET;
+      
+                HFONT hDefaultFont = ::CreateFontIndirect(&lf);
+                Core::Font::Ptr font = AddFont("", -lf.lfHeight, (lf.lfWeight >= FW_BOLD), (lf.lfUnderline == TRUE), (lf.lfItalic == TRUE));
+                font->SetFont(hDefaultFont);
+                Core::FontManager::Get()->SetDefaultFont(font, false);
             }
 
             bool Context::Serialize(tinyxml2::XMLElement* xmlElement) {
@@ -146,13 +75,17 @@ namespace PPEngine {
                 }
 
                 const Core::Math::Rect& imageRC = imageDrawUI.rc;
-                RECT rc = { imageRC.GetMin().x, imageRC.GetMin().y, imageRC.GetSize().x, imageRC.GetSize().y };
+                RECT rc = { static_cast<long>(imageRC.GetMin().x), static_cast<long>(imageRC.GetMin().y),
+                    static_cast<long>(imageRC.GetSize().x), static_cast<long>(imageRC.GetSize().y) };
                 const Core::Math::Rect& imagePaintRC = imageDrawUI.rcPaint;
-                RECT rcPaint = { imagePaintRC.GetMin().x, imagePaintRC.GetMin().y, imagePaintRC.GetSize().x, imagePaintRC.GetSize().y };
+                RECT rcPaint = { static_cast<long>(imagePaintRC.GetMin().x), static_cast<long>(imagePaintRC.GetMin().y),
+                    static_cast<long>(imagePaintRC.GetSize().x), static_cast<long>(imagePaintRC.GetSize().y) };
                 const Core::Math::Rect& imageBmpRC = imageDrawUI.rcBmpPart;
-                RECT rcBmpPart = { imageBmpRC.GetMin().x, imageBmpRC.GetMin().y, imageBmpRC.GetSize().x, imageBmpRC.GetSize().y };
+                RECT rcBmpPart = { static_cast<long>(imageBmpRC.GetMin().x), static_cast<long>(imageBmpRC.GetMin().y),
+                    static_cast<long>(imageBmpRC.GetSize().x), static_cast<long>(imageBmpRC.GetSize().y) };
                 const Core::Math::Rect& imageCornerRC = imageDrawUI.rcCorner;
-                RECT rcCornerPart = { imageCornerRC.GetMin().x, imageCornerRC.GetMin().y, imageCornerRC.GetSize().x, imageCornerRC.GetSize().y };
+                RECT rcCornerPart = { static_cast<long>(imageCornerRC.GetMin().x), static_cast<long>(imageCornerRC.GetMin().y),
+                    static_cast<long>(imageCornerRC.GetSize().x), static_cast<long>(imageCornerRC.GetSize().y) };
                 return WindowRender::DrawImage(hdcPaint_, hBitmap, rc, rcPaint, rcBmpPart, rcCornerPart, image->IsAlpha(),
                     imageDrawUI.fade, imageDrawUI.hole, imageDrawUI.xtiled, imageDrawUI.ytiled);
             }
@@ -173,33 +106,16 @@ namespace PPEngine {
 
                 ::SetBkMode(hdcPaint_, TRANSPARENT);
                 ::SetTextColor(hdcPaint_, RGB(GetBValue(color), GetGValue(color), GetRValue(color)));
-                HFONT old = static_cast<HFONT>(::SelectObject(hdcPaint_, GetFont(font)));
+                HFONT old = static_cast<HFONT>(::SelectObject(hdcPaint_, Core::FontManager::Get()->GetFont(font)->GetFont()));
                 RECT dr{ (long)rect.GetMin().x, (long)rect.GetMin().y, (long)rect.GetMax().x, (long)rect.GetMax().y };
                 ::DrawText(hdcPaint_, text.c_str(), -1, &dr, style | DT_NOPREFIX);
                 ::SelectObject(hdcPaint_, old);
             }
 
             void Context::DrawHtmlText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) {
-                assert(::GetObjectType(hdcPaint_) == OBJ_DC || ::GetObjectType(hdcPaint_) == OBJ_MEMDC);
-                if (rect.IsEmpty()) {
-                    return;
-                }
-
                 RECT rc = { static_cast<long>(rect.GetMin().x), static_cast<long>(rect.GetMin().y),
-                            static_cast<long>(rect.GetMax().x), static_cast<long>(rect.GetMax().y) };
-                bool bDraw = (style & DT_CALCRECT) == 0;
-                RECT rcClip = { 0 };
-                ::GetClipBox(hdcPaint_, &rcClip);
-                HRGN hOldRgn = ::CreateRectRgnIndirect(&rcClip);
-                HRGN hRgn = ::CreateRectRgnIndirect(&rc);
-                if (bDraw) ::ExtSelectClipRgn(hdcPaint_, hRgn, RGN_AND);
-
-                TEXTMETRIC* pTm = &GetDefaultFontInfo()->GetTEXTMETRIC();
-                HFONT hOldFont = (HFONT) ::SelectObject(hdcPaint_, GetDefaultFontInfo()->GetFont());
-                ::SetBkMode(hdcPaint_, TRANSPARENT);
-                ::SetTextColor(hdcPaint_, RGB(GetBValue(color), GetGValue(color), GetRValue(color)));
-                DWORD dwBkColor = GetDefaultSelectedBkColor();
-                ::SetBkColor(hdcPaint_, RGB(GetBValue(dwBkColor), GetGValue(dwBkColor), GetRValue(dwBkColor)));
+                           static_cast<long>(rect.GetMax().x), static_cast<long>(rect.GetMax().y) };
+                //WindowRender::DrawHtmlText(hdcPaint_, this, rc, text.c_str(), color, nullptr, nullptr, font, style);
             }
 
             void Context::Invalidate(Core::Math::Rect& rect) {
@@ -226,45 +142,81 @@ namespace PPEngine {
                 }
 
                 switch (uMsg) {
-                    case WM_ERASEBKGND: {
-                        // We'll do the painting here...
-                        result = 1;
-                    }
-                    return true;
+                case WM_ERASEBKGND: {
+                    // We'll do the painting here...
+                    result = 1;
+                }
+                return true;
 
-                    case WM_PAINT:{
-                        if (nullptr == control_) {
-                            PAINTSTRUCT ps = { 0 };
-                            ::BeginPaint(hWndPaint_, &ps);
-                            WindowRender::DrawColor(hdcPaint_, ps.rcPaint, 0xFFFF0000);
-                            ::EndPaint(hWndPaint_, &ps);
-                            return true;
-                        }
-
-                        
-                        RECT clientRect{ 0 };
-                        ::GetClientRect(hWndPaint_, &clientRect);
-
-                        if (control_->IsUpdateNeeded()) {
-                            float x = clientRect.left;
-                            float y = clientRect.top;
-                            float width = clientRect.right - clientRect.left;
-                            float height = clientRect.bottom - clientRect.top;
-                            const Core::Math::Rect rect(x, y, width, height);
-                            control_->FixRect(rect);
-                        }
+                case WM_PAINT:{
+                    if (nullptr == control_) {
                         PAINTSTRUCT ps = { 0 };
                         ::BeginPaint(hWndPaint_, &ps);
-                        //WindowRender::DrawColor(hdcPaint_, ps.rcPaint, 0xFFFF0000);
-                        Core::Math::Rect rect(clientRect.left, clientRect.top,
-                            clientRect.right - clientRect.left, clientRect.bottom - clientRect.top);
-                        control_->OnDraw(rect);
+                        WindowRender::DrawColor(hdcPaint_, ps.rcPaint, 0xFFFF0000);
                         ::EndPaint(hWndPaint_, &ps);
+                        return true;
                     }
-                    return true;
+
+                    
+                    RECT clientRect{ 0 };
+                    ::GetClientRect(hWndPaint_, &clientRect);
+
+                    if (control_->IsUpdateNeeded()) {
+                        float x = clientRect.left;
+                        float y = clientRect.top;
+                        float width = clientRect.right - clientRect.left;
+                        float height = clientRect.bottom - clientRect.top;
+                        const Core::Math::Rect rect(x, y, width, height);
+                        control_->FixRect(rect);
+                    }
+                    PAINTSTRUCT ps = { 0 };
+                    ::BeginPaint(hWndPaint_, &ps);
+                    //WindowRender::DrawColor(hdcPaint_, ps.rcPaint, 0xFFFF0000);
+                    Core::Math::Rect rect(clientRect.left, clientRect.top,
+                        clientRect.right - clientRect.left, clientRect.bottom - clientRect.top);
+                    control_->OnDraw(rect);
+                    ::EndPaint(hWndPaint_, &ps);
+                }
+                return true;
+                case WM_MOUSEMOVE: {
+                        lastMousePt_.x = GET_X_LPARAM(lParam);
+                        lastMousePt_.y = GET_Y_LPARAM(lParam);
+                    }
                 }
 
                 return false;
+            }
+
+            Core::Font::Ptr Context::AddFont(const std::string& name, int nSize, bool bBold, bool bUnderline, bool bItalic) {
+                LOGFONT lf = { 0 };
+                ::GetObject(::GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
+                strcpy(lf.lfFaceName, name.c_str());
+                lf.lfCharSet = DEFAULT_CHARSET;
+                lf.lfHeight = -nSize;
+                if (bBold) lf.lfWeight += FW_BOLD;
+                if (bUnderline) lf.lfUnderline = TRUE;
+                if (bItalic) lf.lfItalic = TRUE;
+                HFONT hFont = ::CreateFontIndirect(&lf);
+                if (hFont == NULL) return NULL;
+
+                Core::Font::Ptr pFontInfo = std::make_shared<Core::Font>(name, nSize, bBold, bUnderline, bItalic);
+                if (nullptr == pFontInfo) {
+                    return nullptr;
+                }
+                
+                pFontInfo->SetFont(hFont);
+                if (hdcPaint_) {
+                    HFONT hOldFont = (HFONT) ::SelectObject(hdcPaint_, hFont);
+                    ::GetTextMetrics(hdcPaint_, &pFontInfo->GetTEXTMETRIC());
+                    ::SelectObject(hdcPaint_, hOldFont);
+                }
+
+                if (!Core::FontManager::Get()->Add(pFontInfo, false)) {
+                    ::DeleteObject(hFont);
+                    return nullptr;
+                }
+
+                return pFontInfo;
             }
 
             Core::Image::Ptr Context::AddImage(const std::string& name, const std::string& type, uint32 mask) {

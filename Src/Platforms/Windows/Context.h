@@ -10,7 +10,6 @@
 #include "Core/Image.h"
 
 #include "Window/Context.h"
-#include "Platforms/Windows/Font.h"
 
 namespace PPEngine {
     namespace Platforms {
@@ -25,18 +24,9 @@ namespace PPEngine {
             public:
                 void Init(HWND hWnd, const char* name = nullptr);
 
-                Font* GetDefaultFontInfo();
-                void SetDefaultFont(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
-                int32 GetCustomFontCount(bool bShared = false) const;
-             /*   HFONT AddFont(int id, const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);*/
-                HFONT GetFont(int id);
-                void RemoveFont(int id, bool bShared = false);
-                void RemoveAllFonts(bool bShared = false);
-                Font* GetFontInfo(int id);
-
                 bool Serialize(tinyxml2::XMLElement* xmlElement) override;
 
-                void AddFont(int id, Core::Font::Ptr font, bool shared) override;
+               // void AddFont(int id, Core::Font::Ptr font, bool shared) override;
 
                 void DrawLine(const glm::vec2& start, const glm::vec2& end, int32 size, uint32 color, int nStyle = 0) override;
                 void DrawRect(const Core::Math::Rect& rectPaint, int32 size, uint32 color) override;
@@ -56,6 +46,16 @@ namespace PPEngine {
                 void SetInitSize(const Core::Math::Size& size) override;
 
                 LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result);
+                Core::Font::Ptr AddFont(const std::string& name, int nSize, bool bBold, bool bUnderline, bool bItalic);
+
+                void SetDefaultLinkFontColor(uint32 color, bool shared);
+                uint32 GetDefaultLinkFontColor() const {
+                    return defaultInfo_.defaultLinkFontColor_;
+                }
+                void SetDefaultLinkHoverFontColor(uint32 color, bool shared);
+                uint32 GetDefaultLinkHoverFontColor() const {
+                    return defaultInfo_.defaultLinkHoverFontColor_;
+                }
 
             protected:
                 Core::Image::Ptr AddImage(const std::string& name, const std::string& type, uint32 mask = 0) override;

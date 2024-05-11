@@ -40,6 +40,9 @@ namespace PPEngine {
             virtual void SetInternVisible(bool visible);
 
             virtual void OnDraw(const Core::Math::Rect& rect);
+            virtual Core::Math::Size EstimateSize(const Core::Math::Size& availableSize) {
+                return cxyFixed_;
+            }
 
             bool IsFloat() const { return float_; }
             void Invalidate();
@@ -87,9 +90,6 @@ namespace PPEngine {
             virtual void SetRelativeParentSize(const Core::Math::Size& sz);*/
            // virtual TRelativePosUI GetRelativePos() const;
             bool IsRelativePos() const { return false; }
-        
-
-            Core::Math::Size EstimateSize(const Core::Math::Size& availableSize) { return cxyFixed_; }
 
 
         protected:
@@ -99,8 +99,6 @@ namespace PPEngine {
             virtual void OnDrawText();
             virtual void OnDrawBorder();
             virtual void CreateControl(tinyxml2::XMLElement* root);
-
-        private:
 
         protected:
             class Context* context_{ nullptr };

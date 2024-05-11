@@ -76,8 +76,8 @@ namespace PPEngine {
         }
 
         void Context::DrawImageString(const Core::Math::Rect& rectPaint, const Core::Math::Rect& rect, const std::string& image) {
-            // 1¡¢aaa.jpg
-            // 2¡¢file='aaa.jpg' res='' restype='0' dest='0,0,0,0' source='0,0,0,0' corner='0,0,0,0' 
+            // 1ã€aaa.jpg
+            // 2ã€file='aaa.jpg' res='' restype='0' dest='0,0,0,0' source='0,0,0,0' corner='0,0,0,0' 
             // mask='#FF0000' fade='255' hole='false' xtiled='false' ytiled='false'
             std::string file = image;
             std::string imageResType;
@@ -195,9 +195,27 @@ namespace PPEngine {
             }
         }
 
-        //void Context::GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) {
-        //}
-
+        void Context::SetDefaultLinkFontColor(uint32 color, bool shared) {
+            if (shared) {
+                if (defaultInfo_.defaultLinkFontColor_ == sharedDefaultInfo_.defaultLinkFontColor_) {
+                    defaultInfo_.defaultLinkFontColor_ = color;
+                }
+                sharedDefaultInfo_.defaultLinkFontColor_ = color;
+            } else {
+                defaultInfo_.defaultLinkFontColor_ = color;
+            }
+        }
+        
+        void Context::SetDefaultLinkHoverFontColor(uint32 color, bool shared) {
+            if (shared) {
+                if (defaultInfo_.defaultLinkHoverFontColor_ == sharedDefaultInfo_.defaultLinkHoverFontColor_) {
+                    defaultInfo_.defaultLinkHoverFontColor_ = color;
+                }
+                sharedDefaultInfo_.defaultLinkHoverFontColor_ = color;
+            } else {
+                defaultInfo_.defaultLinkHoverFontColor_ = color;
+            }
+        }
         void Context::InitControl(Control::Ptr control, Control* parent) {
             if (nullptr == control) { return; }
 
@@ -248,7 +266,7 @@ namespace PPEngine {
             bool defaultfont = false;
 
             while (nullptr != attribte) {
-                const char* aName = root->Name();
+                const char* aName = attribte->Name();
                 if (0 == strcmp(aName, "id")) {
                     id = attribte->IntValue();
                 } else if (0 == strcmp(aName, "shared")) {
@@ -272,6 +290,10 @@ namespace PPEngine {
 
             Core::Font::Ptr font = Core::Platform::Get()->CreatePlatformFont(name, size, bold, underline, italic);
             AddFont(id, font, shared);
+
+            if (defaultfont) {
+                Core::FontManager::Get()->SetDefaultFont(font, shared);
+            }
             //addfont
         }
 

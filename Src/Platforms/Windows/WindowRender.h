@@ -2,6 +2,8 @@
 
 #include <Windows.h>
 
+#include <string>
+
 #include "Core/Constent.h"
 
 namespace PPEngine {
@@ -17,8 +19,10 @@ namespace PPEngine {
                 static bool DrawImage(HDC hdc, HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint,
                     const RECT& rcBmpPart, const RECT& rcScale9, bool alpha, uint8 fade = 255,
                     bool hole = false, bool xtiled = false, bool ytiled = false);
-                static void DrawHtmlText(HDC hDC, class Context* context, RECT& rc, LPCTSTR pstrText,
-                    DWORD dwTextColor, RECT* pLinks, char* sLinks, int& nLinkRects, UINT uStyle);
+#if 1
+                static void DrawHtmlText(HDC hDC, class Context* context, RECT& rc, const char* pstrText,
+                    DWORD dwTextColor, RECT* pLinks, std::string* sLinks, int& nLinkRects, UINT uStyle);
+#endif
             };
         }
     }

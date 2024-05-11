@@ -128,7 +128,7 @@ namespace PPEngine {
                 if (hWndCenter != nullptr)
                     hWnd = hWndCenter;
 
-                // ´¦Àí¶àÏÔÊ¾Æ÷Ä£Ê½ÏÂÆÁÄ»¾ÓÖÐ
+                // å¤„ç†å¤šæ˜¾ç¤ºå™¨æ¨¡å¼ä¸‹å±å¹•å±…ä¸­
                 MONITORINFO oMonitor = {};
                 oMonitor.cbSize = sizeof(oMonitor);
                 ::GetMonitorInfo(::MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST), &oMonitor);
@@ -156,13 +156,13 @@ namespace PPEngine {
 
             void CWindowWnd::SetIcon(UINT nRes) {
                 HICON hIcon = (HICON)::LoadImage(ResourceManager::Get()->GetInstanceHandle(), MAKEINTRESOURCE(nRes), IMAGE_ICON,
-                    (::GetSystemMetrics(SM_CXICON) + 15) & ~15, (::GetSystemMetrics(SM_CYICON) + 15) & ~15,	// ·ÀÖ¹¸ßDPIÏÂÍ¼±êÄ£ºý
+                    (::GetSystemMetrics(SM_CXICON) + 15) & ~15, (::GetSystemMetrics(SM_CYICON) + 15) & ~15,	// é˜²æ­¢é«˜DPIä¸‹å›¾æ ‡æ¨¡ç³Š
                     LR_DEFAULTCOLOR);
                 ASSERT(hIcon);
                 ::SendMessage(hWnd_, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
 
                 hIcon = (HICON)::LoadImage(ResourceManager::Get()->GetInstanceHandle(), MAKEINTRESOURCE(nRes), IMAGE_ICON,
-                    (::GetSystemMetrics(SM_CXICON) + 15) & ~15, (::GetSystemMetrics(SM_CYICON) + 15) & ~15,	// ·ÀÖ¹¸ßDPIÏÂÍ¼±êÄ£ºý
+                    (::GetSystemMetrics(SM_CXICON) + 15) & ~15, (::GetSystemMetrics(SM_CYICON) + 15) & ~15,	// é˜²æ­¢é«˜DPIä¸‹å›¾æ ‡æ¨¡ç³Š
                     LR_DEFAULTCOLOR);
                 ASSERT(hIcon);
                 ::SendMessage(hWnd_, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);

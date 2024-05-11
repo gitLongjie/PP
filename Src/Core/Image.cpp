@@ -100,6 +100,9 @@ namespace PPEngine {
 
         const Image::Ptr ImageManager::AddImage(const std::string& bitmap, const std::string& type, uint32 mask) {
             Image::Ptr image = Image::LoadImage(bitmap, mask);
+            if (!image) {
+                return image;
+            }
             images_.insert(std::make_pair(bitmap, image));
             return image;
         }

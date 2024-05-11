@@ -1,5 +1,7 @@
 #include "Window/VerticalLayout.h"
 
+#include "Core/Math/Utils.h"
+
 #include "Window/Container.h"
 #include "Window/Context.h"
 #include "Window/ScrollBar.h"
@@ -75,7 +77,7 @@ namespace PPEngine {
             int32_t cyNeeded = 0;
             int32_t cyExpand = 0;
             if (adjustables > 0) {
-                cyExpand = std::max(0.0f, (available.y - cyFixed) / adjustables);
+                cyExpand = Core::Math::Max(0.0f, (available.y - cyFixed) / adjustables);
             }
 
             Core::Math::Size remaining = available;
@@ -106,7 +108,7 @@ namespace PPEngine {
                     sz.y = cyExpand;
 
                     if (iAdjustable == adjustables) {
-                        sz.y = std::max(0.0f, remaining.y - rcPadding.GetBottom() - cyFixedRemaining);
+                        sz.y = Core::Math::Max(0.0f, remaining.y - rcPadding.GetBottom() - cyFixedRemaining);
                     }
                     if (sz.y < control->GetMinHeight()) sz.y = control->GetMinHeight();
                     if (sz.y > control->GetMaxHeight()) sz.y = control->GetMaxHeight();

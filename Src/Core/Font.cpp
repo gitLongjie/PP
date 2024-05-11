@@ -4,27 +4,27 @@ namespace PPEngine {
     namespace Core {
         FontManager* Core::Singleton<FontManager>::instance_ = nullptr;
 
-        Font::Font(const std::string& name) 
+        Font::Font(const std::string& name)
             : name_(name) {
 
         }
 
-        Font::Font(const std::string& name, int32_t size)
+        Font::Font(const std::string& name, int32 size)
             : Font(name) {
             size_ = size;
         }
 
-        Font::Font(const std::string& name, int32_t size, bool bold)
+        Font::Font(const std::string& name, int32 size, bool bold)
             : Font(name, size) {
             bold_ = bold;
         }
 
-        Font::Font(const std::string& name, int32_t size, bool bold, bool underline)
-            : Font(name, size, bold){
+        Font::Font(const std::string& name, int32 size, bool bold, bool underline)
+            : Font(name, size, bold) {
             underline_ = underline;
         }
 
-        Font::Font(const std::string& name, int32_t size, bool bold, bool underline, bool italic)
+        Font::Font(const std::string& name, int32 size, bool bold, bool underline, bool italic)
             : Font(name, size, bold, underline) {
             italic_ = italic;
         }
@@ -54,12 +54,24 @@ namespace PPEngine {
             }
         }
 
-        Font::Ptr FontManager::GetFont(int32_t id) {
+        Font::Ptr FontManager::GetFont(const std::string& name, int32 nSize, bool bBold, bool bUnderline, bool bItalic) {
+            for (const auto& item : fonts_) {
+                const Font::Ptr& font = item.second;
+                if (font->GetName() == name && font->GetSize() == nSize
+                    && font->IsBold() == bBold && font->IsUnderLine() == bUnderline
+                    && font->IsItalic() == bItalic) {
+                    return font;
+                }
+            }
+            return Font::Ptr();
+        }
+
+        Font::Ptr FontManager::GetFont(int32 id) {
             auto itor = fonts_.find(id);
             return fonts_.end() != itor ? itor->second : sharedFonts_[id];
         }
 
-        int32_t FontManager::GetFontCount(bool shared) const {
+        int32 FontManager::GetFontCount(bool shared) const {
             return shared ? sharedFonts_.size() : fonts_.size();
         }
 
@@ -72,16 +84,31 @@ namespace PPEngine {
             }
         }
 
-        bool FontManager::Add(int32_t id, Font::Ptr font, bool shared) {
+        bool FontManager::Add(int32 id, Font::Ptr font, bool shared) {
             if (shared) {
+                if (-1 == id) {
+                    id = sharedFonts_.size();
+                }
                 sharedFonts_.insert(std::make_pair(id, std::move(font)));
             } else {
+                if (-1 == id) {
+                    id = fonts_.size();
+                }
                 fonts_.insert(std::make_pair(id, std::move(font)));
             }
             return true;
         }
 
-        void FontManager::Remove(int32_t id, bool shared) {
+        bool FontManager::Add(Font::Ptr font, bool shared) {
+            if (shared) {
+                sharedFonts_.insert(std::make_pair(sharedFonts_.size(), std::move(font)));
+            } else {
+                fonts_.insert(std::make_pair(fonts_.size(), std::move(font)));
+            }
+            return true;
+        }
+
+        void FontManager::Remove(int32 id, bool shared) {
             if (shared) {
                 sharedFonts_.erase(id);
             } else {

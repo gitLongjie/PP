@@ -13,6 +13,9 @@ namespace PPEngine {
 
             const char* GetClass() const { return "Button"; }
             void SetAttribute(const char* name, const char* value) override;
+            void FixRect(Core::Math::Rect rect) override;
+            Core::Math::Size EstimateSize(const Core::Math::Size& availableSize) override;
+
 
             void SetBkColor(uint32 bkColor) { bkColor_ = bkColor; }
             uint32 GetBkColor() const { return bkColor_; }
@@ -43,6 +46,7 @@ namespace PPEngine {
 
         protected:
             void OnDrawText() override;
+            void OnDrawStatusImage() override;
 
         protected:
             uint32 hotBKColor_{ 0 };

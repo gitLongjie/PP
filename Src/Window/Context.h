@@ -20,6 +20,8 @@ namespace PPEngine {
                 uint32 disabledColor_{ 0 };
                 uint32 fontColor_{ 0 };
                 uint32 selectedBkColor_{ 0 };
+                uint32 defaultLinkFontColor_{ 0 };
+                uint32 defaultLinkHoverFontColor_{ 0 };
             };
 
         public:
@@ -50,7 +52,11 @@ namespace PPEngine {
             uint32 GetDefaultTextColor() const { return defaultInfo_.fontColor_; }
             void SetDisabledColor(uint32 color, bool shared);
             uint32 GetDisabledColor() const { return defaultInfo_.fontColor_; }
-            
+            void SetDefaultLinkFontColor(uint32 color, bool shared);
+            uint32 GetDefaultLinkFontColor() const { return defaultInfo_.defaultLinkFontColor_; }
+            void SetDefaultLinkHoverFontColor(uint32 color, bool shared);
+            uint32 GetDefaultLinkHoverFontColor() const { return defaultInfo_.defaultLinkHoverFontColor_; }
+            uint32 GetDefaultSelectedBkColor() const { return defaultInfo_.selectedBkColor_; }
 
             bool IsUpdateNeeded() const { return needUpdate_; }
             void NeedUpdate() { needUpdate_ = true; }
@@ -77,15 +83,17 @@ namespace PPEngine {
             void SetCaptionRect(const Core::Math::Rect& captionRect) { captionRect_ = captionRect; }
             const Core::Math::Rect& GetCaptionRect() const { return captionRect_; }
 
+            const Core::Math::Size& GetLastMoustPoint() const { return lastMousePt_; }
+
         protected:
             Core::Image::Ptr GetImageEx(const std::string& name, const std::string& type, uint32 mask = 0);
             virtual Core::Image::Ptr AddImage(const std::string& bitmap, const std::string& type, uint32 mask = 0);
             
 
         protected:
-            Core::Math::Size size_;
-            Core::Math::Size roundCorner_;
-            Core::Math::Size maxInfo_;
+            Core::Math::Size size_{0, 0};
+            Core::Math::Size roundCorner_{0, 0};
+            Core::Math::Size maxInfo_{0, 0};
             Core::Math::Rect sizeBox_;
             Core::Math::Rect captionRect_;
 
@@ -97,6 +105,8 @@ namespace PPEngine {
             Control::Ptr control_{ nullptr };
             std::unordered_set<Control::Ptr> controls_;
             DefaultInfo defaultInfo_;
+
+            Core::Math::Size lastMousePt_{-1, -1};
         };
     }
 }

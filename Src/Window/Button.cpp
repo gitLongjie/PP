@@ -46,6 +46,16 @@ namespace PPEngine {
             }
         }
 
+        void Button::FixRect(Core::Math::Rect rect) {
+            Label::FixRect(rect);
+        }
+
+        Core::Math::Size Button::EstimateSize(const Core::Math::Size& availableSize) {
+            if (cxyFixed_.y == 0) return Core::Math::Size(cxyFixed_.x, Core::FontManager::Get()->GetFont(GetFont())->GetTEXTMETRIC().tmHeight + 8);
+            return Label::EstimateSize(availableSize);
+            //return Core::Math::Size();
+        }
+
         void Button::SetNormalImage(const char* normalImage) {
             normalImage_ = normalImage;
             Invalidate();
@@ -117,6 +127,70 @@ namespace PPEngine {
                 context_->DrawHtmlText(drawRect, text_, textColor_, font_, 0);
             } else {
                 context_->DrawUIText(drawRect, text_, textColor_, font_, 0);
+            }
+        }
+
+        void Button::OnDrawStatusImage() {
+            if (IsFocused()) state_ |= State::FOCUSED;
+            else state_ &= ~State::FOCUSED;
+            if (!IsEnabled()) state_ |= State::DISABLED;
+            else state_ &= ~State::DISABLED;
+
+            if ((state_ & State::DISABLED) != 0) {
+                if (!disableImage_.empty()) {
+               //     Core::ImageDrawUI imageDrawUI = { rect_, rectPaint, file, imageResType,
+               //rcItem, rcBmpPart, rcCorner, mask, fade, hole, xtiled, ytiled };
+               //     if (context_->DrawImage())
+               //     //if (!DrawImage(hDC, (LPCTSTR)m_sDisabledImage)) m_sDisabledImage.Empty();
+               //     else goto Label_ForeImage;
+                }
+            }// else if ((state_ & State::PUSHED) != 0) {
+        //        if (!pushedImage_.empty()) {
+        //            if (!DrawImage(hDC, (LPCTSTR)m_sPushedImage)) {
+        //                pushedImage_.clear();
+        //            }
+        //            if (!pushedForeImage_.empty()) {
+        //                if (!DrawImage(hDC, (LPCTSTR)m_sPushedForeImage))
+        //                    pushedForeImage_.clear();
+        //                return;
+        //            } else goto Label_ForeImage;
+        //        }
+        //    } else if ((state_ & State::HOT) != 0) {
+        //        if (!hotImage_.empty()) {
+        //            if (!DrawImage(hDC, (LPCTSTR)m_sHotImage)) {
+        //                hotImage_.clear();
+        //            }
+        //            if (!hotForeImage_.empty()) {
+        //                if (!DrawImage(hDC, (LPCTSTR)m_sHotForeImage))
+        //                    hotForeImage_.clear();
+        //                return;
+        //            } else goto Label_ForeImage;
+        //        } else if (m_dwHotBkColor != 0) {
+        //            CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwHotBkColor));
+        //            return;
+        //        }
+        //    } else if ((state_ & State::FOCUSED) != 0) {
+        //        if (!m_sFocusedImage.IsEmpty()) {
+        //            if (!DrawImage(hDC, (LPCTSTR)m_sFocusedImage)) m_sFocusedImage.Empty();
+        //            else goto Label_ForeImage;
+        //        }
+        //    }
+
+            if (!normalImage_.empty()) {
+                context_->DrawImageString(rectPaint_, rect_, normalImage_);
+               // normalImage_.clear();
+               /* if (!DrawImage(hDC, (LPCTSTR)m_sNormalImage)) m_sNormalImage.Empty();
+                else goto Label_ForeImage;*/
+            }
+
+        //    if (!m_sForeImage.IsEmpty())
+        //        goto Label_ForeImage;
+
+            return;
+
+        Label_ForeImage:
+            if (!hotForeImage_.empty()) {
+                //if (!DrawImage(hDC, (LPCTSTR)m_sForeImage)) m_sForeImage.Empty();
             }
         }
 
