@@ -99,7 +99,8 @@ public:
         RECT rcClient;
         ::GetClientRect(*this, &rcClient);
         const PPEngine::Core::Math::Rect& caption = context_.GetCaptionRect();
-        RECT rcCaption = { caption.GetMin().x, caption.GetMin().y, caption.GetMax().x, caption.GetMax().y };
+        RECT rcCaption = { static_cast<long>(caption.GetMin().x), static_cast<long>(caption.GetMin().y),
+            static_cast<long>(caption.GetMax().x), static_cast<long>(caption.GetMax().y) };
         if (pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right \
             && pt.y >= rcCaption.top && pt.y < rcCaption.bottom) {
             PPEngine::Core::Math::Point2d point(pt.x, pt.y);

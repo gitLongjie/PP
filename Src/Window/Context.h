@@ -86,6 +86,7 @@ namespace PPEngine {
             const Core::Math::Size& GetLastMoustPoint() const { return lastMousePt_; }
 
             const Control* FindControl(const Core::Math::Point2d& pt, uint32 flag) const;
+            Control* FindControl(const Core::Math::Point2d& pt, uint32 flag);
 
         protected:
             Core::Image::Ptr GetImageEx(const std::string& name, const std::string& type, uint32 mask = 0);

@@ -11,6 +11,7 @@
 #include "Core/Logger.h"
 #include "Core/Font.h"
 #include "Core/Platform.h"
+#include "Core/EventSystem/EventManager.h"
 #include "RHI/RHI.h"
 
 namespace PPEngine {
@@ -48,6 +49,10 @@ namespace PPEngine {
             return false;
         }
 
+        if (!Core::EventSystem::EventManager::Init()) {
+            return false;
+        }
+
      /*   auto glfwErrorCallback = [](int error, const char* description) {
             ERRORLOG("code={%1}, description={%2}", error, description);
             };
@@ -72,6 +77,7 @@ namespace PPEngine {
     }
 
     void PPApplication::Uninitialize() {
+        Core::EventSystem::EventManager::Shotdown();
         PPRHI::RHI::Shotdown();
         Core::FontManager::Shotdown();
         Core::Platform::Shotdown();

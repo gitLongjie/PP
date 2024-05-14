@@ -10,6 +10,10 @@ namespace PPEngine {
         return new Platforms::Windows::WinPlatform();
     }
 
+    uint64 Core::Platform::GetTickCount64() {
+        return ::GetTickCount64();
+    }
+
     namespace Platforms {
         namespace Windows {
             std::string WinPlatform::GetPlatformName() {

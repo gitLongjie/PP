@@ -356,6 +356,10 @@ namespace PPEngine {
             }
         }
 
+        bool Control::OnHandlerEvent(const Core::EventSystem::MouseMoveEvent& mouseMoveEvent) {
+            return true;
+        }
+
         void Control::OnDrawBkColor() {
             if (0 != bkColor_) {
                 if (0 != bkColor2_) {

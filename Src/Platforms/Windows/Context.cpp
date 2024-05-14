@@ -5,6 +5,8 @@
 #include <Windowsx.h>
 
 #include "Core/Font.h"
+#include "Core/EventSystem/Event.h"
+#include "Core/EventSystem/EventManager.h"
 #include "Window/Constent.h"
 
 #include "Platforms/Windows/WindowRender.h"
@@ -196,11 +198,14 @@ namespace PPEngine {
                 return true;
                 case WM_MOUSEMOVE: {
                     lastMousePt_ = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
-                    const Window::Control* control = FindControl(lastMousePt_,
+                    Window::Control* control = FindControl(lastMousePt_,
                         Window::UIFIND_VISIBLE | Window::UIFIND_HITTEST | Window::UIFIND_TOP_FIRST);
                     if (nullptr == control || control->GetContext() != this) {
                         return false;
                     }
+                    Core::EventSystem::MouseMoveEvent event(lastMousePt_);
+                    Core::EventSystem::EventManager::Get()->Send(event, control);
+                   // control
                     }
                 break;
                 case WM_SETCURSOR:

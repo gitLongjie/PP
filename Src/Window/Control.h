@@ -9,6 +9,7 @@
 #include "Core/Math/Size.h"
 #include "Core/Math/Rect.h"
 #include "Core/Constent.h"
+#include "Core/EventSystem/Event.h"
 
 namespace PPEngine {
     namespace Window {
@@ -95,6 +96,8 @@ namespace PPEngine {
             virtual void SetRelativeParentSize(const Core::Math::Size& sz);*/
            // virtual TRelativePosUI GetRelativePos() const;
             bool IsRelativePos() const { return false; }
+
+            bool OnHandlerEvent(const Core::EventSystem::MouseMoveEvent& mouseMoveEvent);
 
 
         protected:
