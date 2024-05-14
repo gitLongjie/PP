@@ -105,7 +105,7 @@ public:
             PPEngine::Core::Math::Point2d point(pt.x, pt.y);
             const PPEngine::Window::Control* control = context_.FindControl(point, PPEngine::Window::UIFIND_VISIBLE |
                 PPEngine::Window::UIFIND_HITTEST | PPEngine::Window::UIFIND_TOP_FIRST);
-            if (nullptr != control && 0 == strcmp("Button", control->GetClass())) {
+            if (nullptr == control || 0 != strcmp("Button", control->GetClass())) {
                 return HTCAPTION;
             }
         }

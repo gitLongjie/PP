@@ -60,10 +60,22 @@ namespace PPEngine {
 			}
 		}
 
+        Control* Container::FindControl(const Core::Math::Point2d& pt, uint32 flag) {
+            for (const auto& control : controls_) {
+                Control* hotControl = control->FindControl(pt, flag);
+                if (nullptr != hotControl) {
+                    return hotControl;
+                }
+            }
+
+            return nullptr;
+        }
+
 		const Control* Container::FindControl(const Core::Math::Point2d& pt, uint32 flag) const {
 			for (const auto& control : controls_) {
-				if (control->FindControl(pt, flag)) {
-					return control.get();
+				const Control* hotControl = control->FindControl(pt, flag);
+				if (nullptr != hotControl) {
+					return hotControl;
 				}
 			}
 

@@ -43,6 +43,7 @@ namespace PPEngine {
             virtual Core::Math::Size EstimateSize(const Core::Math::Size& availableSize) {
                 return cxyFixed_;
             }
+            virtual Control* FindControl(const Core::Math::Point2d& pt, uint32 flag);
             virtual const Control* FindControl(const Core::Math::Point2d& pt, uint32 flag) const;
 
             void SetFloat(bool value) { float_ = value; }

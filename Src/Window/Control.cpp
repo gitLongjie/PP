@@ -493,6 +493,15 @@ namespace PPEngine {
             OnDrawBorder();
         }
 
+        Control* Control::FindControl(const Core::Math::Point2d& pt, uint32 flag) {
+            if ((flag & UIFIND_VISIBLE) != 0 && !IsVisible()) return nullptr;
+            if ((flag & UIFIND_ENABLED) != 0 && !IsEnabled()) return nullptr;
+            if ((flag & UIFIND_HITTEST) != 0 && (!mouseEnabled_ || !rect_.Contains(pt))) return nullptr;
+            if (!rect_.Contains(pt)) return nullptr;
+
+            return this;
+        }
+
         const Control* Control::FindControl(const Core::Math::Point2d& pt, uint32 flag) const {
             if ((flag & UIFIND_VISIBLE) != 0 && !IsVisible()) return nullptr;
             if ((flag & UIFIND_ENABLED) != 0 && !IsEnabled()) return nullptr;
