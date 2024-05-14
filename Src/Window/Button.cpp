@@ -92,6 +92,10 @@ namespace PPEngine {
         }
 
         void Button::OnDrawText() {
+            if (text_.empty()) {
+                return;
+            }
+
             if (IsFocused()) {
                 state_ = state_ | State::FOCUSED;
             } else {
@@ -138,47 +142,30 @@ namespace PPEngine {
 
             if ((state_ & State::DISABLED) != 0) {
                 if (!disableImage_.empty()) {
-               //     Core::ImageDrawUI imageDrawUI = { rect_, rectPaint, file, imageResType,
-               //rcItem, rcBmpPart, rcCorner, mask, fade, hole, xtiled, ytiled };
-               //     if (context_->DrawImage())
-               //     //if (!DrawImage(hDC, (LPCTSTR)m_sDisabledImage)) m_sDisabledImage.Empty();
-               //     else goto Label_ForeImage;
+                    context_->DrawImageString(rectPaint_, rect_, disableImage_);
+                    disableImage_.clear();
+                } else goto Label_ForeImage;
+            } else if ((state_ & State::PUSHED) != 0) {
+                if (!pushedImage_.empty()) {
+                    context_->DrawImageString(rectPaint_, rect_, pushedImage_);
+                    pushedImage_.clear();
                 }
-            }// else if ((state_ & State::PUSHED) != 0) {
-        //        if (!pushedImage_.empty()) {
-        //            if (!DrawImage(hDC, (LPCTSTR)m_sPushedImage)) {
-        //                pushedImage_.clear();
-        //            }
-        //            if (!pushedForeImage_.empty()) {
-        //                if (!DrawImage(hDC, (LPCTSTR)m_sPushedForeImage))
-        //                    pushedForeImage_.clear();
-        //                return;
-        //            } else goto Label_ForeImage;
-        //        }
-        //    } else if ((state_ & State::HOT) != 0) {
-        //        if (!hotImage_.empty()) {
-        //            if (!DrawImage(hDC, (LPCTSTR)m_sHotImage)) {
-        //                hotImage_.clear();
-        //            }
-        //            if (!hotForeImage_.empty()) {
-        //                if (!DrawImage(hDC, (LPCTSTR)m_sHotForeImage))
-        //                    hotForeImage_.clear();
-        //                return;
-        //            } else goto Label_ForeImage;
-        //        } else if (m_dwHotBkColor != 0) {
-        //            CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwHotBkColor));
-        //            return;
-        //        }
-        //    } else if ((state_ & State::FOCUSED) != 0) {
-        //        if (!m_sFocusedImage.IsEmpty()) {
-        //            if (!DrawImage(hDC, (LPCTSTR)m_sFocusedImage)) m_sFocusedImage.Empty();
-        //            else goto Label_ForeImage;
-        //        }
-        //    }
-
-            if (!normalImage_.empty()) {
+            } else if ((state_ & State::HOT) != 0) {
+                if (!hotImage_.empty()) {
+                    context_->DrawImageString(rectPaint_, rect_, hotImage_);
+                    hotImage_.clear();
+                } else if (hotBKColor_ != 0) {
+                    context_->DrawColor(rectPaint_, hotBKColor_);
+                    return;
+                }
+            } else if ((state_ & State::FOCUSED) != 0) {
+                if (!foucesedImage_.empty()) {
+                    context_->DrawImageString(rectPaint_, rect_, foucesedImage_);
+                    foucesedImage_.clear();
+                }
+            }else if (!normalImage_.empty()) {
                 context_->DrawImageString(rectPaint_, rect_, normalImage_);
-               // normalImage_.clear();
+                normalImage_.clear();
                /* if (!DrawImage(hDC, (LPCTSTR)m_sNormalImage)) m_sNormalImage.Empty();
                 else goto Label_ForeImage;*/
             }

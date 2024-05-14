@@ -19,7 +19,7 @@ namespace PPEngine {
         public:
             Control();
             virtual ~Control();
-
+            static Control::Ptr Create();
 
 
             void SetContext(class Context* context, Control* parent) {
@@ -44,6 +44,7 @@ namespace PPEngine {
                 return cxyFixed_;
             }
 
+            void SetFloat(bool value) { float_ = value; }
             bool IsFloat() const { return float_; }
             void Invalidate();
             bool IsUpdateNeeded() const;
@@ -72,6 +73,8 @@ namespace PPEngine {
 
             void SetPadding(const Core::Math::Rect& padding);
             const Core::Math::Rect GetPadding() const { return rcPadding_; }
+            void SetFixedXY(const Core::Math::Size& cxy);
+            const Core::Math::Size& GetFixedXY() const { return cXY_; }
             void SetFixed(const Core::Math::Size& size);
             const Core::Math::Size& GetFixed() const { return cxyFixed_; }
             void SetFixedWidth(float width);

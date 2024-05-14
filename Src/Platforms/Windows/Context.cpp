@@ -68,7 +68,7 @@ namespace PPEngine {
                 WindowRender::DrawColor(hdcPaint_, rc, color);
             }
 
-            bool Context::DrawImage(Core::ImageDrawUI& imageDrawUI, Core::Image::Ptr image) {
+            bool Context::DrawImage(Core::ImageDrawUI& imageDrawUI, const Core::Image::Ptr& image) {
                 HBITMAP hBitmap = ResourceManager::Get()->GetBitmap(image->GetName());
                 if (nullptr == hBitmap) {
                     return false;
@@ -76,16 +76,16 @@ namespace PPEngine {
 
                 const Core::Math::Rect& imageRC = imageDrawUI.rc;
                 RECT rc = { static_cast<long>(imageRC.GetMin().x), static_cast<long>(imageRC.GetMin().y),
-                    static_cast<long>(imageRC.GetSize().x), static_cast<long>(imageRC.GetSize().y) };
+                    static_cast<long>(imageRC.GetMax().x), static_cast<long>(imageRC.GetMax().y) };
                 const Core::Math::Rect& imagePaintRC = imageDrawUI.rcPaint;
                 RECT rcPaint = { static_cast<long>(imagePaintRC.GetMin().x), static_cast<long>(imagePaintRC.GetMin().y),
-                    static_cast<long>(imagePaintRC.GetSize().x), static_cast<long>(imagePaintRC.GetSize().y) };
+                    static_cast<long>(imagePaintRC.GetMax().x), static_cast<long>(imagePaintRC.GetMax().y) };
                 const Core::Math::Rect& imageBmpRC = imageDrawUI.rcBmpPart;
                 RECT rcBmpPart = { static_cast<long>(imageBmpRC.GetMin().x), static_cast<long>(imageBmpRC.GetMin().y),
-                    static_cast<long>(imageBmpRC.GetSize().x), static_cast<long>(imageBmpRC.GetSize().y) };
+                    static_cast<long>(imageBmpRC.GetMax().x), static_cast<long>(imageBmpRC.GetMax().y) };
                 const Core::Math::Rect& imageCornerRC = imageDrawUI.rcCorner;
                 RECT rcCornerPart = { static_cast<long>(imageCornerRC.GetMin().x), static_cast<long>(imageCornerRC.GetMin().y),
-                    static_cast<long>(imageCornerRC.GetSize().x), static_cast<long>(imageCornerRC.GetSize().y) };
+                    static_cast<long>(imageCornerRC.GetMax().x), static_cast<long>(imageCornerRC.GetMax().y) };
                 return WindowRender::DrawImage(hdcPaint_, hBitmap, rc, rcPaint, rcBmpPart, rcCornerPart, image->IsAlpha(),
                     imageDrawUI.fade, imageDrawUI.hole, imageDrawUI.xtiled, imageDrawUI.ytiled);
             }
@@ -106,7 +106,8 @@ namespace PPEngine {
 
                 ::SetBkMode(hdcPaint_, TRANSPARENT);
                 ::SetTextColor(hdcPaint_, RGB(GetBValue(color), GetGValue(color), GetRValue(color)));
-                HFONT old = static_cast<HFONT>(::SelectObject(hdcPaint_, Core::FontManager::Get()->GetFont(font)->GetFont()));
+                Core::Font::Ptr fontPtr = Core::FontManager::Get()->GetFont(font);
+                HFONT old = static_cast<HFONT>(::SelectObject(hdcPaint_, fontPtr->GetFont()));
                 RECT dr{ (long)rect.GetMin().x, (long)rect.GetMin().y, (long)rect.GetMax().x, (long)rect.GetMax().y };
                 ::DrawText(hdcPaint_, text.c_str(), -1, &dr, style | DT_NOPREFIX);
                 ::SelectObject(hdcPaint_, old);
@@ -211,10 +212,10 @@ namespace PPEngine {
                     ::SelectObject(hdcPaint_, hOldFont);
                 }
 
-                if (!Core::FontManager::Get()->Add(pFontInfo, false)) {
+              /*  if (!Core::FontManager::Get()->Add(pFontInfo, false)) {
                     ::DeleteObject(hFont);
                     return nullptr;
-                }
+                }*/
 
                 return pFontInfo;
             }

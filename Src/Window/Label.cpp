@@ -97,6 +97,10 @@ namespace PPEngine {
         }
 
         void Label::OnDrawText() {
+            if (text_.empty()) {
+                return;
+            }
+
             if (0 == textColor_) {
                 textColor_ = context_->GetDefaultTextColor();
             }

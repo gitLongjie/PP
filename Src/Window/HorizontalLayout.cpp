@@ -104,7 +104,7 @@ namespace PPEngine {
 				}
 
 				sz.y = control->GetFixedHeight();
-				if (sz.y == 0) sz.y = rect.GetBottom() - rect.GetTop() - rcPadding.GetTop() - rcPadding.GetBottom();
+				if (sz.y == 0) sz.y = rect.GetSize().y - rcPadding.GetSize().y;
 				if (sz.y < 0) sz.y = 0;
 				if (sz.y < control->GetMinHeight()) sz.y = control->GetMinHeight();
 				if (sz.y > control->GetMaxHeight()) sz.y = control->GetMaxHeight();

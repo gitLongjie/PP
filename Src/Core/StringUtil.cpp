@@ -1,6 +1,10 @@
 #include "Core/StringUtil.h"
 
+#include <sstream>
 #include <string>
+#include <iomanip>
+#include <algorithm>
+#include <cctype>
 
 #include <Windows.h>
 
@@ -54,6 +58,21 @@ namespace PPEngine {
                 prev = pos + delimiter.length();
             } while (pos < s.length() && prev < s.length());
             return tokens;
+        }
+
+        bool ToBool(std::string value) {
+            std::transform(value.begin(), value.end(), value.begin(), ::tolower);
+            value.erase(0, value.find_first_not_of(" "));
+            value.erase(value.find_last_not_of(" ") + 1);
+            if (value.empty()) {
+                return false;
+            }
+
+            if (value == "true") {
+                return true;
+            }
+            
+            return value[0] == '0' ? false : atoi(value.c_str()) != 0;
         }
     }
 }

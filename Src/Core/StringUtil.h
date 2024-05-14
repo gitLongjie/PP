@@ -12,5 +12,6 @@ namespace PPEngine {
         bool FromUtf8(std::string& inout);
         uint32 StringToColor16(const char* color);
         std::vector<std::string> Split(const std::string& s, const std::string& delimiter);
+        bool ToBool(std::string value);
     }
 }

@@ -12,14 +12,14 @@
     <HorizontalLayout height="34">
       <HorizontalLayout>
         <Container width="32" height="32" bkimage="file=log.png source=0,0,32,32 dest=5,4,32,32 " />
-        <Text text="360安全卫士7.3" pos="32, 15, 200, 34" textpadding="0, 8, 0, 0" float="true" textcolor="#FF447AA1" font="0" />
+        <Text text="PPEngine" pos="40, 2, 200, 34" textpadding="0, 8, 0, 0" float="true" textcolor="#FF447AA1" font="0" />
       </HorizontalLayout>
-      <HorizontalLayout width="188" inset="0,1,0,0" bkcolor="#FFFF0000">
-        <Button bkcolor="#F1FFFF00" name="menubtn" maxwidth="26" maxheight="27" normalimage="file=sys_dlg_menu.png source=52,0,78,17" hotimage="file=sys_dlg_menu.png source=26,0,52,17" pushedimage="file=sys_dlg_menu.png source=0,0,26,17"/>
-        <Button name="minbtn" maxwidth="26" maxheight="17" normalimage="file=sys_dlg_min.png source=52,0,78,17" hotimage="file=sys_dlg_min.png source=26,0,52,17" pushedimage="file=sys_dlg_min.png source=0,0,26,17"/>
-        <Button name="maxbtn" maxwidth="26" maxheight="17" normalimage="file=sys_dlg_max.png source=52,0,78,17" hotimage="file=sys_dlg_max.png source=26,0,52,18" pushedimage="file=sys_dlg_max.png source=0,0,26,17"/>
-        <Button name="restorebtn" visible="false" maxwidth="26" maxheight="17" normalimage="file=sys_dlg_restore.png source=52,0,78,17" hotimage="file=sys_dlg_restore.png source=26,0,52,17" pushedimage="file=sys_dlg_restore.png source=0,0,26,17" />
-        <Button name="closebtn" maxwidth="45" maxheight="17" normalimage="file=sys_dlg_close.png source=90,0,135,17" hotimage="file=sys_dlg_close.png source=45,0,90,17" pushedimage="file=sys_dlg_close.png source=0,0,45,17"/>
+      <HorizontalLayout width="128" inset="0,1,0,0">
+        <Button bkcolor="#F1F3FFD0"name="menubtn" maxwidth="26" maxheight="17" normalimage="file=sys_dlg_menu.png source=52,0,78,17" hotimage="file=sys_dlg_menu.png source=26,0,52,17" pushedimage="file=sys_dlg_menu.png source=0,0,26,17"/>
+        <Button bkcolor="#F1FFFFD0" name="minbtn" maxwidth="26" maxheight="17" normalimage="file=sys_dlg_min.png source=52,0,78,17" hotimage="file=sys_dlg_min.png source=26,0,52,17" pushedimage="file=sys_dlg_min.png source=0,0,26,17"/>
+        <Button bkcolor="#3FFF0000" name="maxbtn" maxwidth="26" maxheight="17" normalimage="file=sys_dlg_max.png source=52,0,78,17" hotimage="file=sys_dlg_max.png source=26,0,52,18" pushedimage="file=sys_dlg_max.png source=0,0,26,17"/>
+        <Button bkcolor="#F1FFFFA0" name="restorebtn" visible="false" maxwidth="26" maxheight="17" normalimage="file=sys_dlg_restore.png source=52,0,78,17" hotimage="file=sys_dlg_restore.png source=26,0,52,17" pushedimage="file=sys_dlg_restore.png source=0,0,26,17" />
+        <Button bkcolor="#F1FFFFC0" name="closebtn" maxwidth="45" maxheight="17" normalimage="file=sys_dlg_close.png source=0,0,45,17" hotimage="file=sys_dlg_close.png source=45,0,90,17" pushedimage="file=sys_dlg_close.png source=0,0,45,17"/>
       </HorizontalLayout>
     </HorizontalLayout>
     <HorizontalLayout height="67">
@@ -40,7 +40,7 @@
       <HorizontalLayout bkcolor="#FF97C0DA" bkcolor2="#FFB8DFF2"></HorizontalLayout>
       <Control width="1"/>
     </HorizontalLayout>
-	<Control height="25" bkcolor="#FFB8DFF2"/>
+	  <Control height="25" bkcolor="#FFB8DFF2"/>
     <HorizontalLayout>
       <Control width="5"/>
       <HorizontalLayout bkcolor="#FFFFFFFF" bordercolor="#FF768D9B" bordersize="1">

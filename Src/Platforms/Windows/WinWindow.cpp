@@ -223,12 +223,6 @@ namespace PPEngine {
                         return lRes;
                     }
                 }
-                if (uMsg == WM_PAINT) {
-                    PAINTSTRUCT ps = { 0 };
-                    ::BeginPaint(hWnd, &ps);
-                    ::EndPaint(hWnd, &ps);
-                    //return 0;
-                }   
                 if (pThis != nullptr) {
                     return pThis->HandleMessage(uMsg, wParam, lParam);
                 } else {

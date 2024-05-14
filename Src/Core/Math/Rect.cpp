@@ -6,27 +6,33 @@ namespace PPEngine {
             const Rect Rect::Zero = Rect(0.0f, 0.0f, 0.0f, 0.0f);
             const Rect Rect::One = Rect(0.0f, 0.0f, 1.0f, 1.0f);
             Rect::Rect()
-                : position_(0.0f, 0.0f)
+                : left_(0.0f, 0.0f)
+                , right_(0.0f, 0.0f)
                 , size_(0.0f, 0.0f) {
+
             }
-            Rect::Rect(float x, float y, float width, float height)
-                : position_(x, y)
-                , size_(width, height) {
+            Rect::Rect(float x1, float y1, float x2, float y2)
+                : left_(x1, y1)
+                , right_(x2, y2) {
+                UpdateSize();
             }
 
-            Rect::Rect(const glm::vec2& position, const glm::vec2& size)
-                : position_(position)
-                , size_(size) {
+            Rect::Rect(const glm::vec2& left, const glm::vec2& right)
+                : left_(left)
+                , right_(right) {
+                UpdateSize();
             }
 
             Rect::Rect(const Rect& other)
-                : position_(other.position_)
-                , size_(other.size_) {}
+                : left_(other.left_)
+                , right_(other.right_) {
+                UpdateSize();
+            }
 
             Rect Rect::FromString(const char* s) {
                 float x = 0.0f, y = 0.0f, width = 1.0f, height = 1.0f;
                 sscanf(s, "%f,%f,%f,%f", &x, &y, &width, &height);
-                return Rect(x, y, width, height);
+                return Rect(x, y, x + width, y + height);
             }
         }
     }

@@ -30,6 +30,10 @@ namespace PPEngine {
 
         }
 
+        Control::Ptr Control::Create() {
+            return std::make_shared<Control>();
+        }
+
         bool Control::Serialize(tinyxml2::XMLElement* root) {
             const char* name = root->Name();
             if (0 != strcmp(GetClass(), name)) {
@@ -72,6 +76,9 @@ namespace PPEngine {
         void Control::SetAttribute(const char* name, const char* value) {
             if (0 == strcmp("pos", name)) {
                 Core::Math::Rect rect = Core::Math::Rect::FromString(value);
+                Core::Math::Size xy(rect.GetLeft() >= 0.0 ? rect.GetLeft() : rect.GetRight(),
+                    rect.GetTop() >= 0.0f ? rect.GetTop() : rect.GetBottom());
+                SetFixedXY(xy);
                 SetFixedWidth(rect.GetWidth());
                 SetFixedHeight(rect.GetHeight());
             }
@@ -112,6 +119,10 @@ namespace PPEngine {
                 SetMaxHeight(atoi(value));
             } else if (strcmp(name, "name") == 0) {
               //  SetName(value);
+            } else if (strcmp(name, "visible") == 0) {
+                SetVisible(Core::ToBool(value));
+            } else if (strcmp(name, "float") == 0) {
+                SetFloat(Core::ToBool(value));
             }
         }
 
@@ -242,6 +253,16 @@ namespace PPEngine {
         void Control::SetPadding(const Core::Math::Rect& padding) {
             rcPadding_ = padding;
             NeedParentUpdate();
+        }
+
+        void Control::SetFixedXY(const Core::Math::Size& cxy) {
+            cXY_ = cxy;
+
+            if (!float_) {
+                NeedParentUpdate();
+            } else {
+                NeedUpdate();
+            }
         }
 
         void Control::SetFixed(const Core::Math::Size& size) {
@@ -414,7 +435,7 @@ namespace PPEngine {
                 Control* parent = GetParent();
                 if (nullptr != parent) {
                     Core::Math::Rect rectParent = parent->GetRect();
-                    rect_ = rectParent + rect;
+                 //   rect_ = rectParent + rect;
 
                     float width = rectParent.GetWidth();
                     float height = rectParent.GetHeight();

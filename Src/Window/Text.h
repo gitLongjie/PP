@@ -12,8 +12,6 @@ namespace PPEngine {
             static Control::Ptr Create();
 
             const char* GetClass() const { return "Text"; }
-            void SetAttribute(const char* name, const char* value) override;
-            void FixRect(Core::Math::Rect rect) override;
 
         protected:
             void OnDrawText() override;

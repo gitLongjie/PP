@@ -83,7 +83,7 @@ namespace PPEngine {
             std::string imageResType;
             std::string res;
             int32 restype = 0;
-            Core::Math::Rect rcItem;
+            Core::Math::Rect rcItem = rect;
             Core::Math::Rect rcBmpPart;
             Core::Math::Rect rcCorner;
 
@@ -148,13 +148,17 @@ namespace PPEngine {
             if (rcBmpPart.GetRight() > image->GetWidth()) rcBmpPart.SetRight(image->GetWidth());
             if (rcBmpPart.GetBottom() > image->GetHeight()) rcBmpPart.SetBottom(image->GetHeight());
 
-            if (!imageDrawUI.rcItem.Intersects(imageDrawUI.rc)) { return true; }
-            if (!imageDrawUI.rcItem.Intersects(imageDrawUI.rcPaint)) { return true; }
+            if (!imageDrawUI.rcItem.Intersects(imageDrawUI.rc)) {
+                return true;
+            }
+            if (!imageDrawUI.rcItem.Intersects(imageDrawUI.rcPaint)) {
+                return true;
+            }
 
             return DrawImage(imageDrawUI, image);
         }
 
-        bool Context::DrawImage(Core::ImageDrawUI& imageDrawUI, Core::Image::Ptr image){
+        bool Context::DrawImage(Core::ImageDrawUI& imageDrawUI, const Core::Image::Ptr& image){
             return false;
         }
 

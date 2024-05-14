@@ -40,7 +40,7 @@ namespace PPEngine {
             virtual void DrawRoundRect(const Core::Math::Rect& rectPaint, int32 size, int32 width, int32 height, uint32 color);
             virtual void DrawImageString(const Core::Math::Rect& rectPaint, const Core::Math::Rect& rect, const std::string& image);
             virtual bool DrawImage(Core::ImageDrawUI& imageDrawUI);
-            virtual bool DrawImage(Core::ImageDrawUI& imageDrawUI, Core::Image::Ptr image);
+            virtual bool DrawImage(Core::ImageDrawUI& imageDrawUI, const Core::Image::Ptr& image);
             virtual void DrawColor(const Core::Math::Rect& rect, uint32 color);
             virtual void DrawGradient(const Core::Math::Rect& rect, uint32 color1,
                 uint32 color2, bool vertical, int32 steps);

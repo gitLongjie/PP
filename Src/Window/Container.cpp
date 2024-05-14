@@ -135,7 +135,7 @@ namespace PPEngine {
 			if (!control->IsVisible()) { return; }
 			if (!control->IsFloat()) { return; }
 
-            Core::Math::Size xy = control->GetFixed();
+            Core::Math::Size xy = control->GetFixedXY();
 			Core::Math::Rect rcCtrl;
 			if (xy.x >= 0) {
 				rcCtrl.SetLeft(rect_.GetLeft() + xy.x);
@@ -153,7 +153,11 @@ namespace PPEngine {
 				rcCtrl.SetBottom(rect_.GetTop() + xy.y);
 			}
 
-			if (control->IsRelativePos());
+			if (control->IsRelativePos()) {
+
+			}
+
+			control->FixRect(rcCtrl);
 		}
 
 		void Container::ProcessScrollBar(Core::Math::Rect rect, float cx, float cy) {

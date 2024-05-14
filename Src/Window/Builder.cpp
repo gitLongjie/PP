@@ -279,6 +279,7 @@ namespace PPEngine {
             RegisterControlCreator("VerticalLayout", VerticalLayout::Create);
             RegisterControlCreator("HorizontalLayout", HorizontalLayout::Create);
             RegisterControlCreator("Container", Container::Create);
+            RegisterControlCreator("Control", Control::Create);
             RegisterControlCreator("Label", Label::Create);
             RegisterControlCreator("Text", Text::Create);
             RegisterControlCreator("Button", Button::Create);

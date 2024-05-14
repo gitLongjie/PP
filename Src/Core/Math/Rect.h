@@ -8,101 +8,106 @@ namespace PPEngine {
             class Rect {
             public:
                 Rect();
-                Rect(float x, float y, float width, float height);
-                Rect(const glm::vec2& position, const glm::vec2& size);
+                Rect(float x1, float y1, float x2, float y2);
+                Rect(const glm::vec2& left, const glm::vec2& right);
                 Rect(const Rect& other);
                 ~Rect() = default;
 
                 Rect& operator=(const Rect& other) {
-                    position_ = other.position_;
-                    size_ = other.size_;
+                    left_ = other.left_;
+                    right_ = other.right_;
+                    UpdateSize();
                     return *this;
                 }
 
                 bool operator==(const Rect& other) const {
-                    return position_ == other.position_ && size_ == other.size_;
+                    return left_ == other.left_ && right_ == other.right_;
                 }
                 bool operator!=(const Rect& other) const {
-                    return position_ != other.position_ || size_ != other.size_;
+                    return left_ != other.left_ || right_ != other.right_;
                 }
 
                 Rect operator+(const Rect& other) const {
-                    return Rect(position_ + other.position_, size_ + other.size_);
+                    return Rect(left_ + other.left_, right_ + other.right_);
                 }
 
                 bool Contains(const glm::vec2& point) const {
-                    return point.x >= position_.x && point.x <= position_.x + size_.x &&
-                           point.y >= position_.y && point.y <= position_.y + size_.y;
+                    return point.x >= left_.x && point.x <= left_.x + right_.x &&
+                           point.y >= left_.y && point.y <= left_.y + right_.y;
                 }
                 bool Contains(const glm::vec3& point) const {
-                    return point.x >= position_.x && point.x <= position_.x + size_.x &&
-                           point.y >= position_.y && point.y <= position_.y + size_.y;
+                    return point.x >= left_.x && point.x <= left_.x + right_.x &&
+                           point.y >= left_.y && point.y <= left_.y + right_.y;
                 }
                 bool Contains(const glm::vec4& point) const {
-                    return point.x >= position_.x && point.x <= position_.x + size_.x &&
-                           point.y >= position_.y && point.y <= position_.y + size_.y;
+                    return point.x >= left_.x && point.x <= left_.x + right_.x &&
+                           point.y >= left_.y && point.y <= left_.y + right_.y;
                 }
 
                 bool Intersects(const Rect& other) const {
-                    return !(position_.x > other.position_.x + other.size_.x ||
-                             position_.x + size_.x < other.position_.x ||
-                             position_.y > other.position_.y + other.size_.y ||
-                             position_.y + size_.y < other.position_.y);
+                    return !(left_.x > other.left_.x + other.right_.x ||
+                             left_.x + right_.x < other.left_.x ||
+                             left_.y > other.left_.y + other.right_.y ||
+                             left_.y + right_.y < other.left_.y);
                 }
 
                 Rect CalIntersects(const Rect& other) const {
-                    return Rect(glm::max(position_, other.position_),
-                                glm::min(position_ + size_, other.position_ + other.size_));
+                    return Rect(glm::max(left_, other.left_),
+                                glm::min(right_, other.right_));
                 }
 
                 Rect CalOuttersects(const Rect& other) const {
-                    return Rect(glm::min(position_, other.position_),
-                        glm::max(position_ + size_, other.position_ + other.size_));
+                    return Rect(glm::min(left_, other.left_),
+                        glm::max(left_ + right_, other.left_ + other.right_));
                 }
 
                 bool IsEmpty() const {
-                    return size_.x == 0.0f && size_.y == 0.0f;
+                    return right_.x == 0.0f && right_.y == 0.0f;
                 }
 
                 void SetLeft(float x) {
-                    position_.x = x;
+                    left_.x = x;
+                    UpdateSize();
                 }
                 float GetLeft() const {
-                    return position_.x;
+                    return left_.x;
                 }
 
                 void SetRight(float x) {
-                    size_.x = std::abs(x - position_.x);
+                    right_.x = x;
+                    UpdateSize();
                 }
                 float GetRight() const {
-                    return position_.x + size_.x;
+                    return right_.x;
                 }
 
                 void SetTop(float y) {
-                    position_.y = y;
+                    left_.y = y;
+                    UpdateSize();
                 }
                 float GetTop() const {
-                    return position_.y;
+                    return left_.y;
                 }
 
                 void SetBottom(float y) {
-                    size_.y = std::abs(y - position_.y);
+                    right_.y = y;
+                    UpdateSize();
                 }
                 float GetBottom() const {
-                    return position_.y + size_.y;
+                    return right_.y;
                 }
 
                 glm::vec2 GetCenter() const {
-                    return position_ + size_ * 0.5f;
+                    return (left_ + right_) * 0.5f;
                 }
                 const glm::vec2& GetMin() const {
-                    return position_;
+                    return left_;
                 }
                 const glm::vec2& GetSize() const {
                     return size_;
                 }
                 glm::vec2 GetMax() const {
-                    return position_ + size_;
+                    return right_;
                 }
 
                 float GetWidth() const {
@@ -113,47 +118,57 @@ namespace PPEngine {
                 }
 
                 void SetWidth(float width) {
-                    size_.x = width;
+                    right_.x = left_.x + width;
+                    UpdateSize();
                 }
                 void SetHeight(float height) {
-                    size_.y = height;
+                    right_.y = left_.y + height;
+                    UpdateSize();
                 }
 
                 void SetSize(const glm::vec2& size) {
-                    size_ = size;
+                    right_ = left_ + size;
+                    UpdateSize();
                 }
 
                 void SetPosition(const glm::vec2& position) {
-                    position_ = position;
+                    left_ = position;
+                    UpdateSize();
                 }
 
                 void Set(const glm::vec2& position, const glm::vec2& size) {
-                    position_ = position;
-                    size_ = size;
+                    left_ = position;
+                    right_ = left_ + size;
+                    UpdateSize();
                 }
 
                 void Join(const Rect& other) {
-                    glm::vec2 min = glm::min(position_, other.position_);
-                    glm::vec2 max = glm::max(position_ + size_, other.position_ + other.size_);
-                    position_ = min;
-                    size_ = max - min;
+                    glm::vec2 min = glm::min(left_, other.left_);
+                    glm::vec2 max = glm::max(right_, other.right_);
+                    left_ = min;
+                    right_ = max;
+                    UpdateSize();
+
                 }
 
                 void Inset(const glm::vec2& offset) {
-                    position_ += offset;
-                    size_ -= offset;
+                    left_ += offset;
+                    right_ -= offset;
+                    UpdateSize();
                 }
 
                 void Inset(float left, float top, float right, float bottom) {
-                    position_.x += left;
-                    position_.y += top;
-                    size_.x -= left + right;
-                    size_.y -= top + bottom;
+                    left_.x += left;
+                    left_.y += top;
+                    right_.x -= left + right;
+                    right_.y -= top + bottom;
+                    UpdateSize();
                 }
 
                 void Inset(const Rect& rect) {
-                    position_ += rect.position_;
-                    size_ -= rect.size_;
+                    left_ += rect.left_;
+                    right_ -= rect.right_;
+                    UpdateSize();
                 }
 
                 static const Rect Zero;
@@ -170,7 +185,12 @@ namespace PPEngine {
                 static Rect FromString(const char* s); // "1,1,1,1";
 
             private:
-                glm::vec2 position_;
+                void UpdateSize() {
+                    size_ = right_ - left_;
+                }
+
+                glm::vec2 left_;
+                glm::vec2 right_;
                 glm::vec2 size_;
             };
         }

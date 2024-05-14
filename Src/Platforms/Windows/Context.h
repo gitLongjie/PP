@@ -32,7 +32,7 @@ namespace PPEngine {
                 void DrawRect(const Core::Math::Rect& rectPaint, int32 size, uint32 color) override;
                 void DrawRoundRect(const Core::Math::Rect& rectPaint, int32 size, int32 width, int32 height, uint32 color) override;
                 void DrawColor(const Core::Math::Rect& rect, uint32 color) override;
-                bool DrawImage(Core::ImageDrawUI& imageDrawUI, Core::Image::Ptr image) override;
+                bool DrawImage(Core::ImageDrawUI& imageDrawUI, const Core::Image::Ptr& image) override;
                 void DrawGradient(const Core::Math::Rect& rect, uint32 color1,
                     uint32 color2, bool vertical, int32 steps) override;
                 void DrawUIText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) override;
