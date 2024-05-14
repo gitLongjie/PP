@@ -151,6 +151,19 @@ namespace PPEngine {
                 }
                 return true;
 
+                case WM_SIZE:
+                {
+                   /* if (m_pFocus != NULL) {
+                        TEventUI event = { 0 };
+                        event.Type = UIEVENT_WINDOWSIZE;
+                        event.pSender = m_pFocus;
+                        event.dwTimestamp = ::GetTickCount();
+                        m_pFocus->Event(event);
+                    }*/
+                    if (control_) control_->NeedUpdate();
+                }
+                return true;
+
                 case WM_PAINT:{
                     if (nullptr == control_) {
                         PAINTSTRUCT ps = { 0 };

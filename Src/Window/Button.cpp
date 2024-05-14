@@ -143,17 +143,14 @@ namespace PPEngine {
             if ((state_ & State::DISABLED) != 0) {
                 if (!disableImage_.empty()) {
                     context_->DrawImageString(rectPaint_, rect_, disableImage_);
-                    disableImage_.clear();
                 } else goto Label_ForeImage;
             } else if ((state_ & State::PUSHED) != 0) {
                 if (!pushedImage_.empty()) {
                     context_->DrawImageString(rectPaint_, rect_, pushedImage_);
-                    pushedImage_.clear();
                 }
             } else if ((state_ & State::HOT) != 0) {
                 if (!hotImage_.empty()) {
                     context_->DrawImageString(rectPaint_, rect_, hotImage_);
-                    hotImage_.clear();
                 } else if (hotBKColor_ != 0) {
                     context_->DrawColor(rectPaint_, hotBKColor_);
                     return;
@@ -161,11 +158,9 @@ namespace PPEngine {
             } else if ((state_ & State::FOCUSED) != 0) {
                 if (!foucesedImage_.empty()) {
                     context_->DrawImageString(rectPaint_, rect_, foucesedImage_);
-                    foucesedImage_.clear();
                 }
             }else if (!normalImage_.empty()) {
                 context_->DrawImageString(rectPaint_, rect_, normalImage_);
-                normalImage_.clear();
                /* if (!DrawImage(hDC, (LPCTSTR)m_sNormalImage)) m_sNormalImage.Empty();
                 else goto Label_ForeImage;*/
             }

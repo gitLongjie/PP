@@ -114,13 +114,13 @@ public:
     }
 
     LRESULT OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-
+        const PPEngine::Core::Math::Size& size = context_.GetRoundCorner();
          if (!::IsIconic(*this) ) {
              RECT rcWnd;
              ::GetWindowRect(*this, &rcWnd);
              ::OffsetRect(&rcWnd, -rcWnd.left, -rcWnd.top);
              rcWnd.right++; rcWnd.bottom++;
-             HRGN hRgn = ::CreateRoundRectRgn(rcWnd.left, rcWnd.top, rcWnd.right, rcWnd.bottom, 3, 2);
+             HRGN hRgn = ::CreateRoundRectRgn(rcWnd.left, rcWnd.top, rcWnd.right, rcWnd.bottom, size.x, size.y);
              ::SetWindowRgn(*this, hRgn, TRUE);
              ::DeleteObject(hRgn);
          }
@@ -134,7 +134,7 @@ public:
         oMonitor.cbSize = sizeof(oMonitor);
         ::GetMonitorInfo(::MonitorFromWindow(*this, MONITOR_DEFAULTTOPRIMARY), &oMonitor);
         RECT rcWork = oMonitor.rcWork;
-       // rcWork.Offset(-oMonitor.rcMonitor.left, -oMonitor.rcMonitor.top);
+        ::OffsetRect(&rcWork, -oMonitor.rcMonitor.left, -oMonitor.rcMonitor.top);
 
         LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
         lpMMI->ptMaxPosition.x = rcWork.left;
