@@ -85,6 +85,8 @@ namespace PPEngine {
 
             const Core::Math::Size& GetLastMoustPoint() const { return lastMousePt_; }
 
+            const Control* FindControl(const Core::Math::Point2d& pt, uint32 flag) const;
+
         protected:
             Core::Image::Ptr GetImageEx(const std::string& name, const std::string& type, uint32 mask = 0);
             virtual Core::Image::Ptr AddImage(const std::string& bitmap, const std::string& type, uint32 mask = 0);
@@ -106,7 +108,8 @@ namespace PPEngine {
             std::unordered_set<Control::Ptr> controls_;
             DefaultInfo defaultInfo_;
 
-            Core::Math::Size lastMousePt_{-1, -1};
+            Core::Math::Point2d lastMousePt_{-1, -1};
+            bool mouseCapture_{ false };
         };
     }
 }

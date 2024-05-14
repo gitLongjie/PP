@@ -27,6 +27,7 @@ namespace PPEngine {
             void FixRect(Core::Math::Rect rect) override;
             void OnDraw(const Core::Math::Rect& rect) override;
             void SetInternVisible(bool visible) override;
+            const Control* FindControl(const Core::Math::Point2d& pt, uint32 flag) const;
 
             bool AddControl(Control::Ptr control) override;
             void RemoveControl(Control::Ptr control) override;

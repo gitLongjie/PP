@@ -305,6 +305,12 @@ namespace PPEngine {
             
         }
 
+        const Control* Context::FindControl(const Core::Math::Point2d& pt, uint32 flag) const {
+            assert(control_);
+
+            return control_->FindControl(pt, flag);
+        }
+
         Core::Image::Ptr Context::GetImageEx(const std::string& name, const std::string& type, uint32 mask) {
             Core::Image::Ptr image = Core::ImageManager::Get()->GetImageEx(name, type, mask);
             if (!image) {

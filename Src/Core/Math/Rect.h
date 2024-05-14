@@ -32,23 +32,23 @@ namespace PPEngine {
                 }
 
                 bool Contains(const glm::vec2& point) const {
-                    return point.x >= left_.x && point.x <= left_.x + right_.x &&
-                           point.y >= left_.y && point.y <= left_.y + right_.y;
+                    return point.x >= left_.x && point.x <= right_.x &&
+                           point.y >= left_.y && point.y <= right_.y;
                 }
                 bool Contains(const glm::vec3& point) const {
-                    return point.x >= left_.x && point.x <= left_.x + right_.x &&
-                           point.y >= left_.y && point.y <= left_.y + right_.y;
+                    return point.x >= left_.x && point.x <= right_.x &&
+                           point.y >= left_.y && point.y <= right_.y;
                 }
                 bool Contains(const glm::vec4& point) const {
-                    return point.x >= left_.x && point.x <= left_.x + right_.x &&
-                           point.y >= left_.y && point.y <= left_.y + right_.y;
+                    return point.x >= left_.x && point.x <= right_.x &&
+                           point.y >= left_.y && point.y <= right_.y;
                 }
 
                 bool Intersects(const Rect& other) const {
-                    return !(left_.x > other.left_.x + other.right_.x ||
-                             left_.x + right_.x < other.left_.x ||
-                             left_.y > other.left_.y + other.right_.y ||
-                             left_.y + right_.y < other.left_.y);
+                    return !(left_.x > other.right_.x ||
+                             right_.x < other.left_.x ||
+                             left_.y > other.right_.y ||
+                             right_.y < other.left_.y);
                 }
 
                 Rect CalIntersects(const Rect& other) const {

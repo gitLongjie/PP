@@ -4,9 +4,11 @@
 
 #include "Core/StringUtil.h"
 #include "Window/Context.h"
+#include "Window/Constent.h"
 
 namespace PPEngine {
     namespace Window {
+        static Control::Ptr emptyControl{ nullptr };
         static std::unordered_map<std::string, ControlCreator> controlCreators_;
         void RegisterControlCreator(const char* type, ControlCreator Creator) {
             controlCreators_[type] = std::move(Creator);
@@ -32,6 +34,10 @@ namespace PPEngine {
 
         Control::Ptr Control::Create() {
             return std::make_shared<Control>();
+        }
+
+        Control::Ptr& Control::EmptyControl() {
+            return emptyControl;
         }
 
         bool Control::Serialize(tinyxml2::XMLElement* root) {
@@ -485,6 +491,15 @@ namespace PPEngine {
             OnDrawStatusImage();
             OnDrawText();
             OnDrawBorder();
+        }
+
+        const Control* Control::FindControl(const Core::Math::Point2d& pt, uint32 flag) const {
+            if ((flag & UIFIND_VISIBLE) != 0 && !IsVisible()) return nullptr;
+            if ((flag & UIFIND_ENABLED) != 0 && !IsEnabled()) return nullptr;
+            if ((flag & UIFIND_HITTEST) != 0 && (!mouseEnabled_ || !rect_.Contains(pt))) return nullptr;
+            if (!rect_.Contains(pt)) return nullptr;
+
+            return this;
         }
 
         void Control::CreateControl(tinyxml2::XMLElement* root) {

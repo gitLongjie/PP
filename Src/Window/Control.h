@@ -20,7 +20,7 @@ namespace PPEngine {
             Control();
             virtual ~Control();
             static Control::Ptr Create();
-
+            static Control::Ptr& EmptyControl();
 
             void SetContext(class Context* context, Control* parent) {
                 context_ = context;
@@ -43,6 +43,7 @@ namespace PPEngine {
             virtual Core::Math::Size EstimateSize(const Core::Math::Size& availableSize) {
                 return cxyFixed_;
             }
+            virtual const Control* FindControl(const Core::Math::Point2d& pt, uint32 flag) const;
 
             void SetFloat(bool value) { float_ = value; }
             bool IsFloat() const { return float_; }
@@ -135,6 +136,8 @@ namespace PPEngine {
             Core::Math::Size borderRound_{ 0.0f, 0.0f };
 
             std::string bkImage_;
+
+            bool mouseEnabled_{ true };
         };
 
         using ControlCreator = std::function<Control::Ptr()>;

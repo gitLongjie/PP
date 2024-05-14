@@ -11,6 +11,9 @@
 
 #include "Editor/PPEditorApplication.h"
 #include "Core/MainLoop.h"
+#include "Core/Math/Rect.h"
+#include "Window/Constent.h"
+#include "Window/Control.h"
 #include "RHI/DriverSettings.h"
 
 //#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
@@ -45,52 +48,11 @@ public:
     CFrameWnd() {};
     const char* GetWindowClassName() const { return "UIFrame"; };
     UINT GetClassStyle() const { return UI_CLASSSTYLE_DIALOG; };
-    void OnFinalMessage(HWND /*hWnd*/) {  };
+    void OnFinalMessage(HWND /*hWnd*/) {
+        delete this;
+    };
 
     void Init() {}
-
-    //void Notify(TNotifyUI& msg) {
-    //    if (msg.sType == _T("click")) {
-    //        if (msg.pSender->GetName() == _T("closebtn") || msg.pSender->GetName() == _T("closebtn2")) {
-    //            PostQuitMessage(0);
-    //            return;
-    //        }
-    //    } else if (msg.sType == _T("windowinit")) {	// name = flashUI 控件在UI布局中默认注释掉，查看效果需修改xml
-    //        CFlashUI* pFlashUI = static_cast<CFlashUI*>(m_pm.FindControl(_T("flashUI")));
-    //        if (pFlashUI) {
-    //            pFlashUI->m_pFlash->put_WMode(_bstr_t(_T("Transparent")));	// FlashUI没有实现特定接口，需要完善才能支持
-    //            pFlashUI->m_pFlash->put_Movie(_bstr_t(CPaintManagerUI::GetInstancePath() + _T("\\skin\\FlashRes\\test.swf")));
-    //            pFlashUI->m_pFlash->DisableLocalSecurity();
-    //            pFlashUI->m_pFlash->put_AllowScriptAccess(L"always");
-
-    //            BSTR request, response;
-    //            request = SysAllocString(L"<invoke name=\"setButtonText\" returntype=\"xml\"><arguments><string>Click me!</string></arguments></invoke>");
-    //            response = SysAllocString(L"");
-    //            pFlashUI->m_pFlash->CallFunction(request, &response);
-    //            SysFreeString(request);
-    //            SysFreeString(response);
-    //        }
-    //    } else if (msg.sType == _T("showactivex")) {
-    //        if (msg.pSender->GetName() == _T("flashActiveX")) {
-    //            IShockwaveFlash* pFlash = NULL;
-    //            CActiveXUI* pActiveX = static_cast<CActiveXUI*>(msg.pSender);
-    //            pActiveX->GetControl(IID_IUnknown, (void**)&pFlash);
-    //            if (pFlash != NULL) {
-    //                pFlash->put_WMode(_bstr_t(_T("Transparent")));
-    //                pFlash->put_Movie(_bstr_t(CPaintManagerUI::GetInstancePath() + _T("\\skin\\FlashRes\\test.swf")));
-    //                pFlash->DisableLocalSecurity();
-    //                pFlash->put_AllowScriptAccess(L"always");
-
-    //                BSTR request, response;
-    //                request = SysAllocString(L"<invoke name=\"setButtonText\" returntype=\"xml\"><arguments><string>Click me!</string></arguments></invoke>");
-    //                response = SysAllocString(L"");
-    //                pFlash->CallFunction(request, &response);
-    //                SysFreeString(request);
-    //                SysFreeString(response);
-    //            }
-    //        }
-    //    }
-    //}
 
     LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         LONG styleValue = ::GetWindowLong(*this, GWL_STYLE);
@@ -102,6 +64,11 @@ public:
         PPEngine::Window::Builder builder;
         builder.Create("skin.xml", &context_);
         Init();
+        return 0;
+    }
+
+    LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+        bHandled = FALSE;
         return 0;
     }
 
@@ -131,13 +98,16 @@ public:
 
         RECT rcClient;
         ::GetClientRect(*this, &rcClient);
-
-        RECT rcCaption = { 0, 0, 0, 40 }; // m_pm.GetCaptionRect();
+        const PPEngine::Core::Math::Rect& caption = context_.GetCaptionRect();
+        RECT rcCaption = { caption.GetMin().x, caption.GetMin().y, caption.GetMax().x, caption.GetMax().y };
         if (pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right \
             && pt.y >= rcCaption.top && pt.y < rcCaption.bottom) {
-            //CControlUI* pControl = static_cast<CControlUI*>(m_pm.FindControl(pt));
-            //if (pControl && _tcscmp(pControl->GetClass(), _T("ButtonUI")) != 0)
+            PPEngine::Core::Math::Point2d point(pt.x, pt.y);
+            const PPEngine::Window::Control* control = context_.FindControl(point, PPEngine::Window::UIFIND_VISIBLE |
+                PPEngine::Window::UIFIND_HITTEST | PPEngine::Window::UIFIND_TOP_FIRST);
+            if (nullptr != control && 0 == strcmp("Button", control->GetClass())) {
                 return HTCAPTION;
+            }
         }
 
         return HTCLIENT;
@@ -159,17 +129,62 @@ public:
         return 0;
     }
 
+    LRESULT OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+        MONITORINFO oMonitor = {};
+        oMonitor.cbSize = sizeof(oMonitor);
+        ::GetMonitorInfo(::MonitorFromWindow(*this, MONITOR_DEFAULTTOPRIMARY), &oMonitor);
+        RECT rcWork = oMonitor.rcWork;
+       // rcWork.Offset(-oMonitor.rcMonitor.left, -oMonitor.rcMonitor.top);
+
+        LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
+        lpMMI->ptMaxPosition.x = rcWork.left;
+        lpMMI->ptMaxPosition.y = rcWork.top;
+        lpMMI->ptMaxSize.x = rcWork.right;
+        lpMMI->ptMaxSize.y = rcWork.bottom;
+
+        bHandled = FALSE;
+        return 0;
+    }
+
+    LRESULT OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+        // 有时会在收到WM_NCDESTROY后收到wParam为SC_CLOSE的WM_SYSCOMMAND
+        if (wParam == SC_CLOSE) {
+            ::PostQuitMessage(0L);
+            bHandled = TRUE;
+            return 0;
+        }
+        BOOL bZoomed = ::IsZoomed(*this);
+        LRESULT lRes = CWindowWnd::HandleMessage(uMsg, wParam, lParam);
+        /*if (::IsZoomed(*this) != bZoomed) {
+            if (!bZoomed) {
+                CControlUI* pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("maxbtn")));
+                if (pControl) pControl->SetVisible(false);
+                pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("restorebtn")));
+                if (pControl) pControl->SetVisible(true);
+            } else {
+                CControlUI* pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("maxbtn")));
+                if (pControl) pControl->SetVisible(true);
+                pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("restorebtn")));
+                if (pControl) pControl->SetVisible(false);
+            }
+        }*/
+        return lRes;
+    }
+
     LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         LRESULT lRes = 0;
         BOOL bHandled = TRUE;
         switch (uMsg) {
         case WM_CREATE:        lRes = OnCreate(uMsg, wParam, lParam, bHandled); break;
+        case WM_CLOSE:         lRes = OnClose(uMsg, wParam, lParam, bHandled); break;
         case WM_DESTROY:       lRes = OnDestroy(uMsg, wParam, lParam, bHandled); break;
         case WM_NCACTIVATE:    lRes = OnNcActivate(uMsg, wParam, lParam, bHandled); break;
         case WM_NCCALCSIZE:    lRes = OnNcCalcSize(uMsg, wParam, lParam, bHandled); break;
         case WM_NCPAINT:       lRes = OnNcPaint(uMsg, wParam, lParam, bHandled); break;
         case WM_NCHITTEST:     lRes = OnNcHitTest(uMsg, wParam, lParam, bHandled); break;
         case WM_SIZE:          lRes = OnSize(uMsg, wParam, lParam, bHandled); break;
+        case WM_GETMINMAXINFO: lRes = OnGetMinMaxInfo(uMsg, wParam, lParam, bHandled); break;
+        case WM_SYSCOMMAND:    lRes = OnSysCommand(uMsg, wParam, lParam, bHandled); break;
         default:
             bHandled = FALSE;
         }

@@ -5,6 +5,8 @@
 #include <Windowsx.h>
 
 #include "Core/Font.h"
+#include "Window/Constent.h"
+
 #include "Platforms/Windows/WindowRender.h"
 #include "Platforms/Windows/ResourceManager.h"
 
@@ -180,10 +182,29 @@ namespace PPEngine {
                 }
                 return true;
                 case WM_MOUSEMOVE: {
-                        lastMousePt_.x = GET_X_LPARAM(lParam);
-                        lastMousePt_.y = GET_Y_LPARAM(lParam);
+                    lastMousePt_ = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+                    const Window::Control* control = FindControl(lastMousePt_,
+                        Window::UIFIND_VISIBLE | Window::UIFIND_HITTEST | Window::UIFIND_TOP_FIRST);
+                    if (nullptr == control || control->GetContext() != this) {
+                        return false;
                     }
+                    }
+                break;
+                case WM_SETCURSOR:
+                {
+                    if (LOWORD(lParam) != HTCLIENT) break;
+                    if (mouseCapture_) return true;
+
+                    POINT pt = { 0 };
+                    ::GetCursorPos(&pt);
+                    ::ScreenToClient(hWndPaint_, &pt);
+                    Core::Math::Point2d mousePt_ = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+                    const Window::Control* pControl = FindControl(mousePt_,
+                        Window::UIFIND_VISIBLE | Window::UIFIND_HITTEST | Window::UIFIND_TOP_FIRST);
                 }
+                return true;
+                }
+               
 
                 return false;
             }
