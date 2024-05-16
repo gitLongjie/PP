@@ -1,13 +1,22 @@
 #include "Window/Button.h"
 
-#include <bitset>
+#include <functional>
 
 #include "Core/StringUtil.h"
+#include "Core/EventSystem/EventManager.h"
+#include "Core/EventSystem/Invoke.h"
 #include "Window/Context.h"
 
 namespace PPEngine {
     namespace Window {
         Button::Button() {
+            auto testFun = std::mem_fun(&Button::Test);
+            testFun(this);
+            auto testFun1 = std::mem_fun(&Button::Test1);
+           // testFun1(this, 1);
+
+            //Core::EventSystem::MemberInvokeImpl<Button> t(&Button::Test1);
+            //Core::EventSystem::EventManager::Get()->Bind(this, std::mem_fn())
         }
 
         Button::~Button() {

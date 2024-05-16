@@ -9,6 +9,7 @@
 
 #include <cassert>
 
+#include "Core/EventSystem/EventManager.h"
 #include "Platforms/Windows/Context.h"
 #include "Platforms/Windows/ResourceManager.h"
 
@@ -223,6 +224,9 @@ namespace PPEngine {
                         return lRes;
                     }
                 }
+
+                Core::EventSystem::EventManager::Get()->Dispatch();
+
                 if (pThis != nullptr) {
                     return pThis->HandleMessage(uMsg, wParam, lParam);
                 } else {

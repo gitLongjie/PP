@@ -42,6 +42,11 @@ namespace PPEngine {
             const std::string& GetFoucesedImage() const { return foucesedImage_; }
             void SetDisableImage(const char* disableImage);
             const std::string& GetDisableImage() const { return disableImage_; }
+
+            void Test() {}
+            int Test1(int i) {
+                return 1;
+            }
            
 
         protected:

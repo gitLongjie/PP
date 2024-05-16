@@ -204,7 +204,7 @@ namespace PPEngine {
                         return false;
                     }
                     Core::EventSystem::MouseMoveEvent event(lastMousePt_);
-                    Core::EventSystem::EventManager::Get()->Send(event, control);
+                    //Core::EventSystem::EventManager::Get()->Send(event, control);
                    // control
                     }
                 break;

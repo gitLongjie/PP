@@ -1,8 +1,12 @@
 #pragma once
 
 
+#include <queue>
+#include <memory>
+
 #include "Core/Constent.h"
 #include "Core/Singleton.h"
+#include "Core/EventSystem/Event.h"
 
 namespace PPEngine {
     namespace Core {
@@ -16,10 +20,15 @@ namespace PPEngine {
                 bool Initialize() override;
                 void Uninitialize() override;
 
-                template<typename ET, typename Sender>
+               /* template<typename ET, typename Sender>
                 bool Send(const ET& event, Sender* sender) {
                     return sender->OnHandlerEvent(event);
-                }
+                }*/
+
+                void Dispatch();
+
+            private:
+                std::queue<std::shared_ptr<Event>> eventQueue_;
             };
         }
     }
