@@ -2,6 +2,8 @@
 
 #include "Window/Label.h"
 
+#include "Core/EventSystem/Event.h"
+
 namespace PPEngine {
     namespace Window {
         class Button : public Label {
@@ -43,12 +45,11 @@ namespace PPEngine {
             void SetDisableImage(const char* disableImage);
             const std::string& GetDisableImage() const { return disableImage_; }
 
-            void Test() {}
             int Test1(int i) {
                 return 1;
             }
            
-
+            void Test(const Core::EventSystem::MouseMoveEvent& mouseMoveEvent);
         protected:
             void OnDrawText() override;
             void OnDrawStatusImage() override;

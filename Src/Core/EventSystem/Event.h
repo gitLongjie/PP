@@ -1,34 +1,49 @@
 #pragma once
 
 #include "Core/Constent.h"
+#include "Core/EventSystem/Constent.h"
 #include "Core/Math/Size.h"
+#include "Core/Platform.h"
 
 namespace PPEngine {
     namespace Core {
         namespace EventSystem {
-            class Event {
+            class IEvent {
             public:
-                enum class Type : uint32 {
-                    Unknow = 0,
-                    MouseMove,
-                };
+                virtual ~IEvent() = default;
+                virtual EventType GetType() const = 0;
+            };
+
+            template <typename T = EventType, T value = EventType::Unknow>
+            class Event : public IEvent {
+            public:
+                
 
             public:
-                Event(Type t);
-                virtual ~Event() = default;
+                Event() :timestamp_(Platform::GetTickCount64()) {}
+                ~Event() = default;
+                EventType GetType() const {
+                    return Type();
+                }
 
-                Type GetType() const { return t_; }
+
+                static T Type() {
+                    return value;
+                }
 
             private:
-                Type t_{Type::Unknow};
                 uint64 timestamp_{ 0 };
             };
 
-            class MouseMoveEvent : public Event {
+            class MouseMoveEvent : public Event<EventType, EventType::MouseMove> {
             public:
+                MouseMoveEvent() = default;
                 MouseMoveEvent(const Math::Point2d& pt);
                 ~MouseMoveEvent() override = default;
 
+                const Math::Point2d& GetPoint() const {
+                    return pt_;
+                }
             private:
                 Math::Point2d pt_;
             };

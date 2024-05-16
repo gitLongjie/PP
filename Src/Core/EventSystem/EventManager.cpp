@@ -14,16 +14,16 @@ namespace PPEngine {
             }
 
             void EventManager::Dispatch() {
-                if (eventQueue_.empty()) {
-                    return;
-                }
+                //if (eventQueue_.empty()) {
+                //    return;
+                //}
 
-                do 
-                {
-                    //std::shared_ptr<Event>  eventQueue_.front();
-                    eventQueue_.pop();
+                //do 
+                //{
+                //    //std::shared_ptr<Event>  eventQueue_.front();
+                //    eventQueue_.pop();
 
-                } while (!eventQueue_.empty());
+                //} while (!eventQueue_.empty());
             }
 
         }

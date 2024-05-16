@@ -10,12 +10,10 @@
 namespace PPEngine {
     namespace Window {
         Button::Button() {
-            auto testFun = std::mem_fun(&Button::Test);
-            testFun(this);
-            auto testFun1 = std::mem_fun(&Button::Test1);
-           // testFun1(this, 1);
-
-            //Core::EventSystem::MemberInvokeImpl<Button> t(&Button::Test1);
+            using namespace Core::EventSystem;
+            //EventManager::Get()->Attach<int>(&Button::Test1, this);
+            EventManager::Get()->Attach<const MouseMoveEvent&>(MouseMoveEvent(), &Button::Test, this);
+            //Core::EventSystem::InvokeImpl<Button> t(&Button::Test1);
             //Core::EventSystem::EventManager::Get()->Bind(this, std::mem_fn())
         }
 
@@ -184,6 +182,8 @@ namespace PPEngine {
                 //if (!DrawImage(hDC, (LPCTSTR)m_sForeImage)) m_sForeImage.Empty();
             }
         }
+
+        void Button::Test(const Core::EventSystem::MouseMoveEvent& mouseMoveEvent) {}
 
     }
 }

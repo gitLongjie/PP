@@ -15,18 +15,12 @@ namespace PPEngine {
               //  virtual void Do(std::shared_ptr<class Event >&) = 0;
             };
 
+            template<typename ..._Args> struct InvokeImpl;
+
             //template<class _Rx>
-            template <class _Result, class _Ty, class _Arg>
-            class MemberInvokeImpl : public Invoke {
-            public:
-               // using FuncType = std::mem_fun<_Rx>;
-                
-                    MemberInvokeImpl(_Rx fun) {}// : fun_(std::move(fun)) {}
-
-             //   void Do(std::shared_ptr<class Event >&) {}
-
-            private:
-              //  FuncType fun_;
+            template <typename _Ty, typename ..._Args>
+            struct InvokeImpl<_Ty, _Args...> : public Invoke {
+                //InvokeImpl(_Rx fun) {}// : fun_(std::move(fun)) {}
 
 
             };

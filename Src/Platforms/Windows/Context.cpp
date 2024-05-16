@@ -204,8 +204,7 @@ namespace PPEngine {
                         return false;
                     }
                     Core::EventSystem::MouseMoveEvent event(lastMousePt_);
-                    //Core::EventSystem::EventManager::Get()->Send(event, control);
-                   // control
+                    Core::EventSystem::EventManager::Get()->Send(event, control);
                     }
                 break;
                 case WM_SETCURSOR:
