@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 #include "Core/EventSystem/Constent.h"
 #include "Core/Math/Size.h"
 #include "Core/Platform.h"

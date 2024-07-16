@@ -29,7 +29,7 @@ namespace PPEngine {
 
             virtual bool Serialize(tinyxml2::XMLElement* root);
 
-            virtual void AddFont(int id, Core::Font::Ptr font, bool shared);
+            virtual void AddFont(int id, Core::Font* font, bool shared);
 
             virtual void Invalidate(Core::Math::Rect& rect);
             virtual void RemovePostPaint(Control* control);

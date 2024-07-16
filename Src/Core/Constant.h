@@ -1,5 +1,7 @@
 #pragma once
 
+#include <atomic>
+
 using int8 = char;
 using uint8 = unsigned char;
 using int16 = short;
@@ -9,6 +11,8 @@ using uint32 = unsigned int;
 using ulong32 = unsigned long;
 using int64 = long long;
 using uint64 = unsigned long long;
+
+using AtomicRefCount = std::atomic<int32>;
 
 #ifndef MAKEWORD
 #define MAKEWORD(a, b)      ((uint16)(((uint8)(((uint64)(a)) & 0xff)) | ((uint16)((uint8)(((uint64)(b)) & 0xff))) << 8))

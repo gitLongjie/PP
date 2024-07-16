@@ -8,14 +8,14 @@
 #include <memory>
 #include <unordered_map>
 
-#include "Core/Constent.h"
+#include "Core/Object/Object.h"
+#include "Core/Object/SharedPtr.h"
 #include "Core/Singleton.h"
 
 namespace PPEngine {
     namespace Core {
-        class Font {
+        class Font : public Object {
         public:
-            using Ptr = std::shared_ptr<Font>;
 
         public:
             explicit Font(const std::string& name);
@@ -23,8 +23,6 @@ namespace PPEngine {
             explicit Font(const std::string& name, int32 size, bool bold);
             explicit Font(const std::string& name, int32 size, bool bold, bool underline);
             explicit Font(const std::string& name, int32 size, bool bold, bool underline, bool italic);
-
-            virtual ~Font() = default;
 
             virtual void Active() {}
 
@@ -52,6 +50,9 @@ namespace PPEngine {
 
 #endif // WIN32
 
+        protected:
+            ~Font() override = default;
+
         private:
             std::string name_;
             int32 size_{ 12 };
@@ -63,6 +64,8 @@ namespace PPEngine {
             HFONT font_{ nullptr };
             TEXTMETRIC tm_;
 #endif
+
+            IMPLEMENT_OBJECT_REFCOUN(Font)
         };
 
         class FontManager : public Singleton<FontManager> {
@@ -74,25 +77,25 @@ namespace PPEngine {
             bool Initialize() override;
             void Uninitialize() override;
 
-            Font::Ptr GetDefaultFontInfo();
+            Font* GetDefaultFontInfo();
 
-            void SetDefaultFont(Font::Ptr font, bool shared);
-            bool Add(int32 id, Font::Ptr font, bool shared);
-            bool Add(Font::Ptr font, bool shared);
+            void SetDefaultFont(Font* font, bool shared);
+            bool Add(int32 id, Font* font, bool shared);
+            bool Add(Font* font, bool shared);
             void Remove(int32 id, bool shared);
             void Clear(bool shared);
 
-            Font::Ptr GetDefaultFontInfo() const;
-            Font::Ptr GetFont(int32 id);
-            Font::Ptr GetFont(const std::string& name, int32 nSize, bool bBold, bool bUnderline, bool bItalic);
+            Font* GetDefaultFontInfo() const;
+            Font* GetFont(int32 id);
+            Font* GetFont(const std::string& name, int32 nSize, bool bBold, bool bUnderline, bool bItalic);
 
             int32 GetFontCount(bool shared) const;
 
         private:
-            Font::Ptr defaultFont_;
-            Font::Ptr sharedFont_;
-            std::unordered_map<int32, Font::Ptr> sharedFonts_;
-            std::unordered_map<int32, Font::Ptr> fonts_;
+            Font* defaultFont_;
+            Font* sharedFont_;
+            std::unordered_map<int32, Core::SharedPtr<Font>> sharedFonts_;
+            std::unordered_map<int32, Core::SharedPtr<Font>> fonts_;
         };
     }
 }

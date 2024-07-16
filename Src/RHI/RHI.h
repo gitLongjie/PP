@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 #include "Core/Singleton.h"
 
 #include "RHI/DriverSettings.h"

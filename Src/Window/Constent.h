@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 
 namespace PPEngine {
     namespace Window {

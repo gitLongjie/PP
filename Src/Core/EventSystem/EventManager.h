@@ -7,7 +7,7 @@
 #include <map>
 //#include <any>
 
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 #include "Core/Singleton.h"
 #include "Core/EventSystem/Constent.h"
 #include "Core/EventSystem/Event.h"
@@ -55,7 +55,7 @@ namespace PPEngine {
                     test_ = storeValue;
 
                     storeValue->obj_ = std::move(o);
-                    storeValue->fun_ = std::move(fn);
+                    storeValue->fun_ = fn;
                     storeValue->eventType_ = ET::Type();
                 }
 

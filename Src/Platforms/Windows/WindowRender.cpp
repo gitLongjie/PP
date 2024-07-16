@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <algorithm>
 
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 #include "Core/Math/Utils.h"
 #include "Core/Image.h"
 #include "Platforms/Windows/Context.h"
@@ -707,7 +707,7 @@ namespace PPEngine {
                 bool bDraw = (uStyle & DT_CALCRECT) == 0;
 
                 //CStdPtrArray aFontArray(10);
-                std::vector<Core::Font::Ptr> aFontArray;
+                std::vector<Core::Font*> aFontArray;
                 std::vector<uint32> aColorArray;
                 std::vector<int> aPIndentArray;
 
@@ -843,10 +843,10 @@ namespace PPEngine {
                             //}
                             aColorArray.push_back(clrColor);
                             ::SetTextColor(hDC, RGB(GetBValue(clrColor), GetGValue(clrColor), GetRValue(clrColor)));
-                            Core::Font::Ptr pFontInfo = Core::FontManager::Get()->GetDefaultFontInfo();
+                            Core::Font* pFontInfo = Core::FontManager::Get()->GetDefaultFontInfo();
                             if (aFontArray.size() > 0) pFontInfo = aFontArray.at(aFontArray.size() - 1);
                             if (!pFontInfo->IsUnderLine()) {
-                                Core::Font::Ptr font = Core::FontManager::Get()->GetFont(pFontInfo->GetName(), pFontInfo->GetSize(), pFontInfo->IsBold(), 
+                                Core::Font* font = Core::FontManager::Get()->GetFont(pFontInfo->GetName(), pFontInfo->GetSize(), pFontInfo->IsBold(), 
                                     true, pFontInfo->IsItalic());
                                 if (!font) {
                                     font = context->AddFont(pFontInfo->GetName(), pFontInfo->GetSize(), pFontInfo->IsBold(), true, pFontInfo->IsItalic());
@@ -864,10 +864,10 @@ namespace PPEngine {
                         case ('b'):  // Bold
                         {
                             pstrText++;
-                            Core::Font::Ptr pFontInfo = Core::FontManager::Get()->GetDefaultFontInfo();
+                            Core::Font* pFontInfo = Core::FontManager::Get()->GetDefaultFontInfo();
                             if (!aFontArray.empty()) pFontInfo = aFontArray.back();
                             if (pFontInfo->IsBold() == false) {
-                                Core::Font::Ptr font = Core::FontManager::Get()->GetFont(pFontInfo->GetName(), pFontInfo->GetSize(), pFontInfo->IsBold(),
+                                Core::Font* font = Core::FontManager::Get()->GetFont(pFontInfo->GetName(), pFontInfo->GetSize(), pFontInfo->IsBold(),
                                     true, pFontInfo->IsItalic());
                                 if (!font) {
                                     font = context->AddFont(pFontInfo->GetName(), pFontInfo->GetSize(), pFontInfo->IsBold(), true, pFontInfo->IsItalic());
@@ -898,7 +898,7 @@ namespace PPEngine {
                             int iFont = (int)strtol(pstrText, const_cast<char**>(&pstrText), 10);
                             //if( isdigit(*pstrText) ) { // debug版本会引起异常
                             if (pstrTemp != pstrText) {
-                                Core::Font::Ptr pFontInfo = Core::FontManager::Get()->GetFont(iFont);
+                                Core::Font* pFontInfo = Core::FontManager::Get()->GetFont(iFont);
                                 aFontArray.push_back(pFontInfo);
                                 pTm = &pFontInfo->GetTEXTMETRIC();
                                 ::SelectObject(hDC, pFontInfo->GetFont());
@@ -930,7 +930,7 @@ namespace PPEngine {
                                 if (sFontAttr.find(("bold")) >= 0) bBold = true;
                                 if (sFontAttr.find(("underline")) >= 0) bUnderline = true;
                                 if (sFontAttr.find(("italic")) >= 0) bItalic = true;
-                                Core::Font::Ptr font = Core::FontManager::Get()->GetFont(sFontName, iFontSize, bBold, bUnderline, bItalic);
+                                Core::Font* font = Core::FontManager::Get()->GetFont(sFontName, iFontSize, bBold, bUnderline, bItalic);
                                 if (!font) font = context->AddFont(sFontName, iFontSize, bBold, bUnderline, bItalic);
                                 //TFontInfo* pFontInfo = pManager->GetFontInfo(hFont);
                                 aFontArray.push_back(font);
@@ -1088,10 +1088,10 @@ namespace PPEngine {
                         case ('u'):  // Underline text
                         {
                             pstrText++;
-                            Core::Font::Ptr pFontInfo = Core::FontManager::Get()->GetDefaultFontInfo();
+                            Core::Font* pFontInfo = Core::FontManager::Get()->GetDefaultFontInfo();
                             if (aFontArray.size() > 0) pFontInfo = aFontArray.at(aFontArray.size() - 1);
                             if (pFontInfo->IsUnderLine() == false) {
-                                Core::Font::Ptr hFont = Core::FontManager::Get()->GetFont(pFontInfo->GetName(), pFontInfo->GetSize(), pFontInfo->IsBold(),
+                                Core::Font* hFont = Core::FontManager::Get()->GetFont(pFontInfo->GetName(), pFontInfo->GetSize(), pFontInfo->IsBold(),
                                     true, pFontInfo->IsItalic());
                                 if (hFont == NULL) hFont = context->AddFont(pFontInfo->GetName(), pFontInfo->GetSize(), pFontInfo->IsBold(),
                                     true, pFontInfo->IsItalic());
@@ -1174,7 +1174,7 @@ namespace PPEngine {
                         {
                             pstrText++;
                             aFontArray.pop_back();
-                            Core::Font::Ptr pFontInfo = aFontArray.at(aFontArray.size() - 1);
+                            Core::Font* pFontInfo = aFontArray.at(aFontArray.size() - 1);
                             if (pFontInfo == NULL) pFontInfo = Core::FontManager::Get()->GetDefaultFontInfo();
                             if (pTm->tmItalic && pFontInfo->IsItalic() == false) {
                                 ABC abc;

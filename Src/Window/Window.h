@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 #include "Window/WindowImpl.h"
 #include "Window/WindowSettings.h"
 

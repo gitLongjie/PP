@@ -6,7 +6,7 @@
 
 #include "Core/Singleton.h"
 #include "Core/Math/Rect.h"
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 
 namespace PPEngine {
     namespace Core {

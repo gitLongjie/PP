@@ -30,7 +30,7 @@ namespace PPEngine {
                 lf.lfCharSet = DEFAULT_CHARSET;
       
                 HFONT hDefaultFont = ::CreateFontIndirect(&lf);
-                Core::Font::Ptr font = AddFont("", -lf.lfHeight, (lf.lfWeight >= FW_BOLD), (lf.lfUnderline == TRUE), (lf.lfItalic == TRUE));
+                Core::Font* font = AddFont("", -lf.lfHeight, (lf.lfWeight >= FW_BOLD), (lf.lfUnderline == TRUE), (lf.lfItalic == TRUE));
                 font->SetFont(hDefaultFont);
                 Core::FontManager::Get()->SetDefaultFont(font, false);
             }
@@ -110,7 +110,7 @@ namespace PPEngine {
 
                 ::SetBkMode(hdcPaint_, TRANSPARENT);
                 ::SetTextColor(hdcPaint_, RGB(GetBValue(color), GetGValue(color), GetRValue(color)));
-                Core::Font::Ptr fontPtr = Core::FontManager::Get()->GetFont(font);
+                Core::Font* fontPtr = Core::FontManager::Get()->GetFont(font);
                 HFONT old = static_cast<HFONT>(::SelectObject(hdcPaint_, fontPtr->GetFont()));
                 RECT dr{ (long)rect.GetMin().x, (long)rect.GetMin().y, (long)rect.GetMax().x, (long)rect.GetMax().y };
                 ::DrawText(hdcPaint_, text.c_str(), -1, &dr, style | DT_NOPREFIX);
@@ -204,7 +204,7 @@ namespace PPEngine {
                         return false;
                     }
                     Core::EventSystem::MouseMoveEvent event(lastMousePt_);
-                    Core::EventSystem::EventManager::Get()->Send(event, control);
+//                    Core::EventSystem::EventManager::Get()->Send(event, control);
                     }
                 break;
                 case WM_SETCURSOR:
@@ -226,19 +226,19 @@ namespace PPEngine {
                 return false;
             }
 
-            Core::Font::Ptr Context::AddFont(const std::string& name, int nSize, bool bBold, bool bUnderline, bool bItalic) {
+            Core::Font* Context::AddFont(const std::string& name, int nSize, bool bBold, bool bUnderline, bool bItalic) {
                 LOGFONT lf = { 0 };
                 ::GetObject(::GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
                 strcpy(lf.lfFaceName, name.c_str());
                 lf.lfCharSet = DEFAULT_CHARSET;
                 lf.lfHeight = -nSize;
                 if (bBold) lf.lfWeight += FW_BOLD;
-                if (bUnderline) lf.lfUnderline = TRUE;
-                if (bItalic) lf.lfItalic = TRUE;
+                if (bUnderline) lf.lfUnderline = true;
+                if (bItalic) lf.lfItalic = true;
                 HFONT hFont = ::CreateFontIndirect(&lf);
-                if (hFont == NULL) return NULL;
+                if (hFont == NULL) return nullptr;
 
-                Core::Font::Ptr pFontInfo = std::make_shared<Core::Font>(name, nSize, bBold, bUnderline, bItalic);
+                Core::Font* pFontInfo = new Core::Font(name, nSize, bBold, bUnderline, bItalic);
                 if (nullptr == pFontInfo) {
                     return nullptr;
                 }
@@ -249,11 +249,6 @@ namespace PPEngine {
                     ::GetTextMetrics(hdcPaint_, &pFontInfo->GetTEXTMETRIC());
                     ::SelectObject(hdcPaint_, hOldFont);
                 }
-
-              /*  if (!Core::FontManager::Get()->Add(pFontInfo, false)) {
-                    ::DeleteObject(hFont);
-                    return nullptr;
-                }*/
 
                 return pFontInfo;
             }

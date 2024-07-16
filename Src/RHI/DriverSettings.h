@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 #include "Core/Platform.h"
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 
 namespace PPEngine {
     namespace PPRHI {

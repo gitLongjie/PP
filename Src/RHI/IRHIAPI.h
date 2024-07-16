@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 #include "Core/Mesh.h"
 
 #include "RHI/DriverSettings.h"

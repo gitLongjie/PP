@@ -8,7 +8,7 @@
 
 #include "Core/Math/Size.h"
 #include "Core/Math/Rect.h"
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 #include "Core/EventSystem/Event.h"
 
 namespace PPEngine {

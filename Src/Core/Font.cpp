@@ -29,15 +29,19 @@ namespace PPEngine {
             italic_ = italic;
         }
 
+        Font::~Font() {
+            int n = 0;
+            n = 1;
+        }
+
         bool FontManager::Initialize() {
             return true;
         }
 
         void FontManager::Uninitialize() {
-
         }
 
-        Font::Ptr FontManager::GetDefaultFontInfo() {
+        Font* FontManager::GetDefaultFontInfo() {
             if (!defaultFont_) {
                 return nullptr;
             }
@@ -46,7 +50,7 @@ namespace PPEngine {
             return defaultFont_;
         }
 
-        Font::Ptr FontManager::GetDefaultFontInfo() const {
+        Font* FontManager::GetDefaultFontInfo() const {
             if (defaultFont_) {
                 return defaultFont_;
             } else {
@@ -54,19 +58,19 @@ namespace PPEngine {
             }
         }
 
-        Font::Ptr FontManager::GetFont(const std::string& name, int32 nSize, bool bBold, bool bUnderline, bool bItalic) {
+        Font* FontManager::GetFont(const std::string& name, int32 nSize, bool bBold, bool bUnderline, bool bItalic) {
             for (const auto& item : fonts_) {
-                const Font::Ptr& font = item.second;
+                Font* font = item.second;
                 if (font->GetName() == name && font->GetSize() == nSize
                     && font->IsBold() == bBold && font->IsUnderLine() == bUnderline
                     && font->IsItalic() == bItalic) {
                     return font;
                 }
             }
-            return Font::Ptr();
+            return nullptr;
         }
 
-        Font::Ptr FontManager::GetFont(int32 id) {
+        Font* FontManager::GetFont(int32 id) {
             auto itor = fonts_.find(id);
             return fonts_.end() != itor ? itor->second : sharedFonts_[id];
         }
@@ -75,7 +79,7 @@ namespace PPEngine {
             return shared ? sharedFonts_.size() : fonts_.size();
         }
 
-        void FontManager::SetDefaultFont(Font::Ptr font, bool shared) {
+        void FontManager::SetDefaultFont(Font* font, bool shared) {
             if (shared) {
                 sharedFont_ = font;
             }
@@ -84,7 +88,7 @@ namespace PPEngine {
             }
         }
 
-        bool FontManager::Add(int32 id, Font::Ptr font, bool shared) {
+        bool FontManager::Add(int32 id, Font* font, bool shared) {
             if (shared) {
                 if (-1 == id) {
                     id = sharedFonts_.size();
@@ -99,7 +103,7 @@ namespace PPEngine {
             return true;
         }
 
-        bool FontManager::Add(Font::Ptr font, bool shared) {
+        bool FontManager::Add(Font* font, bool shared) {
             if (shared) {
                 sharedFonts_.insert(std::make_pair(sharedFonts_.size(), std::move(font)));
             } else {

@@ -47,7 +47,7 @@ namespace PPEngine {
             return true;
         }
 
-        void Context::AddFont(int id, Core::Font::Ptr font, bool shared) {
+        void Context::AddFont(int id, Core::Font* font, bool shared) {
             Core::FontManager::Get()->Add(id, font, shared);
         }
 
@@ -292,7 +292,7 @@ namespace PPEngine {
                 attribte = attribte->Next();
             }
 
-            Core::Font::Ptr font = Core::Platform::Get()->CreatePlatformFont(name, size, bold, underline, italic);
+            Core::Font* font = Core::Platform::Get()->CreatePlatformFont(name, size, bold, underline, italic);
             AddFont(id, font, shared);
 
             if (defaultfont) {

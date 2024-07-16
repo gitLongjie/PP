@@ -58,6 +58,8 @@ namespace PPEngine {
                 HWND hWnd_{ nullptr };
                 WNDPROC oldWndProc_{ nullptr };
                 bool subclassed_{ false };
+
+                IMPLEMENT_OBJECT_REFCOUN(CWindowWnd)
             };
         }
     }

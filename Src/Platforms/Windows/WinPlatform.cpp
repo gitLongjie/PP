@@ -20,8 +20,8 @@ namespace PPEngine {
                 return "Windows";
             }
 
-            Core::Font::Ptr WinPlatform::CreatePlatformFont(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic) {
-                Core::Font::Ptr platformFont = std::make_shared<Core::Font>(font, nSize, bBold, bUnderline, bItalic);
+            Core::Font* WinPlatform::CreatePlatformFont(const std::string& font, int nSize, bool bBold, bool bUnderline, bool bItalic) {
+                Core::Font* platformFont = new Core::Font(font, nSize, bBold, bUnderline, bItalic);
                 LOGFONT lf = { 0 };
                 ::GetObject(::GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
                 strcpy(lf.lfFaceName, font.c_str());

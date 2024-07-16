@@ -5,7 +5,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 #include "Core/Singleton.h"
 #include "Core/Image.h"
 

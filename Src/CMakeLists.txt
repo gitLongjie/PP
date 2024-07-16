@@ -73,3 +73,12 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${Proj
 TARGET_LINK_LIBRARIES(
     ${PROJECT_NAME}
 )
+
+add_custom_command(TARGET ${PROJECT_NAME}
+    POST_BUILD
+
+    COMMAND mt.exe
+    -manifest \"${CMAKE_CURRENT_SOURCE_DIR}\\${PROJECT_NAME}.manifest\"
+    -inputresource:\"$<TARGET_FILE:${PROJECT_NAME}>\"
+    -outputresource:\"$<TARGET_FILE:${PROJECT_NAME}>\"
+)

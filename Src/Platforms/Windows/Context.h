@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <string>
 
-#include "Core/Constent.h"
+#include "Core/Constant.h"
 #include "Core/Math/Size.h"
 #include "Core/Math/Rect.h"
 #include "Core/Platform.h"
@@ -46,7 +46,7 @@ namespace PPEngine {
                 void SetInitSize(const Core::Math::Size& size) override;
 
                 LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result);
-                Core::Font::Ptr AddFont(const std::string& name, int nSize, bool bBold, bool bUnderline, bool bItalic);
+                Core::Font* AddFont(const std::string& name, int nSize, bool bBold, bool bUnderline, bool bItalic);
 
                 void SetDefaultLinkFontColor(uint32 color, bool shared);
                 uint32 GetDefaultLinkFontColor() const {
