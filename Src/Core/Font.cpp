@@ -29,11 +29,6 @@ namespace PPEngine {
             italic_ = italic;
         }
 
-        Font::~Font() {
-            int n = 0;
-            n = 1;
-        }
-
         bool FontManager::Initialize() {
             return true;
         }

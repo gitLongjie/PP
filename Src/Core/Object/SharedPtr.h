@@ -1,5 +1,7 @@
 #pragma once
 
+#include <assert.h>
+
 #include "Core/Constant.h"
 
 namespace PPEngine {
@@ -37,8 +39,8 @@ namespace PPEngine {
             bool HasMoreThanOnRef() const { return 1 <= refCount_.load(); }
 
         protected:
-            ThreadSafeRefCountBase();
-            virtual ~ThreadSafeRefCountBase();
+            ThreadSafeRefCountBase() = default;
+            virtual ~ThreadSafeRefCountBase() = default;
 
             void AddRef() const {
                 ++refCount_;
@@ -78,8 +80,7 @@ namespace PPEngine {
         class ThreadSafeRefCount;
 
         template<typename T>
-        class DefaultDeleter {
-        public:
+        struct DefaultDeleter {
             static void Delete(const T* ptr) {
                 ThreadSafeRefCount<T, DefaultDeleter<T>>::Delete(ptr);
             }
@@ -95,7 +96,7 @@ namespace PPEngine {
             void AddRef() const { ThreadSafeRefCountBase::AddRef(); }
             void Release() const {
                 if (ThreadSafeRefCountBase::Release()) {
-                    D::Delete(static_cast<T*>(this));
+                    D::Delete(reinterpret_cast<const T*>(this));
                 }
             }
 
@@ -104,7 +105,7 @@ namespace PPEngine {
 
         private:
             friend class DefaultDeleter<T>;
-            static void DeleteThis(T* p) { delete p; }
+            static void Delete(const T* p) { delete p; }
         };
 
         template <class T>
@@ -152,6 +153,7 @@ namespace PPEngine {
                 if (nullptr != old) {
                     old->Release();
                 }
+                return *this;
             }
             SharedPtr<T>& operator= (const SharedPtr<T>& other) {
                 return *this = other.ptr_;
