@@ -2,36 +2,34 @@
 
 #include "Core/Constant.h"
 
-namespace PPEngine {
-    namespace Core {
-        class Object {
-        public:
-            virtual void AddRef() const = 0;
-            virtual bool Release() const = 0;
-            virtual bool HasOneRef() const = 0;
-            virtual bool HasAtLeastOneRef() const = 0;
+namespace Core {
+    class Object {
+    public:
+        virtual void AddRef() const = 0;
+        virtual bool Release() const = 0;
+        virtual bool HasOneRef() const = 0;
+        virtual bool HasAtLeastOneRef() const = 0;
 
-        protected:
-            virtual ~Object() = default;
-        };
+    protected:
+        virtual ~Object() = default;
+    };
 
-        class ObjectRefCount {
-            NON_COPYABLE(ObjectRefCount)
+    class ObjectRefCount {
+        NON_COPYABLE(ObjectRefCount)
 
-        public:
-            ObjectRefCount();
-            ~ObjectRefCount();
+    public:
+        ObjectRefCount();
+        ~ObjectRefCount();
 
-            void AddRef() const;
-            bool Release() const;
-            bool HasOneRef() const;
-            bool HasAtLeastOneRef() const;
+        void AddRef() const;
+        bool Release() const;
+        bool HasOneRef() const;
+        bool HasAtLeastOneRef() const;
 
-        private:
-            friend class ObjectRefCountImpl;
-            ObjectRefCountImpl* impl_ { nullptr };
-        };
-    }
+    private:
+        friend class ObjectRefCountImpl;
+        ObjectRefCountImpl* impl_ { nullptr };
+    };
 }
 
 #define IMPLEMENT_OBJECT_REFCOUN(CLASSNAME)                                                              \
@@ -48,4 +46,4 @@ public:                                                                         
         bool HasAtLeastOneRef(void) const override { return refCount_.HasAtLeastOneRef(); }              \
                                                                                                          \
 private:                                                                                                 \
-    PPEngine::Core::ObjectRefCount refCount_;                                                            \
+    Core::ObjectRefCount refCount_;                                                            \

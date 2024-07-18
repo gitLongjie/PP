@@ -2,20 +2,16 @@
 
 #include "Core/Image.h"
 
-namespace PPEngine {
-    namespace Core {
-        Platform* SingletonSub<Platform>::instance_ = nullptr;
+namespace Core {
+    Platform* SingletonSub<Platform>::instance_ = nullptr;
 
-        bool Platform::Initialize() {
-            if (!ImageManager::Init()) {
-                return false;
-            }
-            return true;
+    bool Platform::Initialize() {
+        if (!ImageManager::Init()) {
+            return false;
         }
+        return true;
+    }
 
-        void Platform::Uninitialize() {
-        }
-
-
+    void Platform::Uninitialize() {
     }
 }

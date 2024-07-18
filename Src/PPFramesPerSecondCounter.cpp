@@ -18,7 +18,7 @@ bool PPFramesPerSecondCounter::OnFrame(float deltaSeconds, bool frameRendered /*
     if (m_accumulatedTime > m_avgInterval) {
         m_currentFPS = static_cast<float>(m_numFrames / m_accumulatedTime);
         if (m_printFPS) {
-            INFOLOG("FPS: {}", m_currentFPS);
+            LOGI("FPS: {}", m_currentFPS);
         }
 
         m_numFrames = 0;

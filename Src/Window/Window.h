@@ -8,22 +8,20 @@
 
 #include "RHI/DriverSettings.h"
 
-namespace PPEngine {
-    namespace Window {
-        class Window {
-        public:
-            explicit Window(PPRHI::DriverSettings& driverSetting, const WindowSettings& settings, std::unique_ptr<WindowImpl> impl) noexcept;
+namespace Window {
+    class Window {
+    public:
+        explicit Window(PPRHI::DriverSettings& driverSetting, const WindowSettings& settings, std::unique_ptr<WindowImpl> impl) noexcept;
 
-            bool ShouldClose() const;
-            void MakeCurrentContext() const;
-            void SwapBuffers() const;
+        bool ShouldClose() const;
+        void MakeCurrentContext() const;
+        void SwapBuffers() const;
 
-            //Core::WindowHandle GetWindowHandle() const;
+        //Core::WindowHandle GetWindowHandle() const;
 
-        private:
-            PPRHI::DriverSettings& driverSetting_;
-            const WindowSettings& settings_;
-            std::unique_ptr<WindowImpl> impl_;
-        };
-    }
+    private:
+        PPRHI::DriverSettings& driverSetting_;
+        const WindowSettings& settings_;
+        std::unique_ptr<WindowImpl> impl_;
+    };
 }

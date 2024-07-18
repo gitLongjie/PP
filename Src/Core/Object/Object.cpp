@@ -3,54 +3,55 @@
 #include <atomic>
 #include <cassert>
 
-namespace PPEngine {
-    namespace Core {
-        class ObjectRefCountImpl {
-            public:
-            ObjectRefCountImpl() {}
+namespace Core {
+    class ObjectRefCountImpl {
+    public:
+        ObjectRefCountImpl() {}
 
-            void AddRef(void) const {
-                ++refCount_; 
+        void AddRef(void) const {
+            ++refCount_;
+        }
+        bool Release(void) const {
+            if (0 == --refCount_) {
+                return true;
             }
-            bool Release(void) const {
-                if (0 == --refCount_) {
-                    return true;
-                }
 
-                return false;
-            }
-            bool HasOneRef(void) const { return 1 == refCount_.load(); }
-            bool HasAtLeastOneRef(void) const { return refCount_.load() >= 1; }
-
-        private:
-            mutable std::atomic<int> refCount_{0};
-        };
-
-        ObjectRefCount::ObjectRefCount() : impl_(new ObjectRefCountImpl) {
+            return false;
+        }
+        bool HasOneRef(void) const {
+            return 1 == refCount_.load();
+        }
+        bool HasAtLeastOneRef(void) const {
+            return refCount_.load() >= 1;
         }
 
-        ObjectRefCount::~ObjectRefCount() {
-            delete impl_;
-        }
+    private:
+        mutable std::atomic<int> refCount_{ 0 };
+    };
 
-        void ObjectRefCount::AddRef() const {
-            assert(nullptr != impl_);
-            impl_->AddRef();
-        }
+    ObjectRefCount::ObjectRefCount() : impl_(new ObjectRefCountImpl) {}
 
-        bool ObjectRefCount::Release() const {
-            assert(nullptr != impl_);
-            return impl_->Release();
-        }
+    ObjectRefCount::~ObjectRefCount() {
+        delete impl_;
+    }
 
-        bool ObjectRefCount::HasOneRef() const {
-            assert(nullptr != impl_);
-            return impl_->HasOneRef();
-        }
+    void ObjectRefCount::AddRef() const {
+        assert(nullptr != impl_);
+        impl_->AddRef();
+    }
 
-        bool ObjectRefCount::HasAtLeastOneRef() const {
-            assert(nullptr != impl_);
-            return impl_->HasAtLeastOneRef();
-        }
+    bool ObjectRefCount::Release() const {
+        assert(nullptr != impl_);
+        return impl_->Release();
+    }
+
+    bool ObjectRefCount::HasOneRef() const {
+        assert(nullptr != impl_);
+        return impl_->HasOneRef();
+    }
+
+    bool ObjectRefCount::HasAtLeastOneRef() const {
+        assert(nullptr != impl_);
+        return impl_->HasAtLeastOneRef();
     }
 }

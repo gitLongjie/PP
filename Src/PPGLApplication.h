@@ -7,7 +7,7 @@
 #include "PPCamera.h"
 #include "PPScene.h"
 
-class PPGLApplication : public PPEngine::PPApplication {
+class PPGLApplication : public PPApplication {
 public:
     PPGLApplication(int width, int height, const char* title);
     ~PPGLApplication();

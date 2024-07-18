@@ -44,78 +44,75 @@ void main()
 };
 )";
 
-namespace PPEngine {
-    namespace PPEditor {
+namespace Editor {
 
-        PPEditorApplication::PPEditorApplication(Core::MainLoop& mainLoop) noexcept
-            : PPApplication()
-            , mainLoop_(mainLoop){
+    PPEditorApplication::PPEditorApplication(Core::MainLoop& mainLoop) noexcept
+        : PPApplication()
+        , mainLoop_(mainLoop){
 
+    }
+
+    PPEditorApplication::~PPEditorApplication() {
+
+    }
+
+    bool PPEditorApplication::Initialize() {
+        if (!PPApplication::Initialize()) {
+            return false;
         }
+        return true;
+        // return context_.Initialize();
+    }
 
-        PPEditorApplication::~PPEditorApplication() {
+    int PPEditorApplication::RunLoop() {
+        return mainLoop_.Run();
+        PPRHI::RHI* rhi = PPRHI::RHI::Get();
+        assert(nullptr != rhi);
 
-        }
+        const float vertices[] = {
+            //    ---- 位置 ----  ---- 颜色 ----     - 纹理坐标 -
+            -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   0.0f, 1.0f, // 左下
+                0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 1.0f, // 右下
+                0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   1.0f, 0.0f, // 右上
+            -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,   0.0f, 0.0f  // 左上
+        };
+        unsigned int indices[] = {
+            0, 1, 2,
+            2, 3, 0
+        };
 
-        bool PPEditorApplication::Initialize() {
-            if (!PPApplication::Initialize()) {
-                return false;
+        Core::Mesh::Vertex vertexs[4] = {
+            { { -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, {0.0f, 1.0f}, { 0.0f, 0.0f, 0.0f } },
+            { {  0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, {1.0f, 1.0f}, { 0.0f, 0.0f, 0.0f } },
+            { {  0.5f,  0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, {1.0f, 0.0f}, { 0.0f, 0.0f, 0.0f } },
+            { { -0.5f,  0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0f, 0.0f}, { 0.0f, 0.0f, 0.0f } }
+        };
+
+        Core::Mesh mesh;
+        int count = sizeof(Core::Mesh::Vertex);
+        mesh.SetVertices(vertexs, 4, false);
+        mesh.SetIndices(indices, 6, false);
+        {
+            Renderer::MeshRender meshRender(&mesh);
+            rhi->StartRender();
+            auto vertexSource = PPRHI::GLShader::CreateSource(GL_VERTEX_SHADER, shaderCodeVertex);
+            auto fragmSource = PPRHI::GLShader::CreateSource(GL_FRAGMENT_SHADER, shaderCodeFragment);
+            PPRHI::GLShader shader(vertexSource, fragmSource);
+
+            while (context_.IsRunning()) {
+                rhi->UpdateScreenSize();
+                shader.Use();
+                meshRender.Render();
+                rhi->EndFrame();
+                rhi->PollEvents();
             }
-            return true;
-           // return context_.Initialize();
         }
+        rhi->StopRender();
+        return PPApplication::RunLoop();
+    }
 
-        int PPEditorApplication::RunLoop() {
-            return mainLoop_.Run();
-            PPRHI::RHI* rhi = PPRHI::RHI::Get();
-            assert(nullptr != rhi);
-
-            const float vertices[] = {
-                //    ---- 位置 ----  ---- 颜色 ----     - 纹理坐标 -
-                -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   0.0f, 1.0f, // 左下
-                 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 1.0f, // 右下
-                 0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   1.0f, 0.0f, // 右上
-                -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,   0.0f, 0.0f  // 左上
-            };
-            unsigned int indices[] = {
-                0, 1, 2,
-                2, 3, 0
-            };
-
-            Core::Mesh::Vertex vertexs[4] = {
-                { { -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, {0.0f, 1.0f}, { 0.0f, 0.0f, 0.0f } },
-                { {  0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, {1.0f, 1.0f}, { 0.0f, 0.0f, 0.0f } },
-                { {  0.5f,  0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, {1.0f, 0.0f}, { 0.0f, 0.0f, 0.0f } },
-                { { -0.5f,  0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0f, 0.0f}, { 0.0f, 0.0f, 0.0f } }
-            };
-
-            Core::Mesh mesh;
-            int count = sizeof(Core::Mesh::Vertex);
-            mesh.SetVertices(vertexs, 4, false);
-            mesh.SetIndices(indices, 6, false);
-            {
-                Renderer::MeshRender meshRender(&mesh);
-                rhi->StartRender();
-                auto vertexSource = PPRHI::GLShader::CreateSource(GL_VERTEX_SHADER, shaderCodeVertex);
-                auto fragmSource = PPRHI::GLShader::CreateSource(GL_FRAGMENT_SHADER, shaderCodeFragment);
-                PPRHI::GLShader shader(vertexSource, fragmSource);
-
-                while (context_.IsRunning()) {
-                    rhi->UpdateScreenSize();
-                    shader.Use();
-                    meshRender.Render();
-                    rhi->EndFrame();
-                    rhi->PollEvents();
-                }
-            }
-            rhi->StopRender();
-            return PPApplication::RunLoop();
-        }
-
-        void PPEditorApplication::Uninitialize() {
-            //context_.Uninitialize();
-            PPApplication::Uninitialize();
-        }
-
+    void PPEditorApplication::Uninitialize() {
+        //context_.Uninitialize();
+        PPApplication::Uninitialize();
     }
 }

@@ -20,7 +20,7 @@
 
 //int main(int argc, char* argv[]) {
 //
-//    PPEngine::PPEditor::PPEditorApplication app;// (/*1720, 600, "ProjectorPlayer"*/);
+//    PPEditor::PPEditorApplication app;// (/*1720, 600, "ProjectorPlayer"*/);
 //    if (!app.Initialize()) {
 //        app.Uninitialize();
 //        return -1;
@@ -43,7 +43,7 @@
 
 #define UI_CLASSSTYLE_DIALOG     (CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS | CS_SAVEBITS)
 
-class CFrameWnd : public PPEngine::Platforms::Windows::WinFrame {
+class CFrameWnd : public Platforms::Windows::WinFrame {
 public:
     CFrameWnd() {};
     const char* GetWindowClassName() const { return "UIFrame"; };
@@ -65,19 +65,19 @@ protected:
 #define WNDSTYLE_FRAME      (WS_VISIBLE | WS_OVERLAPPEDWINDOW)
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    PPEngine::Platforms::Windows::WindowsMainLoopImpl impl;
-  //  PPEngine::Platforms::Windows::Context::SetInstanceHandle(hInstance);
-    PPEngine::Core::MainLoop mainLoop(&impl);
-    PPEngine::PPEditor::PPEditorApplication app(mainLoop);
+    Platforms::Windows::WindowsMainLoopImpl impl;
+  //  Platforms::Windows::Context::SetInstanceHandle(hInstance);
+    Core::MainLoop mainLoop(&impl);
+    Editor::PPEditorApplication app(mainLoop);
     if (!app.Initialize()) {
         return -1;
     }
-    PPEngine::Platforms::Windows::ResourceManager::Get()->SetInstanceHandle(hInstance);
+    Platforms::Windows::ResourceManager::Get()->SetInstanceHandle(hInstance);
 
-    PPEngine::Window::WindowSettings settings;
+    Window::WindowSettings settings;
     settings.title = "PPEditor";
-    PPEngine::PPRHI::DriverSettings driverSettings;
-    PPEngine::Window::Window window(driverSettings, settings, std::make_unique<CFrameWnd>());
+    PPRHI::DriverSettings driverSettings;
+    Window::Window window(driverSettings, settings, std::make_unique<CFrameWnd>());
     //CFrameWnd* window = new CFrameWnd();
     //window->Create(NULL, "ProjectorPlayer", WNDSTYLE_FRAME, 0L, 0L, 0, 640, 480);
     //window->CenterWindow();

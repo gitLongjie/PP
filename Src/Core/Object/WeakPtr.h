@@ -4,182 +4,187 @@
 #include "Core/Object/SharedPtr.h"
 #include "Core/Thread/ThreadChecker.h"
 
-namespace PPEngine {
-    namespace Core {
-        template <typename T>
-        class SupportsWeakPtr;
-        template <typename T>
-        class WeakPtr;
+namespace Core {
+    template <typename T>
+    class SupportsWeakPtr;
+    template <typename T>
+    class WeakPtr;
 
-        class WeakReference {
+    class WeakReference {
+    public:
+        class Flag : public ThreadSafeRefCount<Flag> {
         public:
-            class Flag : public ThreadSafeRefCount<Flag> {
-            public:
-                Flag();
+            Flag();
 
-                void Invalidate(void);
-                bool IsValid(void) const;
-
-            private:
-                friend class ThreadSafeRefCount<Flag>;
-
-                ~Flag() override;
-
-                ThreadChecker threadChecker_;
-                mutable bool isValide_ { false };
-            };
-
-        public:
-            WeakReference();
-            explicit WeakReference(const Flag* flag);
-            ~WeakReference();
-
+            void Invalidate(void);
             bool IsValid(void) const;
 
         private:
-            SharedPtr<const Flag> flag_;
+            friend class ThreadSafeRefCount<Flag>;
+
+            ~Flag() override;
+
+            ThreadChecker threadChecker_;
+            mutable bool isValide_{ false };
         };
 
-        class WeakReferenceOwner {
-        public:
-            WeakReferenceOwner();
-            ~WeakReferenceOwner();
+    public:
+        WeakReference();
+        explicit WeakReference(const Flag* flag);
+        ~WeakReference();
 
-            WeakReference GetRef() const;
+        bool IsValid(void) const;
 
-            bool HasRefs() const { return flag_.Get() && !flag_->HasOnRef(); }
+    private:
+        SharedPtr<const Flag> flag_;
+    };
 
-            void Invalidate();
+    class WeakReferenceOwner {
+    public:
+        WeakReferenceOwner();
+        ~WeakReferenceOwner();
 
-        private:
-            mutable SharedPtr<WeakReference::Flag> flag_;
-        };
+        WeakReference GetRef() const;
 
-        class WeakPtrBase {
-        public:
-            WeakPtrBase();
-            ~WeakPtrBase();
+        bool HasRefs() const {
+            return flag_.Get() && !flag_->HasOnRef();
+        }
 
-        protected:
-            explicit WeakPtrBase(const WeakReference& ref);
+        void Invalidate();
 
-            WeakReference ref_;
-        };
+    private:
+        mutable SharedPtr<WeakReference::Flag> flag_;
+    };
 
-        template <typename T>
-        class WeakPtrFactory;
+    class WeakPtrBase {
+    public:
+        WeakPtrBase();
+        ~WeakPtrBase();
 
-        template <typename T>
-        class WeakPtr : public WeakPtrBase {
-        public:
-            WeakPtr() : m_pObject(NULL) {}
+    protected:
+        explicit WeakPtrBase(const WeakReference& ref);
 
-            template <typename U>
-            WeakPtr(const WeakPtr<U>& other) : WeakPtrBase(other), m_pObject(other.ref_) {}
+        WeakReference ref_;
+    };
 
-            T* Get() const { return ref_.IsValid() ? m_pObject : NULL; }
+    template <typename T>
+    class WeakPtrFactory;
 
-            T& operator*() const {
-                assert(ref_.IsValid());
-                return *Get();
-            }
-            T* operator->() const {
-                assert(ref_.IsValid());
-                return Get();
-            }
+    template <typename T>
+    class WeakPtr : public WeakPtrBase {
+    public:
+        WeakPtr() : m_pObject(NULL) {}
 
-        private:
-            typedef T* WeakPtr::* Testable;
+        template <typename U>
+        WeakPtr(const WeakPtr<U>& other) : WeakPtrBase(other), m_pObject(other.ref_) {}
 
-        public:
-            operator Testable() const { return Get() ? &WeakPtr::ptr_ : NULL; }
+        T* Get() const {
+            return ref_.IsValid() ? m_pObject : NULL;
+        }
 
-            void Reset() {
-                ref_ = WeakReference();
-                ptr_ = nullptr;
-            }
+        T& operator*() const {
+            assert(ref_.IsValid());
+            return *Get();
+        }
+        T* operator->() const {
+            assert(ref_.IsValid());
+            return Get();
+        }
 
-        private:
-            template <class U>
-            bool operator==(WeakPtr<U> const&) const;
-            template <class U>
-            bool operator!=(WeakPtr<U> const&) const;
+    private:
+        typedef T* WeakPtr::* Testable;
 
-            friend class SupportsWeakPtrBase;
-            template <typename U>
-            friend class WeakPtr;
-            friend class SupportsWeakPtr<T>;
-            friend class WeakPtrFactory<T>;
+    public:
+        operator Testable() const {
+            return Get() ? &WeakPtr::ptr_ : NULL;
+        }
 
-            WeakPtr(const WeakReference& ref, T* p)
-                : WeakPtrBase(ref), m_pObject(p) {
-            }
+        void Reset() {
+            ref_ = WeakReference();
+            ptr_ = nullptr;
+        }
 
-            T* ptr_ { nullptr };
-        };
+    private:
+        template <class U>
+        bool operator==(WeakPtr<U> const&) const;
+        template <class U>
+        bool operator!=(WeakPtr<U> const&) const;
 
-        class SupportsWeakPtrBase {
-        public:
-            template <typename Derived>
-            static WeakPtr<Derived> StaticAsWeakPtr(Derived* t) {
-                typedef IsConvertible<Derived, SupportsWeakPtrBase&> convertible;
-                COMPILE_ASSERT(convertible::value, AsWeakPtr_argument_inherits_from_SupportsWeakPtr);
-                return AsWeakPtrImpl<Derived>(t, *t);
-            }
+        friend class SupportsWeakPtrBase;
+        template <typename U>
+        friend class WeakPtr;
+        friend class SupportsWeakPtr<T>;
+        friend class WeakPtrFactory<T>;
 
-        private:
-            template <typename Derived, typename Base>
-            static WeakPtr<Derived> AsWeakPtrImpl(Derived* t,
-                                                  const SupportsWeakPtr<Base>&) {
-                WeakPtr<Base> ptr = t->Base::AsWeakPtr();
-                return WeakPtr<Derived>(ptr.ref_, static_cast<Derived*>(ptr.ptr_));
-            }
-        };
+        WeakPtr(const WeakReference& ref, T* p)
+            : WeakPtrBase(ref), m_pObject(p) {}
 
-        template <class T>
-        class WeakPtrFactory {
-            NON_COPYABLE(WeakPtrFactory);
+        T* ptr_{ nullptr };
+    };
 
-        public:
-            explicit WeakPtrFactory(T* ptr) : ptr_(ptr) {}
+    class SupportsWeakPtrBase {
+    public:
+        template <typename Derived>
+        static WeakPtr<Derived> StaticAsWeakPtr(Derived* t) {
+            typedef IsConvertible<Derived, SupportsWeakPtrBase&> convertible;
+            COMPILE_ASSERT(convertible::value, AsWeakPtr_argument_inherits_from_SupportsWeakPtr);
+            return AsWeakPtrImpl<Derived>(t, *t);
+        }
 
-            ~WeakPtrFactory() { ptr_ = NULL; }
+    private:
+        template <typename Derived, typename Base>
+        static WeakPtr<Derived> AsWeakPtrImpl(Derived* t,
+            const SupportsWeakPtr<Base>&) {
+            WeakPtr<Base> ptr = t->Base::AsWeakPtr();
+            return WeakPtr<Derived>(ptr.ref_, static_cast<Derived*>(ptr.ptr_));
+        }
+    };
 
-            WeakPtr<T> GetWeakPtr() {
-                assert(nullptr != ptr_);
-                return WeakPtr<T>(weakReferenceOwner_.GetRef(), ptr_);
-            }
+    template <class T>
+    class WeakPtrFactory {
+        NON_COPYABLE(WeakPtrFactory);
 
-            void InvalidateWeakPtrs() {
-                assert( nullptr != ptr_);
-                weakReferenceOwner_.Invalidate();
-            }
+    public:
+        explicit WeakPtrFactory(T* ptr) : ptr_(ptr) {}
 
-            bool HasWeakPtrs() const {
-                assert( nullptr != ptr_);
-                return weakReferenceOwner_.HasRefs();
-            }
+        ~WeakPtrFactory() {
+            ptr_ = NULL;
+        }
 
-        private:
-            WeakReferenceOwner weakReferenceOwner_;
-            T* ptr_ { nullptr };
-        };
+        WeakPtr<T> GetWeakPtr() {
+            assert(nullptr != ptr_);
+            return WeakPtr<T>(weakReferenceOwner_.GetRef(), ptr_);
+        }
 
-        template <class T>
-        class SupportsWeakPtr : public SupportsWeakPtrBase {
-            NON_COPYABLE(SupportsWeakPtr);
-        public:
-            SupportsWeakPtr() {}
+        void InvalidateWeakPtrs() {
+            assert(nullptr != ptr_);
+            weakReferenceOwner_.Invalidate();
+        }
 
-            WeakPtr<T> AsWeakPtr() {
-                return WeakPtr<T>(weakReferenceOwner_.GetRef(), static_cast<T*>(this));
-            }
+        bool HasWeakPtrs() const {
+            assert(nullptr != ptr_);
+            return weakReferenceOwner_.HasRefs();
+        }
 
-        protected:
-            ~SupportsWeakPtr() {}
+    private:
+        WeakReferenceOwner weakReferenceOwner_;
+        T* ptr_{ nullptr };
+    };
 
-        private:
-            WeakReferenceOwner weakReferenceOwner_;
-        };
-    }
+    template <class T>
+    class SupportsWeakPtr : public SupportsWeakPtrBase {
+        NON_COPYABLE(SupportsWeakPtr);
+    public:
+        SupportsWeakPtr() {}
+
+        WeakPtr<T> AsWeakPtr() {
+            return WeakPtr<T>(weakReferenceOwner_.GetRef(), static_cast<T*>(this));
+        }
+
+    protected:
+        ~SupportsWeakPtr() {}
+
+    private:
+        WeakReferenceOwner weakReferenceOwner_;
+    };
 }

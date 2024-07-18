@@ -60,7 +60,7 @@ bool PPGLApplication::Initialize() {
     }
 
  /*   if (!Create(m_width, m_height, m_title.c_str())) {
-        ERRORLOG("create failed");
+        LOGE("create failed");
     }*/
 
     m_scene = new PPScene(&m_camera);
@@ -70,7 +70,7 @@ bool PPGLApplication::Initialize() {
 
 int PPGLApplication::RunLoop() {
     if (nullptr == m_window) {
-        ERRORLOG("No window to run");
+        LOGE("No window to run");
         return -1;
     }
 

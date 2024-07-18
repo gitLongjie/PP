@@ -38,14 +38,6 @@ using AtomicRefCount = std::atomic<int32>;
 #define HIBYTE(w)           ((uint8)((((uint64)(w)) >> 8) & 0xff))
 #endif // !HIBYTE
 
-namespace PPEngine {
-    namespace Core {
 #define NON_COPYABLE(class_name) \
     class_name(const class_name&) = delete; \
     class_name& operator=(const class_name&) = delete;
-
-
-        
-
-    }
-} // namespace name

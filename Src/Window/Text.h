@@ -2,19 +2,17 @@
 
 #include "Window/Label.h"
 
-namespace PPEngine {
-    namespace Window {
-        class Text : public Label {
-        public:
-            Text();
-            ~Text() override;
+namespace Window {
+    class Text : public Label {
+    public:
+        Text();
+        ~Text() override;
 
-            static Control::Ptr Create();
+        static Control::Ptr Create();
 
-            const char* GetClass() const { return "Text"; }
+        const char* GetClass() const { return "Text"; }
 
-        protected:
-            void OnDrawText() override;
-        };
-    }
+    protected:
+        void OnDrawText() override;
+    };
 }

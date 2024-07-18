@@ -3,17 +3,15 @@
 #include <assert.h>
 #include "Core/Platform.h"
 
-namespace PPEngine {
-    namespace Core {
-        MainLoop::MainLoop(MainLoopImpl* impl)
-            : impl_(impl) {
-        }
+namespace Core {
+    MainLoop::MainLoop(MainLoopImpl* impl)
+        : impl_(impl) {
+    }
 
 
-        int MainLoop::Run() {
-            assert(nullptr != impl_ && "MainLoopImpl is nullptr");
+    int MainLoop::Run() {
+        assert(nullptr != impl_ && "MainLoopImpl is nullptr");
 
-            return impl_->Run();
-        }
+        return impl_->Run();
     }
 }

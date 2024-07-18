@@ -13,32 +13,29 @@
 
 #include "Singleton.h"
 
-namespace PPEngine {
-    namespace Core {
-        class Logger : public Singleton<Logger> {
-        public:
-            Logger();
-            ~Logger();
+namespace Core {
+    class Logger : public Singleton<Logger> {
+    public:
+        Logger();
+        ~Logger();
 
-            bool Initialize() override;
-            void Uninitialize() override;
+        bool Initialize() override;
+        void Uninitialize() override;
 
-            auto logger() const {
-                return logPtr;
-            }
+        auto logger() const {
+            return logPtr;
+        }
 
-        private:
-            std::shared_ptr<spdlog::logger> logPtr;
-        };
+    private:
+        std::shared_ptr<spdlog::logger> logPtr;
+    };
 
-    }
 }
 
-//参见SPDLOG_LOGGER_CALL
 #define SPDLOG_BASE(logger, level, ...) (logger)->log(spdlog::source_loc{__FILE__, __LINE__, __func__}, level, __VA_ARGS__)
-#define TRACELOG(...)     SPDLOG_BASE(PPEngine::Core::Logger::Get()->logger(), spdlog::level::trace, __VA_ARGS__)
-#define DEBUGLOG(...)     SPDLOG_BASE(PPEngine::Core::Logger::Get()->logger(), spdlog::level::debug, __VA_ARGS__)
-#define INFOLOG(...)      SPDLOG_BASE(PPEngine::Core::Logger::Get()->logger(), spdlog::level::info, __VA_ARGS__)
-#define WARNLOG(...)      SPDLOG_BASE(PPEngine::Core::Logger::Get()->logger(), spdlog::level::warn, __VA_ARGS__)
-#define ERRORLOG(...)     SPDLOG_BASE(PPEngine::Core::Logger::Get()->logger(), spdlog::level::err, __VA_ARGS__)
-#define CRITICALLOG(...)  SPDLOG_BASE(PPEngine::Core::Logger::Get()->logger(), spdlog::level::critical, __VA_ARGS__)
+#define LOGT(...)     SPDLOG_BASE(Core::Logger::Get()->logger(), spdlog::level::trace, __VA_ARGS__)
+#define LOGD(...)     SPDLOG_BASE(Core::Logger::Get()->logger(), spdlog::level::debug, __VA_ARGS__)
+#define LOGI(...)      SPDLOG_BASE(Core::Logger::Get()->logger(), spdlog::level::info, __VA_ARGS__)
+#define LOGW(...)      SPDLOG_BASE(Core::Logger::Get()->logger(), spdlog::level::warn, __VA_ARGS__)
+#define LOGE(...)     SPDLOG_BASE(Core::Logger::Get()->logger(), spdlog::level::err, __VA_ARGS__)
+#define LOGC(...)  SPDLOG_BASE(Core::Logger::Get()->logger(), spdlog::level::critical, __VA_ARGS__)

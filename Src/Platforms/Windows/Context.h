@@ -11,65 +11,64 @@
 
 #include "Window/Context.h"
 
-namespace PPEngine {
-    namespace Platforms {
-        namespace Windows {
-            class Context : public Window::Context {
-            public:
-                NON_COPYABLE(Context)
 
-                Context() = default;
-                ~Context() override = default;
+namespace Platforms {
+    namespace Windows {
+        class Context : public Window::Context {
+        public:
+            NON_COPYABLE(Context)
 
-            public:
-                void Init(HWND hWnd, const char* name = nullptr);
+            Context() = default;
+            ~Context() override = default;
 
-                bool Serialize(tinyxml2::XMLElement* xmlElement) override;
+        public:
+            void Init(HWND hWnd, const char* name = nullptr);
 
-               // void AddFont(int id, Core::Font::Ptr font, bool shared) override;
+            bool Serialize(tinyxml2::XMLElement* xmlElement) override;
 
-                void DrawLine(const glm::vec2& start, const glm::vec2& end, int32 size, uint32 color, int nStyle = 0) override;
-                void DrawRect(const Core::Math::Rect& rectPaint, int32 size, uint32 color) override;
-                void DrawRoundRect(const Core::Math::Rect& rectPaint, int32 size, int32 width, int32 height, uint32 color) override;
-                void DrawColor(const Core::Math::Rect& rect, uint32 color) override;
-                bool DrawImage(Core::ImageDrawUI& imageDrawUI, const Core::Image::Ptr& image) override;
-                void DrawGradient(const Core::Math::Rect& rect, uint32 color1,
-                    uint32 color2, bool vertical, int32 steps) override;
-                void DrawUIText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) override;
-                void DrawHtmlText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) override;
+            // void AddFont(int id, Core::Font::Ptr font, bool shared) override;
 
-                void Invalidate(Core::Math::Rect& rect) override;
+            void DrawLine(const glm::vec2& start, const glm::vec2& end, int32 size, uint32 color, int nStyle = 0) override;
+            void DrawRect(const Core::Math::Rect& rectPaint, int32 size, uint32 color) override;
+            void DrawRoundRect(const Core::Math::Rect& rectPaint, int32 size, int32 width, int32 height, uint32 color) override;
+            void DrawColor(const Core::Math::Rect& rect, uint32 color) override;
+            bool DrawImage(Core::ImageDrawUI& imageDrawUI, const Core::Image::Ptr& image) override;
+            void DrawGradient(const Core::Math::Rect& rect, uint32 color1,
+                uint32 color2, bool vertical, int32 steps) override;
+            void DrawUIText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) override;
+            void DrawHtmlText(const Core::Math::Rect& rect, const std::string& text, uint32 color, int32 font, uint32 style) override;
 
-                void SetFocus(Window::Control* control, bool focusWnd) override;
-             //   void GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) override;
+            void Invalidate(Core::Math::Rect& rect) override;
 
-                void SetInitSize(const Core::Math::Size& size) override;
+            void SetFocus(Window::Control* control, bool focusWnd) override;
+            //   void GenerateRoundClip(const Core::Math::Rect& rect, const Core::Math::Rect& rcItem, int width, int height) override;
 
-                LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result);
-                Core::Font* AddFont(const std::string& name, int nSize, bool bBold, bool bUnderline, bool bItalic);
+            void SetInitSize(const Core::Math::Size& size) override;
 
-                void SetDefaultLinkFontColor(uint32 color, bool shared);
-                uint32 GetDefaultLinkFontColor() const {
-                    return defaultInfo_.defaultLinkFontColor_;
-                }
-                void SetDefaultLinkHoverFontColor(uint32 color, bool shared);
-                uint32 GetDefaultLinkHoverFontColor() const {
-                    return defaultInfo_.defaultLinkHoverFontColor_;
-                }
+            LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result);
+            Core::Font* AddFont(const std::string& name, int nSize, bool bBold, bool bUnderline, bool bItalic);
 
-            protected:
-                Core::Image::Ptr AddImage(const std::string& name, const std::string& type, uint32 mask = 0) override;
+            void SetDefaultLinkFontColor(uint32 color, bool shared);
+            uint32 GetDefaultLinkFontColor() const {
+                return defaultInfo_.defaultLinkFontColor_;
+            }
+            void SetDefaultLinkHoverFontColor(uint32 color, bool shared);
+            uint32 GetDefaultLinkHoverFontColor() const {
+                return defaultInfo_.defaultLinkHoverFontColor_;
+            }
 
-                HBITMAP GetBitmap(Core::Image::Ptr image, uint32 mask);
+        protected:
+            Core::Image::Ptr AddImage(const std::string& name, const std::string& type, uint32 mask = 0) override;
 
-            private:
+            HBITMAP GetBitmap(Core::Image::Ptr image, uint32 mask);
+
+        private:
                
 
-            private:
-                std::string name_;
-                HWND hWndPaint_;
-                HDC hdcPaint_;
-            };
-        }
+        private:
+            std::string name_;
+            HWND hWndPaint_;
+            HDC hdcPaint_;
+        };
     }
 }

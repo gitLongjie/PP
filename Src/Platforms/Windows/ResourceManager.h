@@ -9,37 +9,35 @@
 #include "Core/Singleton.h"
 #include "Core/Image.h"
 
-namespace PPEngine {
-    namespace Platforms {
-        namespace Windows {
-            class ResourceManager : public Core::Singleton<ResourceManager> {
-            public:
-                NON_COPYABLE(ResourceManager)
+namespace Platforms {
+    namespace Windows {
+        class ResourceManager : public Core::Singleton<ResourceManager> {
+        public:
+            NON_COPYABLE(ResourceManager)
 
-                 ResourceManager() = default;
-                ~ResourceManager() = default;
+                ResourceManager() = default;
+            ~ResourceManager() = default;
 
-                bool Initialize() override;
-                void Uninitialize() override;
+            bool Initialize() override;
+            void Uninitialize() override;
 
-                static ResourceManager* Create();
+            static ResourceManager* Create();
 
-                void SetInstanceHandle(HINSTANCE handle);
-                HINSTANCE GetInstanceHandle();
-                void SetResourceDll(HINSTANCE hInst);
-                HINSTANCE GetResourceDll();
+            void SetInstanceHandle(HINSTANCE handle);
+            HINSTANCE GetInstanceHandle();
+            void SetResourceDll(HINSTANCE hInst);
+            HINSTANCE GetResourceDll();
 
-                HBITMAP GetBitmap(const std::string& name);
-                bool AddBitmap(Core::Image::Ptr image, uint32 mask = 0);
+            HBITMAP GetBitmap(const std::string& name);
+            bool AddBitmap(Core::Image::Ptr image, uint32 mask = 0);
 
-            private:
-                HINSTANCE instanceHandle_{ nullptr };
-                HINSTANCE resourceDll_{ nullptr };
+        private:
+            HINSTANCE instanceHandle_{ nullptr };
+            HINSTANCE resourceDll_{ nullptr };
 
-                using Bitmaps = std::unordered_map<std::string, HBITMAP>;
-                Bitmaps bitmaps_;
+            using Bitmaps = std::unordered_map<std::string, HBITMAP>;
+            Bitmaps bitmaps_;
                
-            };
-        }
+        };
     }
 }
