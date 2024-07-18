@@ -76,7 +76,7 @@ namespace PPEngine {
 
             private:
                 //std::queue<std::shared_ptr<Event>> eventQueue_;
-                IStoreValue* test_;
+                IStoreValue* test_{ nullptr };
             };
         }
     }
