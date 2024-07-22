@@ -7,6 +7,7 @@ namespace Core {
         enum class EventType : uint32 {
             Unknow = 0,
             MouseMove,
+            MouseClick,
         };
     }
 }

@@ -161,7 +161,7 @@ namespace Platforms {
             ::SendMessage(hWnd_, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
 
             hIcon = (HICON)::LoadImage(ResourceManager::Get()->GetInstanceHandle(), MAKEINTRESOURCE(nRes), IMAGE_ICON,
-                (::GetSystemMetrics(SM_CXICON) + 15) & ~15, (::GetSystemMetrics(SM_CYICON) + 15) & ~15,	// 防止高DPI下图标模糊
+                (::GetSystemMetrics(SM_CXICON) + 15) & ~15, (::GetSystemMetrics(SM_CYICON) + 15) & ~15,
                 LR_DEFAULTCOLOR);
             ASSERT(hIcon);
             ::SendMessage(hWnd_, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);

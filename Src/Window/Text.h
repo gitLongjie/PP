@@ -8,7 +8,7 @@ namespace Window {
         Text();
         ~Text() override;
 
-        static Control::Ptr Create();
+        static Control* Create();
 
         const char* GetClass() const { return "Text"; }
 

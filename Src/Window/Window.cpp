@@ -4,11 +4,18 @@
 
 namespace Window {
         
-    Window::Window(PPRHI::DriverSettings& driverSetting, const WindowSettings& settings, std::unique_ptr<WindowImpl> impl) noexcept
+    Window::Window(PPRHI::DriverSettings& driverSetting,
+        const WindowSettings& settings, WindowImpl* impl) noexcept
         : driverSetting_(driverSetting)
         , settings_(settings)
-        , impl_(std::move(impl)) {
+        , impl_(impl) {
         impl_->Create(settings_, driverSetting_);
+    }
+
+    Window::~Window() {
+        if (nullptr != impl_) {
+            impl_->Release();
+        }
     }
 
     bool Window::ShouldClose() const {

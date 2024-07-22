@@ -17,7 +17,7 @@ namespace Window {
         Label();
         ~Label() override;
 
-        static Control::Ptr Create();
+        static Control* Create();
 
         const char* GetClass() const { return "Label"; }
         void SetAttribute(const char* name, const char* value) override;

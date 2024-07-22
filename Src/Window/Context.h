@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include <unordered_set>
+#include <set>
 
 #include "Core/Xml/tinyxml2.h"
 #include "Core/Math/Rect.h"
@@ -59,9 +59,9 @@ namespace Window {
         bool IsUpdateNeeded() const { return needUpdate_; }
         void NeedUpdate() { needUpdate_ = true; }
 
-        void InitControl(Control::Ptr control, Control* parent);
-        void UninitContorl(Control::Ptr control);
-        bool Attach(Control::Ptr control);
+        void InitControl(Control* control, Control* parent);
+        void UninitContorl(Control* control);
+        bool Attach(Control* control);
 
         void ParseAttribute(tinyxml2::XMLElement* root);
         void ParseFontAttribute(tinyxml2::XMLElement* root);
@@ -83,6 +83,8 @@ namespace Window {
 
         const Core::Math::Size& GetLastMoustPoint() const { return lastMousePt_; }
 
+        const Control* FindControl(const Core::Math::Point2d& pt) const;
+        Control* FindControl(const Core::Math::Point2d& pt);
         const Control* FindControl(const Core::Math::Point2d& pt, uint32 flag) const;
         Control* FindControl(const Core::Math::Point2d& pt, uint32 flag);
 
@@ -103,8 +105,9 @@ namespace Window {
         bool needUpdate_{ false };
         bool noActivate_{ false };
 
-        Control::Ptr control_{ nullptr };
-        std::unordered_set<Control::Ptr> controls_;
+        Core::SharedPtr<Control> control_{ nullptr };
+        Control* clickControl_{ nullptr };
+        std::set<Core::SharedPtr<Control>> controls_;
         DefaultInfo defaultInfo_;
 
         Core::Math::Point2d lastMousePt_{-1, -1};

@@ -7,17 +7,16 @@
 #include "Window/Constent.h"
 
 namespace Window {
-    static Control::Ptr emptyControl{ nullptr };
     static std::unordered_map<std::string, ControlCreator> controlCreators_;
     void RegisterControlCreator(const char* type, ControlCreator Creator) {
         controlCreators_[type] = std::move(Creator);
     }
 
-    Control::Ptr CreateControl(const char* type) {
+    Control* CreateControl(const char* type) {
         if (controlCreators_.find(type) != controlCreators_.end()) {
             return controlCreators_[type]();
         }
-        return Control::Ptr();
+        return nullptr;
     }
 
 
@@ -31,12 +30,8 @@ namespace Window {
 
     }
 
-    Control::Ptr Control::Create() {
-        return std::make_shared<Control>();
-    }
-
-    Control::Ptr& Control::EmptyControl() {
-        return emptyControl;
+    Control* Control::Create() {
+        return new Control;
     }
 
     bool Control::Serialize(tinyxml2::XMLElement* root) {
@@ -60,7 +55,7 @@ namespace Window {
     void Control::InitControl(Control* parent) {
         parent_ = parent;
         if (nullptr != context_) {
-            context_->InitControl(shared_from_this(), parent);
+            context_->InitControl(this, parent);
         }
     }
 
@@ -355,9 +350,9 @@ namespace Window {
         }
     }
 
-    bool Control::OnHandlerEvent(const Core::EventSystem::MouseMoveEvent& mouseMoveEvent) {
-        return true;
-    }
+    //bool Control::OnHandlerEvent(const Core::EventSystem::MouseMoveEvent& mouseMoveEvent) {
+    //    return true;
+    //}
 
     void Control::OnDrawBkColor() {
         if (0 != bkColor_) {
@@ -518,7 +513,7 @@ namespace Window {
         tinyxml2::XMLElement* xmlElement = root->FirstChildElement();
         while (xmlElement) {
             const char* name = xmlElement->Name();
-            Control::Ptr control = Window::CreateControl(name);
+            Control* control = Window::CreateControl(name);
             if (nullptr == control) {
                 break;
             }

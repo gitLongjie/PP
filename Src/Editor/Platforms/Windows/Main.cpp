@@ -77,12 +77,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     Window::WindowSettings settings;
     settings.title = "PPEditor";
     PPRHI::DriverSettings driverSettings;
-    Window::Window window(driverSettings, settings, std::make_unique<CFrameWnd>());
-    //CFrameWnd* window = new CFrameWnd();
-    //window->Create(NULL, "ProjectorPlayer", WNDSTYLE_FRAME, 0L, 0L, 0, 640, 480);
-    //window->CenterWindow();
-    //window->ShowWindow(true);
-    //godot_hinstance = hInstance;
+    Core::SharedPtr<Window::Window> window (new Window::Window(driverSettings, settings, new CFrameWnd));
 
     int ret = app.RunLoop();
     app.Uninitialize();

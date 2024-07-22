@@ -34,11 +34,12 @@ namespace Core {
             uint64 timestamp_{ 0 };
         };
 
-        class MouseMoveEvent : public Event<EventType, EventType::MouseMove> {
+
+        class MoveEvent : public Event<EventType, EventType::MouseMove> {
         public:
-            MouseMoveEvent() = default;
-            MouseMoveEvent(const Math::Point2d& pt);
-            ~MouseMoveEvent() override = default;
+            MoveEvent() = default;
+            MoveEvent(const Math::Point2d& pt);
+            ~MoveEvent() override = default;
 
             const Math::Point2d& GetPoint() const {
                 return pt_;

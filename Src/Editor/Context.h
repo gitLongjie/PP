@@ -21,6 +21,5 @@ namespace Editor {
 
     private:
         Window::WindowSettings windowSettings_;
-        std::unique_ptr<Window::Window> window_;
     };
 }

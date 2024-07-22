@@ -8,7 +8,7 @@ namespace Window {
         HorizontalLayout();
         ~HorizontalLayout() override;
 
-        static Control::Ptr Create();
+        static Control* Create();
 
         const char* GetClass() const { return "HorizontalLayout"; }
         void SetAttribute(const char* name, const char* value) override;

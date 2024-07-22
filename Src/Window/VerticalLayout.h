@@ -9,7 +9,7 @@ namespace Window {
         VerticalLayout();
         ~VerticalLayout() override;
 
-        static Control::Ptr Create();
+        static Control* Create();
             
         const char* GetClass() const { return "VerticalLayout"; }
         void SetAttribute(const char* name, const char* value) override;

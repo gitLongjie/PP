@@ -11,8 +11,8 @@ namespace Window {
     Container::~Container() {
     }
 
-	Control::Ptr Container::Create() {
-		return std::make_shared<Container>();
+	Control* Container::Create() {
+		return new Container();
 	}
 
 	void Container::SetAttribute(const char* name, const char* value) {
@@ -81,7 +81,7 @@ namespace Window {
 		return nullptr;
 	}
 
-    bool Container::AddControl(Control::Ptr control) {
+    bool Container::AddControl(Control* control) {
 		if (!control) return false;
 
 		if (nullptr != context_) {
@@ -97,7 +97,7 @@ namespace Window {
 		return true;
 	}
 
-    void Container::RemoveControl(Control::Ptr control) {
+    void Container::RemoveControl(Control* control) {
         if (!control) return;
 
 		const auto itor = std::find(controls_.begin(), controls_.end(), control);
@@ -135,7 +135,7 @@ namespace Window {
 		tinyxml2::XMLElement* xmlElement = root->FirstChildElement();
 		while (xmlElement) {
 			const char* name = xmlElement->Name();
-			Control::Ptr control = Window::CreateControl(name);
+			Control* control = Window::CreateControl(name);
 			if (nullptr == control) {
 				break;
 			}
@@ -152,7 +152,7 @@ namespace Window {
             return;
         }
 
-        Control::Ptr control = controls_[iIndex];
+        Control* control = controls_[iIndex];
 		if (!control->IsVisible()) { return; }
 		if (!control->IsFloat()) { return; }
 

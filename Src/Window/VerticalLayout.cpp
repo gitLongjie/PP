@@ -12,8 +12,8 @@ namespace Window {
 
     VerticalLayout::~VerticalLayout() {}
 
-    Control::Ptr VerticalLayout::Create() {
-        return std::make_shared<VerticalLayout>();
+    Control* VerticalLayout::Create() {
+        return new VerticalLayout();
     }
 
     void VerticalLayout::SetAttribute(const char* name, const char* value) {
@@ -92,7 +92,7 @@ namespace Window {
         int32_t iAdjustable = 0;
         int32_t cyFixedRemaining = cyFixed;
         for (int32_t i = 0; i < controls_.size(); ++i) {
-            Control::Ptr control = controls_[i];
+            Control* control = controls_[i];
             if (!control->IsVisible()) { continue; }
             if (control->IsFloat()) {
                 SetFloatRect(i);

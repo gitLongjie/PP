@@ -11,8 +11,8 @@ namespace Window {
 
     HorizontalLayout::~HorizontalLayout() {}
 
-    Control::Ptr HorizontalLayout::Create() {
-        return std::make_shared<HorizontalLayout>();
+    Control* HorizontalLayout::Create() {
+        return new HorizontalLayout();
     }
 
     void HorizontalLayout::SetAttribute(const char* name, const char* value) {
@@ -48,7 +48,7 @@ namespace Window {
 		int32_t cxFixed = 0;
 		int32_t nEstimateNum = 0;
 		for (int it1 = 0; it1 < controls_.size(); it1++) {
-			Control::Ptr control = controls_[it1];
+			Control* control = controls_[it1];
 			if (!control->IsVisible()) continue;
 			if (control->IsFloat()) continue;
 			Core::Math::Size sz = control->EstimateSize(szAvailable);
@@ -76,7 +76,7 @@ namespace Window {
 		int32_t iAdjustable = 0;
 		int32_t cxFixedRemaining = cxFixed;
 		for (int32_t it2 = 0; it2 < controls_.size(); it2++) {
-			Control::Ptr control = controls_[it2];
+			Control* control = controls_[it2];
 			if (!control->IsVisible()) continue;
 			if (control->IsFloat()) {
 				SetFloatRect(it2);

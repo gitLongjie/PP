@@ -4,7 +4,7 @@
 
 namespace Core {
     namespace EventSystem {
-        MouseMoveEvent::MouseMoveEvent(const Math::Point2d& pt)
+        MoveEvent::MoveEvent(const Math::Point2d& pt)
             : pt_(pt) {
         }
 

@@ -3,13 +3,14 @@
 #include <vector>
 #include "Window/Control.h"
 #include "Core/Math/Rect.h"
+#include "Core/Object/SharedPtr.h"
 
 namespace Window {
     class IContainer {
     public:
         virtual ~IContainer() = default;
-        virtual bool AddControl(Control::Ptr control) = 0;
-        virtual void RemoveControl(Control::Ptr control) = 0;
+        virtual bool AddControl(Control* control) = 0;
+        virtual void RemoveControl(Control* control) = 0;
         virtual int32_t GetCount() const = 0;
         virtual void Clear() = 0;
     };
@@ -19,7 +20,7 @@ namespace Window {
         Container();
         ~Container() override;
 
-        static Control::Ptr Create();
+        static Control* Create();
 
         const char* GetClass() const { return "Container"; }
         void SetAttribute(const char* name, const char* value) override;
@@ -29,8 +30,8 @@ namespace Window {
         Control* FindControl(const Core::Math::Point2d& pt, uint32 flag);
         const Control* FindControl(const Core::Math::Point2d& pt, uint32 flag) const;
 
-        bool AddControl(Control::Ptr control) override;
-        void RemoveControl(Control::Ptr control) override;
+        bool AddControl(Control* control) override;
+        void RemoveControl(Control* control) override;
         int32_t GetCount() const override { return controls_.size(); }
         void Clear() override { controls_.clear(); }
 
@@ -62,7 +63,7 @@ namespace Window {
         void ProcessScrollBar(Core::Math::Rect rect, float cx, float cy);
 
     protected:
-        std::vector<Control::Ptr> controls_;
+        std::vector<Core::SharedPtr<Control>> controls_;
         Core::Math::Rect rectInset_;
 
         class ScrollBar* vscrollbar_{ nullptr };

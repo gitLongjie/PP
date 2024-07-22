@@ -9,18 +9,17 @@
 #include "Core/Math/Size.h"
 #include "Core/Math/Rect.h"
 #include "Core/Constant.h"
-#include "Core/EventSystem/Event.h"
+#include "Core/Object/Object.h"
+
 
 namespace Window {
-    class Control : public std::enable_shared_from_this<Control> {
-    public:
-        using Ptr = std::shared_ptr<Control>;
+    class Control : public Core::Object {
+        NON_COPYABLE(Control)
 
     public:
         Control();
         virtual ~Control();
-        static Control::Ptr Create();
-        static Control::Ptr& EmptyControl();
+        static Control* Create();
 
         void SetContext(class Context* context, Control* parent) {
             context_ = context;
@@ -96,7 +95,7 @@ namespace Window {
         // virtual TRelativePosUI GetRelativePos() const;
         bool IsRelativePos() const { return false; }
 
-        bool OnHandlerEvent(const Core::EventSystem::MouseMoveEvent& mouseMoveEvent);
+      //  bool OnHandlerEvent(const Core::EventSystem::MouseMoveEvent& mouseMoveEvent);
 
 
     protected:
@@ -141,9 +140,11 @@ namespace Window {
         std::string bkImage_;
 
         bool mouseEnabled_{ true };
+
+        IMPLEMENT_OBJECT_REFCOUN(Control)
     };
 
-    using ControlCreator = std::function<Control::Ptr()>;
+    using ControlCreator = std::function<Control* ()>;
     void RegisterControlCreator(const char* type, ControlCreator);
-    Control::Ptr CreateControl(const char* type);
+    Control* CreateControl(const char* type);
 }

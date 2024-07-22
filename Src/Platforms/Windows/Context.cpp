@@ -195,6 +195,7 @@ namespace Platforms {
                 ::EndPaint(hWndPaint_, &ps);
             }
             return true;
+
             case WM_MOUSEMOVE: {
                 lastMousePt_ = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
                 Window::Control* control = FindControl(lastMousePt_,
@@ -202,10 +203,31 @@ namespace Platforms {
                 if (nullptr == control || control->GetContext() != this) {
                     return false;
                 }
-                Core::EventSystem::MouseMoveEvent event(lastMousePt_);
+                //Core::EventSystem::MouseMoveEvent event(lastMousePt_);
 //                    Core::EventSystem::EventManager::Get()->Send(event, control);
                 }
             break;
+
+            case WM_LBUTTONDOWN: {
+                ::SetFocus(hWndPaint_);
+                lastMousePt_ = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+                Window::Control* control = FindControl(lastMousePt_);
+                if (nullptr == control || this != control->GetContext()) {
+                    break;
+                }
+                clickControl_ = control_;
+            }
+
+            case WM_LBUTTONUP: {
+                lastMousePt_ = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+                if (nullptr == clickControl_) {
+                    break;
+                }
+
+                clickControl_ = nullptr;               
+            }
+            break;
+
             case WM_SETCURSOR:
             {
                 if (LOWORD(lParam) != HTCLIENT) break;

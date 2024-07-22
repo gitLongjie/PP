@@ -24,9 +24,7 @@ namespace Editor {
     }
 
     void Context::Uninitialize() {
-        if (window_) {
-            window_.reset();
-        }
+      
     }
 
     bool Context::IsRunning() const {

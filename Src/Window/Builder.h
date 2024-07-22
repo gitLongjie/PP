@@ -10,8 +10,8 @@ namespace Window {
         Builder() = default;
         virtual ~Builder() = default;
 
-        Control::Ptr Create(const char* xml, Context* context = NULL, Control::Ptr parent = NULL);
-        Control::Ptr Create(Context* context = NULL,Control::Ptr parent = NULL);
+        Control* Create(const char* xml, Context* context = nullptr, Control* parent = nullptr);
+        Control* Create(Context* context = nullptr, Control* parent = nullptr);
 
     private:
         void RegisterDefaultControl();

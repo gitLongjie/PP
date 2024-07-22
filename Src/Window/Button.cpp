@@ -11,7 +11,7 @@ namespace Window {
     Button::Button() {
         using namespace Core::EventSystem;
         //EventManager::Get()->Attach<int>(&Button::Test1, this);
-        EventManager::Get()->Attach<const MouseMoveEvent&>(MouseMoveEvent(), &Button::Test, this);
+       // EventManager::Get()->Attach<const MouseMoveEvent&>(MouseMoveEvent(), &Button::Test, this);
         //Core::EventSystem::InvokeImpl<Button> t(&Button::Test1);
         //Core::EventSystem::EventManager::Get()->Bind(this, std::mem_fn())
     }
@@ -19,8 +19,8 @@ namespace Window {
     Button::~Button() {
     }
 
-    Control::Ptr Button::Create() {
-        return std::make_shared<Button>();
+    Control* Button::Create() {
+        return new Button;
     }
 
     void Button::SetAttribute(const char* name, const char* value) {
@@ -182,6 +182,6 @@ namespace Window {
         }
     }
 
-    void Button::Test(const Core::EventSystem::MouseMoveEvent& mouseMoveEvent) {}
+    
 
 }

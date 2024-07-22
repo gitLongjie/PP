@@ -10,8 +10,8 @@ namespace Window {
     Label::~Label() {
     }
 
-    Control::Ptr Label::Create() {
-        return std::make_shared<Label>();
+    Control* Label::Create() {
+        return new Label();
     }
 
     void Label::SetAttribute(const char* name, const char* value) {

@@ -7,6 +7,7 @@
 #include "Core/Math/Size.h"
 #include "Core/FileSystem/FileHandle.h"
 #include "Core/FileSystem/Path.h"
+#include "Core/Object/SharedPtr.h"
 
 #include "Window/Control.h"
 #include "Window/VerticalLayout.h"
@@ -175,16 +176,16 @@ namespace Window {
         ~ControlCreatorVisitor() override = default;
 
         bool VisitEnter(const tinyxml2::XMLElement& element, const tinyxml2::XMLAttribute* attribute) override {
-            Window::Control::Ptr control;
+            Window::Control* control;
             const char* eleName = element.Name();
             if (0 == strcmp("VerticalLayout", eleName)) {
-                control = std::make_shared<VerticalLayout>();
+                control = new VerticalLayout();
             } else if (0 == strcmp("HorizontalLayout", eleName)) {
-                control = std::make_shared<HorizontalLayout>();
+                control = new HorizontalLayout();
             } else if (0 == strcmp("Container", eleName)) {
-                control = std::make_shared<Container>();
+                control = new Container();
             } else if (0 == strcmp("Text", eleName)) {
-                control = std::make_shared<Text>();
+                control =new  Text();
             }
             if (nullptr == control) {
                 return true;
@@ -202,16 +203,16 @@ namespace Window {
             if (!root_) {
                 root_ = control;
             }
-            parent_ = control.get();
+            parent_ = control;
 
             return true;
         }
         Context* context_;
-        Control::Ptr root_;
+        Core::SharedPtr<Control> root_;
         Control* parent_{ nullptr };
     };
 
-    Control::Ptr Builder::Create(const char* xml, Context* context, Control::Ptr parent) {
+    Control* Builder::Create(const char* xml, Context* context, Control* parent) {
         const std::string xmlPath = Core::FileSystem::Path::GetEditorSkinPath() + xml;
         Core::FileSystem::FileHandle fileHandle(xmlPath.c_str());
         if (!fileHandle.OpenRead(false)) {
@@ -239,7 +240,7 @@ namespace Window {
         return Create(context, parent);
     }
 
-    Control::Ptr Builder::Create( Context* context, Control::Ptr parent) {
+    Control* Builder::Create( Context* context, Control* parent) {
         static bool isRegisterDefaultControl = false;
         if (!isRegisterDefaultControl) {
             isRegisterDefaultControl = true;

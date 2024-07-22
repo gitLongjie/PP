@@ -769,7 +769,7 @@ namespace Platforms {
             bool bInSelected = false;
             int iLineLinkIndex = 0;
 
-            // 排版习惯是图文底部对齐，所以每行绘制都要分两步，先计算高度，再绘制 
+            
             /*CStdPtrArray aLineFontArray;
             CStdPtrArray aLineColorArray;
             CStdPtrArray aLinePIndentArray;*/
@@ -895,7 +895,6 @@ namespace Platforms {
                         while (*pstrText > ('\0') && *pstrText <= (' ')) pstrText = ::CharNext(pstrText);
                         LPCTSTR pstrTemp = pstrText;
                         int iFont = (int)strtol(pstrText, const_cast<char**>(&pstrText), 10);
-                        //if( isdigit(*pstrText) ) { // debug版本会引起异常
                         if (pstrTemp != pstrText) {
                             Core::Font* pFontInfo = Core::FontManager::Get()->GetFont(iFont);
                             aFontArray.push_back(pFontInfo);

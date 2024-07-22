@@ -5,6 +5,7 @@
 #include "Core/StringUtil.h"
 
 #include "Window/Control.h"
+#include "Window/Constent.h"
 
 
 namespace Window {
@@ -29,7 +30,7 @@ namespace Window {
             } else if (0 == strcmp(name, "Default")) {
 
             } else {
-                Control::Ptr control = CreateControl(name);
+                Control* control = CreateControl(name);
                 if (nullptr == control) {
                     continue;
                 }
@@ -219,18 +220,18 @@ namespace Window {
             defaultInfo_.defaultLinkHoverFontColor_ = color;
         }
     }
-    void Context::InitControl(Control::Ptr control, Control* parent) {
+    void Context::InitControl(Control* control, Control* parent) {
         if (nullptr == control) { return; }
 
         control->SetContext(this, parent);
         controls_.insert(control);
     }
 
-    void Context::UninitContorl(Control::Ptr control) {
+    void Context::UninitContorl(Control* control) {
         controls_.erase(control);
     }
 
-    bool Context::Attach(Window::Control::Ptr control) {
+    bool Context::Attach(Window::Control* control) {
         if (nullptr == control) {
             return false;
         }
@@ -304,13 +305,25 @@ namespace Window {
             
     }
 
+    const Control* Context::FindControl(const Core::Math::Point2d& pt) const {
+        assert(control_);
+
+        return control_->FindControl(pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST);
+    }
+
+    Control* Context::FindControl(const Core::Math::Point2d& pt) {
+        assert(control_);
+
+        return control_->FindControl(pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST);
+    }
+
     const Control* Context::FindControl(const Core::Math::Point2d& pt, uint32 flag) const {
         assert(control_);
 
         return control_->FindControl(pt, flag);
     }
 
-    Window::Control* Context::FindControl(const Core::Math::Point2d& pt, uint32 flag) {
+    Control* Context::FindControl(const Core::Math::Point2d& pt, uint32 flag) {
         assert(control_);
 
         return control_->FindControl(pt, flag);

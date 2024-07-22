@@ -10,7 +10,7 @@ namespace Window {
         Button();
         ~Button() override;
 
-        static Control::Ptr Create();
+        static Control* Create();
 
         const char* GetClass() const { return "Button"; }
         void SetAttribute(const char* name, const char* value) override;
@@ -47,8 +47,7 @@ namespace Window {
         int Test1(int i) {
             return 1;
         }
-           
-        void Test(const Core::EventSystem::MouseMoveEvent& mouseMoveEvent);
+
     protected:
         void OnDrawText() override;
         void OnDrawStatusImage() override;

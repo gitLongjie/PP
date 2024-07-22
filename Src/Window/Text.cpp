@@ -7,8 +7,8 @@ namespace Window {
     Text::~Text() {
     }
 
-    Control::Ptr Text::Create() {
-        return std::make_shared<Text>();
+    Control* Text::Create() {
+        return new Text();
     }
 
     void Text::OnDrawText() {
